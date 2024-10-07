@@ -1,9 +1,9 @@
 spring:
-#  data:
-#    mongodb:
-#      host: localhost
-#      port: 27017
-#      database: wsuchat
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: wsuchat
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

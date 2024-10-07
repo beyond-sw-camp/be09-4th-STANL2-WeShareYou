@@ -11,11 +11,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-  kafka:
-    bootstrap-servers: 192.168.1.155:9092
-    template:
-      default-topic: dev-topic
-
   profiles:
     active: local
 

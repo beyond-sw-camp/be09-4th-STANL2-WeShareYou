@@ -8,8 +8,8 @@ import lombok.Data;
 @Table(name="board")
 public class Board {
     @Id
-    @Column(name = "BOARD_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "BOARD_ID")
     private Long id;
 
     @Column(name = "BOARD_TITLE",nullable = false)

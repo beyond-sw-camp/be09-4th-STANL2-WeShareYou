@@ -59,18 +59,28 @@ public class BoardServiceImpl implements BoardService{
 
         boardRepository.save(board);
 
-        BoardDTO boardResonseDTO = modelMapper.map(board, BoardDTO.class);
+        BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
 
-        return boardResonseDTO;
+        return boardResponseDTO;
     }
 
     @Override
+    @Transactional
     public BoardDTO updateBoard(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
-        
+        board.setTitle(boardDTO.getTitle());
+        board.setContent(boardDTO.getContent());
+        board.setImageUrl(boardDTO.getImageUrl());
+        board.setTag(boardDTO.getTag());
+        board.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
 
+        boardRepository.save(board);
+
+        BoardDTO boardReponseDTO = modelMapper.map(board, BoardDTO.class);
+
+        return boardReponseDTO;
     }
 }

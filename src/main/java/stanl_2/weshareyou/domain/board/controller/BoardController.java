@@ -33,7 +33,7 @@ public class BoardController {
     }
 
     /**
-     * 내용: 게시글 생성2
+     * 내용: 게시글 생성
      * req:
      * {
      *     "title": "가이드 해드립니다.",
@@ -70,7 +70,24 @@ public class BoardController {
     /**
      * 내용: 게시글 내용 수정
      * req:
+     * {
+     *     "id": 4,
+     *     "title": "guide",
+     *     "imageUrl": "image5",
+     *     "memberId": 1
+     * }
      * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "title": "guide",
+     *         "content": "안녕하세요, 가이드 6년차 홍길동입니다. 가이드가 필요하신분 연락주세요",
+     *         "imageUrl": "image5",
+     *         "tag": "GUIDE",
+     *         "memberId": 1
+     *     },
+     *     "error": null
+     * }
      */
     @PostMapping("/update")
     public ApiResponse<?> updateBoard(@RequestBody BoardUpdateRequestVO boardUpdateRequestVO) {
@@ -83,4 +100,5 @@ public class BoardController {
 
         return ApiResponse.ok(boardUpdateResponseVO);
     }
+
 }

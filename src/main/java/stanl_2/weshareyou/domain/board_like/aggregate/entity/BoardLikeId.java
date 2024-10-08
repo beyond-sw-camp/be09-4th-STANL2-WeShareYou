@@ -1,6 +1,5 @@
 package stanl_2.weshareyou.domain.board_like.aggregate.entity;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

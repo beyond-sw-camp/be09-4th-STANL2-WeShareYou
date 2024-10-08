@@ -36,6 +36,8 @@ public enum ErrorCode {
      *   서버들은 인증받지 않은 클라이언트로부터 리소스를 숨기기 위하여 이 응답을 403 대신에 전송할 수도 있습니다.
      *   이 응답 코드는 웹에서 반복적으로 발생하기 때문에 가장 유명할지도 모릅니다.
      * */
+    ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
+    BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
 
 
     /*

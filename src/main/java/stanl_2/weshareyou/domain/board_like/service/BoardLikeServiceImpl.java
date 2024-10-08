@@ -14,7 +14,7 @@ import stanl_2.weshareyou.domain.board_like.repository.BoardLikeRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
-import java.util.Optional;
+
 
 @Service
 public class BoardLikeServiceImpl implements BoardLikeService{
@@ -26,7 +26,6 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         this.boardLikeRepository = boardLikeRepository;
         this.boardRepository = boardRepository;
     }
-
 
 
 

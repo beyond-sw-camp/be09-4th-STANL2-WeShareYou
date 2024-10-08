@@ -23,10 +23,8 @@ public class BoardLikeController {
 
     @PostMapping("")
     public ApiResponse<?> AddLike(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
-        System.out.println(boardLikeRequestVO);
         BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
         BoardLikeDto boardLikeResponse = boardLikeService.addBoardLike(boardLikeDTO);
-        System.out.println(boardLikeResponse);
 
         BoardLikeResponseVO boardLikeResponseVO = modelMapper.map(boardLikeResponse, BoardLikeResponseVO.class);
         return ApiResponse.ok(boardLikeResponseVO);

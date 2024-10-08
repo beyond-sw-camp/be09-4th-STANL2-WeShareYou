@@ -32,7 +32,7 @@ public class SecurityConfig {
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
 
-        return http.build();
+        return http.build(); 
     }
 
 

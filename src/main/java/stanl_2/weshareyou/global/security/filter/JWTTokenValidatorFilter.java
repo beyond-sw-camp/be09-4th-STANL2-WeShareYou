@@ -29,19 +29,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
     private final ApplicationConstants applicationConstants;
 
-    /**
-     * @param request
-     * @param response
-     * @param filterChain
-     * @throws ServletException
-     * @throws IOException
-     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        log.error("밸리데이터 필터 : ValidatorFilter");
-        // 토큰을 얻으러 가는데 토큰이 없는 상태로 여기오네
         String jwt = request.getHeader(applicationConstants.getJWT_HEADER());
         if(null != jwt) {
             try {
@@ -57,8 +48,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                                 .build()
                                 .parseClaimsJws(jwt)        // 권한 정보
                                 .getBody();                 // 사용자 관련 정보
-//                        Claims claims = Jwts.parser().verifyWith(secretKey)
-//                                .build().parseSignedClaims(jwt).getPayload();
+
                         String username = String.valueOf(claims.get("username"));
                         String authorities = String.valueOf(claims.get("authorities"));
                         Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,

@@ -11,11 +11,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.MemberRequestDTO;
 import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.reponseMemberDetailDTO;
 import stanl_2.weshareyou.domain.member.aggregate.dto.request.MemberResponseDTO;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
@@ -31,6 +31,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static stanl_2.weshareyou.global.common.exception.ErrorCode.LOGIN_FAILURE;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController("value = memberController")
@@ -39,7 +41,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final Environment env;
     private final ApplicationConstants applicationConstants;
@@ -68,29 +69,19 @@ public class MemberController {
 
     @PostMapping("/login")
     public ApiResponse<?> loginMember(@RequestBody LoginRequestVO loginRequestVO){
-        String jwt = "";
+
         Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
 
         Authentication authenticationResponse = authenticationManager.authenticate(authentication);
-        //                                          인증 성공 여부
-        if(authenticationResponse != null && authenticationResponse.isAuthenticated()){
-            if (null != env) {
-                String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
-                        applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
-                SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                jwt = Jwts.builder()
-                        .setIssuer("STANL2")
-                        .setSubject("JWT Token")
-                        .claim("username", authenticationResponse.getName())
-                        .claim("authorities", authenticationResponse.getAuthorities().stream().map(
-                                GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
-                        .setIssuedAt(new java.util.Date())
-                        .setExpiration(new java.util.Date((new java.util.Date()).getTime() + 30000000)) // 만료시간 8시간
-                        .signWith(secretKey)
-                        .compact(); // Digital Signature 생성
-            }
+
+        String jwt = memberService.loginMember(authenticationResponse);
+        if("".equals(jwt)){
+            throw new CommonException(LOGIN_FAILURE);
         }
+
         return ApiResponse.ok(new LoginResponseVO(HttpStatus.OK.getReasonPhrase(), jwt));
     }
+
+
 
 }

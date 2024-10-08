@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 
 @Slf4j
@@ -32,15 +34,20 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        log.error("제너레이트 필터: GeneratorFilter");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (null != authentication) {
             Environment env = getEnvironment(); // 환경변수
             if (null != env) {
+                // pk, nickname 넣기
+                Member member = (Member) authentication.getPrincipal();
+                log.info("{}", member.getId());
+                log.info("{}", member.getNickname());
                 String secret = applicationConstants.getJWT_SECRET_KEY();
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 String jwt = Jwts.builder().setIssuer("STANL2").setSubject("JWT Token")
                         .claim("username", authentication.getName())
+                        .claim("id", member.getId())
+                        .claim("nickname", member.getNickname())
                         .claim("authorities", authentication.getAuthorities().stream().map(
                                 GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                         .setIssuedAt(new Date())

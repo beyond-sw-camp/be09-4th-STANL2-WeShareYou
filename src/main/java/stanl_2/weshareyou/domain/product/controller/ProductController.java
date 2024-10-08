@@ -1,16 +1,21 @@
 package stanl_2.weshareyou.domain.product.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductCreateResponseVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductUpdateResponseVO;
 import stanl_2.weshareyou.domain.product.service.ProductService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/v1/product")
+@Slf4j
 public class ProductController {
 
     private final ModelMapper modelMapper;
@@ -19,6 +24,7 @@ public class ProductController {
     @Autowired
     public ProductController(ModelMapper modelMapper, ProductService productService) {
         this.modelMapper = modelMapper;
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.productService = productService;
     }
 
@@ -48,13 +54,23 @@ public class ProductController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productRequestVO) {
-
-        ProductDTO productRequestDTO = modelMapper.map(productRequestVO, ProductDTO.class);
+    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO) {
+        log.info("id1값: " + productCreateRequestVO.getAdminId());
+        ProductDTO productRequestDTO = modelMapper.map(productCreateRequestVO, ProductDTO.class);
+        log.info("id2값: " + productRequestDTO.getAdminId());
         ProductDTO productResponseDTO = productService.createProduct(productRequestDTO);
 
         ProductCreateResponseVO productCreateResponseVO = modelMapper.map(productResponseDTO, ProductCreateResponseVO.class);
-
         return ApiResponse.ok(productCreateResponseVO);
+    }
+
+    @PutMapping("")
+    public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO) {
+
+        ProductDTO productRequestDTO = modelMapper.map(productUpdateRequestVO, ProductDTO.class);
+        ProductDTO productResponseDTO = productService.updateProduct(productRequestDTO);
+
+        ProductUpdateResponseVO productUpdateResponseVO = modelMapper.map(productResponseDTO, ProductUpdateResponseVO.class);
+        return ApiResponse.ok(productUpdateResponseVO);
     }
 }

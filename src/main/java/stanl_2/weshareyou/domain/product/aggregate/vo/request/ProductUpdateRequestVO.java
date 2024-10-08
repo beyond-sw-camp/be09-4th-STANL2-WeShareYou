@@ -1,7 +1,6 @@
 package stanl_2.weshareyou.domain.product.aggregate.vo.request;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 
@@ -9,24 +8,26 @@ import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ProductCreateRequestVO {
+public class ProductUpdateRequestVO {
 
-    @NotNull
+    @NonNull
+    private Long id;
+
+    @NonNull
     private String title;
 
-    @NotNull
-    @Size(min = 1, max = 1000)
+    @NonNull
     private String content;
 
-    @NotNull
+    @NonNull
     private ProuctCategory category;
 
-    @NotNull
+    @NonNull
     private String startAt;
 
-    @NotNull
+    @NonNull
     private String endAt;
 
-    @NotNull
-    private long adminId;
+    @NonNull
+    private Long adminId;
 }

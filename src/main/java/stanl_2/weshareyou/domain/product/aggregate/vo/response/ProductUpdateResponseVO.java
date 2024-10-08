@@ -10,23 +10,26 @@ import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class ProductCreateResponseVO {
+public class ProductUpdateResponseVO {
 
-    @NotNull
+    @NonNull
+    private Long id;
+
+    @NonNull
     private String title;
 
-    @NotNull
+    @NonNull
     private String content;
 
-    @NotNull
-    private String category;
+    @NonNull
+    private ProuctCategory category;
 
-    @NotNull
+    @NonNull
     private String startAt;;
 
-    @NotNull
+    @NonNull
     private String endAt;
 
-    @NotNull
-    private long adminId;
+    @NonNull
+    private Long adminId;
 }

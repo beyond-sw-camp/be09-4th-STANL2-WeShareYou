@@ -11,6 +11,8 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  config:
+    import: application_prod.yml
   profiles:
     active: local
 
@@ -29,3 +31,9 @@ spring:
 test:
   project:
     topic: dev-topic
+
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:

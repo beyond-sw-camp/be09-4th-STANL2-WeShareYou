@@ -45,9 +45,7 @@ public class MemberServiceImpl implements MemberService {
 
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
         memberRequestDTO.setPassword(hashPwd);
-        log.info(hashPwd);
         Member registMember = modelMapper.map(memberRequestDTO, Member.class);
-        log.info(registMember.toString());
         registMember.setUpdatedAt(LocalDateTime.now()
                 .format(FORMATTER));
         registMember.setCreatedAt(LocalDateTime.now()

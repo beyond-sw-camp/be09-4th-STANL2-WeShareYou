@@ -1,7 +1,5 @@
 package stanl_2.weshareyou.domain.member.controller;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -10,12 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.MemberRequestDTO;
 import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.reponseMemberDetailDTO;
 import stanl_2.weshareyou.domain.member.aggregate.dto.request.MemberResponseDTO;
-import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
@@ -26,12 +22,7 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static stanl_2.weshareyou.global.common.exception.ErrorCode.LOGIN_FAILURE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -76,7 +67,7 @@ public class MemberController {
 
         String jwt = memberService.loginMember(authenticationResponse);
         if("".equals(jwt)){
-            throw new CommonException(LOGIN_FAILURE);
+            throw new CommonException(ErrorCode.LOGIN_FAILURE);
         }
 
         return ApiResponse.ok(new LoginResponseVO(HttpStatus.OK.getReasonPhrase(), jwt));

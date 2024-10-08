@@ -40,7 +40,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain defalutSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 //CSRF 토큰 요청 속성을 사용하여 토큰 값을 헤더나 매개변수 값으로 해결하는 로직을 포함
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 //        http.csrf(csrfConfig -> csrfConfig.disable());

@@ -24,25 +24,16 @@ import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 @RequiredArgsConstructor
 public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
 
-
     ApplicationConstants applicationConstants;
 
-    /**
-     * @param request
-     * @param response
-     * @param filterChain
-     * @throws ServletException
-     * @throws IOException
-     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request
-            , HttpServletResponse response
-            , FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (null != authentication) {
             Environment env = getEnvironment(); // 환경변수
             if (null != env) {
-
                 String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
                         applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));

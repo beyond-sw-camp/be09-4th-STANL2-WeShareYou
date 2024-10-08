@@ -30,7 +30,7 @@ public enum ErrorCode {
      *   클라이언트는 요청한 응답을 받기 위해서는 반드시 스스로를 인증해야 합니다.
      * */
     LOGIN_FAILURE(40100, HttpStatus.UNAUTHORIZED, "로그인에 실패했습니다"),
-
+    INVALID_TOKEN_ERROR(40101, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
 
     // 403
     FORBIDDEN_ROLE(40300, HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),

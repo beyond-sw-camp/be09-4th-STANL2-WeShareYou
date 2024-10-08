@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class BoardLikeResponseVO {
-    @NotNull(message = "게시판 ID를 입력하여 주세요.")
+    @NotNull
     private Long boardId;
 
     @NotNull

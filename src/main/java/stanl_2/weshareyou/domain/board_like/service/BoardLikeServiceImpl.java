@@ -28,13 +28,11 @@ public class BoardLikeServiceImpl implements BoardLikeService{
     }
 
 
-
     @Transactional
     @Override
     public BoardLikeDto addBoardLike(BoardLikeDto boardLikeDto) {
         Long boardId = boardLikeDto.getBoardId();
         Long memberId = boardLikeDto.getMemberId();
-
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 //        Member member = memberRepository.findById(memberId)
@@ -47,10 +45,11 @@ public class BoardLikeServiceImpl implements BoardLikeService{
             throw new CommonException(ErrorCode.ALREADY_LIKED);
         }
         else{
+
             BoardLike newBoardLike = new BoardLike();
             newBoardLike.setMemberId(memberId);
-
             newBoardLike.setBoardId(board);
+            board.setLikesCount(board.getLikesCount()+1);
             boardLikeRepository.save(newBoardLike);
 
             return boardLikeDto;

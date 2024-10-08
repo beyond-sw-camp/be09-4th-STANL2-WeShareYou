@@ -1,19 +1,15 @@
 package stanl_2.weshareyou.domain.board_like.aggregate.vo.request;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 public class BoardLikeRequestVO {
-    @NotNull(message = "게시판 ID를 입력하여 주세요.")
+    @NonNull
     private Long boardId;
 
-    @NotNull
+    @NonNull
     private Long memberId;
 }

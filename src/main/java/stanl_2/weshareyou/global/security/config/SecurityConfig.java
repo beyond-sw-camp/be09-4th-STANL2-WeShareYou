@@ -69,8 +69,9 @@ public class SecurityConfig {
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
                         .requestMatchers("/userDetail").authenticated()
-                .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
-                .anyRequest().authenticated()));
+//                .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
+//                .anyRequest().authenticated()
+                        .anyRequest().permitAll()));
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();

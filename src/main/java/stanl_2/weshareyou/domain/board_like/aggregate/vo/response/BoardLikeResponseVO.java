@@ -9,9 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class BoardLikeResponseVO {
-    @NonNull
+    @NotNull
     private Long boardId;
 
-    @NonNull
+    @NotNull
     private Long memberId;
 }

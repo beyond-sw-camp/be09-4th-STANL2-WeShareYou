@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import stanl_2.weshareyou.domain.board.aggregate.dto.BoardRequestDTO;
-import stanl_2.weshareyou.domain.board.aggregate.dto.BoardResponseDTO;
+import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
 import stanl_2.weshareyou.domain.board.service.BoardService;
@@ -28,12 +27,17 @@ public class BoardController {
         this.modelMapper = modelMapper;
     }
 
+    /**
+     * 내용: 게시글 생성
+     * req: title, content, image_url, tag, member_id
+     * res: X
+     */
     @PostMapping("")
     public ResponseEntity<BoardCreateResponseVO> createBoard(@RequestBody BoardCreateRequestVO boardCreateRequestVO){
 
-        BoardRequestDTO boardRequestDTO = modelMapper.map(boardCreateRequestVO, BoardRequestDTO.class);
+        BoardDTO boardDTO = modelMapper.map(boardCreateRequestVO, BoardDTO.class);
 
-        BoardResponseDTO boardResponseDTO = boardService.createBoard(boardRequestDTO);
+        BoardDTO boardResponseDTO = boardService.createBoard(boardDTO);
 
         BoardCreateResponseVO boardCreateResponseVO = modelMapper.map(boardResponseDTO, BoardCreateResponseVO.class);
 

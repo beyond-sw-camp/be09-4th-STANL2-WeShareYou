@@ -43,6 +43,9 @@ public enum ErrorCode {
      *   이 응답 코드는 웹에서 반복적으로 발생하기 때문에 가장 유명할지도 모릅니다.
      * */
     USERDETAILS_NOT_FOUND(40000, HttpStatus.NOT_FOUND, "User Details를 찾을 수 없습니다."),
+    ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
+    BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
+
 
     /*
      * 500(Internal Server Error)

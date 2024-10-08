@@ -19,6 +19,8 @@ public enum ErrorCode {
     // 데이터 무결성 위반 추가(ex: db의 NOT NULL 속성)
     DATA_INTEGRITY_VIOLATION(40005, HttpStatus.BAD_REQUEST,
             "데이터 무결성 위반입니다. 필수 값이 누락되었거나 유효하지 않습니다."),
+    REGISTER_FAIL(40006, HttpStatus.BAD_REQUEST, "회원 가입 실패!"),
+
 
 
     /*
@@ -27,7 +29,11 @@ public enum ErrorCode {
      *   의미상 이 응답은 "비인증(unauthenticated)"을 의미합니다.
      *   클라이언트는 요청한 응답을 받기 위해서는 반드시 스스로를 인증해야 합니다.
      * */
+    LOGIN_FAILURE(40100, HttpStatus.UNAUTHORIZED, "로그인에 실패했습니다"),
+    INVALID_TOKEN_ERROR(40101, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
 
+    // 403
+    FORBIDDEN_ROLE(40300, HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),
 
     /*
      * 404(Not Found)
@@ -36,6 +42,7 @@ public enum ErrorCode {
      *   서버들은 인증받지 않은 클라이언트로부터 리소스를 숨기기 위하여 이 응답을 403 대신에 전송할 수도 있습니다.
      *   이 응답 코드는 웹에서 반복적으로 발생하기 때문에 가장 유명할지도 모릅니다.
      * */
+    USERDETAILS_NOT_FOUND(40000, HttpStatus.NOT_FOUND, "User Details를 찾을 수 없습니다."),
     ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
     BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
 

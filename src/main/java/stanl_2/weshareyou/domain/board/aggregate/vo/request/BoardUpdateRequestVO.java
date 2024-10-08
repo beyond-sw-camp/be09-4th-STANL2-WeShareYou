@@ -2,7 +2,10 @@ package stanl_2.weshareyou.domain.board.aggregate.vo.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.w3c.dom.Text;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 
@@ -10,9 +13,9 @@ import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class BoardCreateRequestVO {
+public class BoardUpdateRequestVO {
 
-    @NotNull(message = "제목을 입력하여 주세요.")
+    @NotNull(message = "수정하실 게시글의 제목을 입력하여 주세요.")
     private String title;
 
     @Size(min=1, max=1000, message = "1000자 이내로 입력하여 주세요.")
@@ -25,6 +28,4 @@ public class BoardCreateRequestVO {
 
     @NotNull
     private Long memberId;
-
 }
-

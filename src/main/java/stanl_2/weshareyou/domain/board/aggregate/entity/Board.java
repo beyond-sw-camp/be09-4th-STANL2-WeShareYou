@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
 import javax.xml.stream.events.Comment;
-import java.lang.reflect.Member;
 
 @Entity
 @Data
-@Table(name="Board")
+@Table(name="BOARD")
 public class Board {
 
     @Id

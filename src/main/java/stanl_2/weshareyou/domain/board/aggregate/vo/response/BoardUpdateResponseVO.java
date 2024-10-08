@@ -1,7 +1,6 @@
 package stanl_2.weshareyou.domain.board.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 
@@ -10,7 +9,7 @@ import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class BoardCreateResponseVO {
+public class BoardUpdateResponseVO {
 
     @NotNull
     private String title;
@@ -24,5 +23,4 @@ public class BoardCreateResponseVO {
 
     @NotNull
     private Long memberId;
-
 }

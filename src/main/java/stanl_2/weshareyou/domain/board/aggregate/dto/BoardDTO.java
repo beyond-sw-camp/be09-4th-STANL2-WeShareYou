@@ -1,9 +1,6 @@
 package stanl_2.weshareyou.domain.board.aggregate.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.BoardLikeVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.CommentVO;
@@ -12,6 +9,7 @@ import stanl_2.weshareyou.domain.board.aggregate.vo.CommentVO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class BoardDTO {
 
     private Long id;

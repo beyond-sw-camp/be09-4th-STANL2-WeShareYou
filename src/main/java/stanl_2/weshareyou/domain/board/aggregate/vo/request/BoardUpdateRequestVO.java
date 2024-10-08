@@ -15,6 +15,9 @@ import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 @EqualsAndHashCode
 public class BoardUpdateRequestVO {
 
+    @NotNull
+    private Long id;
+
     @NotNull(message = "수정하실 게시글의 제목을 입력하여 주세요.")
     private String title;
 

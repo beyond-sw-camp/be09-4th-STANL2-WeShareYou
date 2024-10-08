@@ -10,6 +10,9 @@ import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.member.aggregate.repository.MemberRepository;
+import stanl_2.weshareyou.global.common.exception.CommonException;
+import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,29 +26,51 @@ public class BoardServiceImpl implements BoardService{
 
     private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper) {
+    public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper, MemberRepository memberRepository) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
+        this.memberRepository = memberRepository;
     }
 
 
     @Override
+    @Transactional
     public BoardDTO createBoard(BoardDTO boardDTO) {
-//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        Board board = modelMapper.map(boardDTO,Board.class);
+        Board board = new Board();
+        Long memberId = boardDTO.getMemberId();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        board.setTitle(boardDTO.getTitle());
+        board.setContent(boardDTO.getContent());
+        board.setImageUrl(boardDTO.getImageUrl());
+        board.setTag(boardDTO.getTag());
         board.setCommentCount(0);
         board.setLikesCount(0);
         board.setCreatedAt(LocalDateTime.now().format(FORMATTER));
         board.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
         board.setActive(true);
+        board.setMemberId(member);
 
         boardRepository.save(board);
 
         BoardDTO boardResonseDTO = modelMapper.map(board, BoardDTO.class);
 
         return boardResonseDTO;
+    }
+
+    @Override
+    public BoardDTO updateBoard(BoardDTO boardDTO) {
+
+        Board board = boardRepository.findById(boardDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+
+        
+
     }
 }

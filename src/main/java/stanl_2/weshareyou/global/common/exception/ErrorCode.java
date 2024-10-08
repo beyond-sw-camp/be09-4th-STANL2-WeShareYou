@@ -42,7 +42,9 @@ public enum ErrorCode {
      * 500(Internal Server Error)
      *   서버가 처리 방법을 모르는 상황이 발생했습니다. 서버는 아직 처리 방법을 알 수 없습니다.
      * */
-    INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다.");
+    INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
+    BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(40403, HttpStatus.BAD_REQUEST, "해당멤버을 찾을 수 없습니다.");
 
     private final Integer code;
     private final HttpStatus httpStatus;

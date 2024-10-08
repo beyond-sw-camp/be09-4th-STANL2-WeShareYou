@@ -2,15 +2,19 @@ package stanl_2.weshareyou.domain.board.aggregate.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
 import javax.xml.stream.events.Comment;
 
 @Entity
-@Data
-@Table(name="BOARD")
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@ToString
+@Table(name = "BOARD")
 public class Board {
 
     @Id
@@ -22,41 +26,41 @@ public class Board {
     @NotNull
     private String title;
 
-    @Column(name = "BOARD_CONTENT",columnDefinition = "TEXT")
+    @Column(name = "BOARD_CONTENT", columnDefinition = "TEXT")
     @NotNull
-    private String context;
+    private String content;
 
-    @Column(name = "BOARD_IMAGE_URL",columnDefinition = "TEXT")
+    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
     @NotNull
     private String imageUrl;
 
-    @Column(name= "BOARD_TAG")
+    @Column(name = "BOARD_TAG")
     @Enumerated(EnumType.STRING)
     @NotNull
     private TAG tag;
 
-    @Column(name= "BOARD_COMMENT_COUNT")
+    @Column(name = "BOARD_COMMENT_COUNT")
     @NotNull
     private Integer commentCount = 0;
 
-    @Column(name= "BOARD_LIKES_COUNT")
+    @Column(name = "BOARD_LIKES_COUNT")
     @NotNull
     private Integer likesCount = 0;
 
-    @Column(name= "BOARD_CREATED_AT")
+    @Column(name = "BOARD_CREATED_AT")
     @NotNull
     private String createdAt;
 
-    @Column(name= "BOARD_UPDATED_AT")
+    @Column(name = "BOARD_UPDATED_AT")
     @NotNull
     private String updatedAt;
 
-    @Column(name= "BOARD_ACTIVE")
+    @Column(name = "BOARD_ACTIVE")
     @NotNull
     private Boolean active = true;
 
     @ManyToOne
-    @JoinColumn(name= "MEMBER_ID", referencedColumnName = "MEMBER_ID")
+    @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
     @NotNull
     private Member memberId;
 }

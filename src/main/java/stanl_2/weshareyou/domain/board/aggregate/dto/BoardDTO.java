@@ -14,7 +14,7 @@ public class BoardDTO {
 
     private Long id;
     private String title;
-    private String context;
+    private String content;
     private String imageUrl;
     private TAG tag;
     private Integer commentCount;

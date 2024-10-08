@@ -1,25 +1,31 @@
-package stanl_2.weshareyou.domain.product.aggregate.dto;
+package stanl_2.weshareyou.domain.product.aggregate.vo.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
-public class ProductDTO {
-    private Long id;
+@EqualsAndHashCode
+public class ProductCreateRequestVO {
+
+    @NonNull
     private String title;
+
+    @NonNull
     private String content;
-    private String imageUrl;
+
+    @NonNull
     private ProuctCategory category;
+
+    @NonNull
     private String startAt;
+
+    @NonNull
     private String endAt;
-    private Boolean rental;
-    private String createdAt;
-    private String updatedAt;
+
+    @NotNull
     private Long adminId;
-    private Long memberId;
 }

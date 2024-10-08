@@ -13,7 +13,6 @@ public class AuthorizationEvents {
     @EventListener
     public void onFailure(AuthorizationDeniedEvent deniedEvent){
         log.error("권한 없음 유저: {} due to: {}", deniedEvent.getAuthentication().get().getName()
-                , deniedEvent.getAuthorizationDecision().toString(),
-                deniedEvent.getSource().toString());
+                , deniedEvent.getAuthorizationDecision().toString());
     }
 }

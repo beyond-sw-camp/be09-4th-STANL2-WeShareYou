@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -28,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
-    ApplicationConstants applicationConstants;
+    private final ApplicationConstants applicationConstants;
 
     /**
      * @param request
@@ -41,6 +40,8 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        log.error("밸리데이터 필터 : ValidatorFilter");
+        // 토큰을 얻으러 가는데 토큰이 없는 상태로 여기오네
         String jwt = request.getHeader(applicationConstants.getJWT_HEADER());
         if(null != jwt) {
             try {
@@ -72,5 +73,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request,response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return request.getServletPath().equals("/api/v1/member/userDetail");
     }
 }

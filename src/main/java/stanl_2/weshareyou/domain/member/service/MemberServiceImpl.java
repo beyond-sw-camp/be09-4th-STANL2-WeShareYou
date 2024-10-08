@@ -4,17 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stanl_2.weshareyou.domain.member.aggregate.dto.MemberRequestDTO;
-import stanl_2.weshareyou.domain.member.aggregate.dto.MemberResponseDTO;
+import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.MemberRequestDTO;
+import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.reponseMemberDetailDTO;
+import stanl_2.weshareyou.domain.member.aggregate.dto.request.MemberResponseDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Slf4j
 @Service("MemberServiceImpl")
@@ -52,5 +53,11 @@ public class MemberServiceImpl implements MemberService {
         Member newMember = memberRepository.save(registMember);
 
         return modelMapper.map(newMember, MemberResponseDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public Optional<reponseMemberDetailDTO> findMemberDetail(String username) {
+        return memberRepository.findByLoginId(username);
     }
 }

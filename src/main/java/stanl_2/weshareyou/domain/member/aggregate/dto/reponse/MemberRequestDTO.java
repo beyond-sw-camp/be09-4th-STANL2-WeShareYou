@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.domain.member.aggregate.dto;
+package stanl_2.weshareyou.domain.member.aggregate.dto.reponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import stanl_2.weshareyou.domain.member.aggregate.Sex;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResponseDTO {
+public class MemberRequestDTO {
     private Long id;
     private String loginId;
     private String password;

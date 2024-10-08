@@ -41,6 +41,6 @@ public class UsernamePwdAuthenticationProvider implements AuthenticationProvider
     // 추후에 여기에 OAuth2.0 추가 가능 할 듯
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

@@ -31,8 +31,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()));
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
-
-        return http.build(); 
+        return http.build();
     }
 
 

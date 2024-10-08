@@ -5,7 +5,7 @@ import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 
 @Entity
-@Table(name="boardLike")
+@Table(name="BoardLike")
 @RequiredArgsConstructor
 @IdClass(BoardLikeId.class)
 @Getter

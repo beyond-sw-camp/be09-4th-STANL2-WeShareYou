@@ -37,3 +37,8 @@ logging:
     org:
       springframework:
         security=DEBUG:
+
+JWT:
+  SECRET_KEY: ${SCRET_KEY}
+  JWT_SECRET_DEFAULT_VALUE: ${JWT_SECRET_DEFAULT_VALUE}
+  JWT_HEADER: ${JWT_HEADER}

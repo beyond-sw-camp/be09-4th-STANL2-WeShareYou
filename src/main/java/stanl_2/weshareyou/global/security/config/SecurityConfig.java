@@ -12,6 +12,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import stanl_2.weshareyou.global.security.filter.JWTTokenGeneratorFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -22,7 +24,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain defalutSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrfConfig -> csrfConfig.disable());
-        http.requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
+        http.addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
                 .requestMatchers("/api/v1/member/register").permitAll()
                 .anyRequest().authenticated()));

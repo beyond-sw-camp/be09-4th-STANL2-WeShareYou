@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "PetCast API Specification",
+                title = "WeShareYou API Specification",
                 description = "Specification for buds",
                 version = "v1"
         )

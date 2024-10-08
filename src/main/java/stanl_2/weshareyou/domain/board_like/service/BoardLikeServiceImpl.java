@@ -38,14 +38,15 @@ public class BoardLikeServiceImpl implements BoardLikeService{
 //        Member member = memberRepository.findById(memberId)
 //                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
+
         boolean existingLike
-                = boardLikeRepository.findById(new BoardLikeId(boardId, memberId)).isPresent();
+                = boardLikeRepository.findById(new BoardLikeId(memberId,boardId)).isPresent();
+
 
         if(existingLike){
             throw new CommonException(ErrorCode.ALREADY_LIKED);
         }
         else{
-
             BoardLike newBoardLike = new BoardLike();
             newBoardLike.setMemberId(memberId);
             newBoardLike.setBoardId(board);

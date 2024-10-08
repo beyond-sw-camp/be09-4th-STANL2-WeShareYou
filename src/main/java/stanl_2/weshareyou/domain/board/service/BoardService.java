@@ -7,4 +7,6 @@ public interface BoardService {
     BoardDTO createBoard(BoardDTO boardDTO);
 
     BoardDTO updateBoard(BoardDTO boardDTO);
+
+    BoardDTO deleteBoard(BoardDTO boardDTO);
 }

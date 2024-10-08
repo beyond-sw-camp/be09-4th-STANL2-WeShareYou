@@ -6,14 +6,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
+import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
+import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardDeleteResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardUpdateResponseVO;
 import stanl_2.weshareyou.domain.board.service.BoardService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
@@ -89,7 +88,7 @@ public class BoardController {
      *     "error": null
      * }
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ApiResponse<?> updateBoard(@RequestBody BoardUpdateRequestVO boardUpdateRequestVO) {
 
         BoardDTO boardDTO = modelMapper.map(boardUpdateRequestVO, BoardDTO.class);
@@ -101,4 +100,32 @@ public class BoardController {
         return ApiResponse.ok(boardUpdateResponseVO);
     }
 
+    /**
+     * 내용: 게시글 수정
+     * req:
+     * {
+     *     "id": 4,
+     *     "memberId": 1
+     * }
+     * res:
+     *{
+     *     "success": true,
+     *     "result": {
+     *         "id": 4,
+     *         "active": false
+     *     },
+     *     "error": null
+     * }
+     */
+    @DeleteMapping("/delete")
+    public ApiResponse<?> deleteBoard(@RequestBody BoardDeleteRequestVO boardDeleteRequestVO){
+
+        BoardDTO boardDTO = modelMapper.map(boardDeleteRequestVO, BoardDTO.class);
+
+        BoardDTO boardResponseDTO = boardService.deleteBoard(boardDTO);
+
+        BoardDeleteResponseVO boardDeleteResponseVO = modelMapper.map(boardResponseDTO, BoardDeleteResponseVO.class);
+
+        return ApiResponse.ok(boardDeleteResponseVO);
+    }
 }

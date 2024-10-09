@@ -22,7 +22,7 @@ public class ProductUpdateResponseVO {
     private String content;
 
     @NotNull
-    private ProuctCategory category;
+    private String category;
 
     @NotNull
     private String startAt;;

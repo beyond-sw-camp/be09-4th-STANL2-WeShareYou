@@ -17,6 +17,7 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -53,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
         product.setAdminId(member);
         product.setCreatedAt(LocalDateTime.now().format(FORMATTER));
         product.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
-        log.info("id2:{}", product.getAdminId());
+
         productRepository.save(product);
 
         ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
@@ -63,14 +64,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateProduct(ProductDTO productUpdateRequestDTO) {
+    public ProductDTO updateProduct(ProductDTO productDTO) {
 
-        Member adminId = new Member();
-        adminId.setId(productUpdateRequestDTO.getId());
+        Member member = memberRepository.findById(productDTO.getAdminId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Product product = modelMapper.map(productUpdateRequestDTO, Product.class);
+        Product productId = productRepository.findByIdAndAdminId(productDTO.getId(), member)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
+
+
+        Product product = modelMapper.map(productDTO, Product.class);
         product.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
-        product.setAdminId(adminId);
+        product.setAdminId(member);
 
         productRepository.save(product);
 

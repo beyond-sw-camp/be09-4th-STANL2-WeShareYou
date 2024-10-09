@@ -21,7 +21,7 @@ public class ProductCreateResponseVO {
     private String imageUrl;
 
     @NotNull
-    private String category;
+    private ProuctCategory category;
 
     @NotNull
     private String startAt;;
@@ -30,5 +30,5 @@ public class ProductCreateResponseVO {
     private String endAt;
 
     @NotNull
-    private long adminId;
+    private Long adminId;
 }

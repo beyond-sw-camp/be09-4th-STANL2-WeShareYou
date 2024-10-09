@@ -68,9 +68,37 @@ public class ProductController {
         ProductDTO productResponseDTO = productService.createProduct(productRequestDTO);
 
         ProductCreateResponseVO productCreateResponseVO = modelMapper.map(productResponseDTO, ProductCreateResponseVO.class);
+
         return ApiResponse.ok(productCreateResponseVO);
     }
 
+    /**
+     * 내용: 공유물품 수정
+     * req:
+     * {
+     *     "id": 4,
+     *     "title": "스탠리 텀블러1",
+     *     "content": "스탠리 상태 좋습니다1.",
+     *     "category": "KITCHENWARES",
+     *     "startAt": "2024-10-08T00:00:00",
+     *     "endAt": "2024-10-10T00:00:00",
+     *     "adminId": 1
+     * }
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 4,
+     *         "title": "스탠리 텀블러1",
+     *         "content": "스탠리 상태 좋습니다1.",
+     *         "category": "KITCHENWARES",
+     *         "startAt": "2024-10-08T00:00:00",
+     *         "endAt": "2024-10-10T00:00:00",
+     *         "adminId": 1
+     *     },
+     *     "error": null
+     * }
+     */
     @PutMapping("")
     public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO) {
 
@@ -78,6 +106,7 @@ public class ProductController {
         ProductDTO productResponseDTO = productService.updateProduct(productRequestDTO);
 
         ProductUpdateResponseVO productUpdateResponseVO = modelMapper.map(productResponseDTO, ProductUpdateResponseVO.class);
+
         return ApiResponse.ok(productUpdateResponseVO);
     }
 }

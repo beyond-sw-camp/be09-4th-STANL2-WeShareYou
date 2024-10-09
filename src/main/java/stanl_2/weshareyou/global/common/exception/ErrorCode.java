@@ -44,6 +44,8 @@ public enum ErrorCode {
      * */
     USERDETAILS_NOT_FOUND(40000, HttpStatus.NOT_FOUND, "User Details를 찾을 수 없습니다."),
     ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
+    PRODUCT_NOT_FOUND(40405, HttpStatus.NOT_FOUND, "해당 공유물품 게시글을 찾을 수 없습니다."),
+    PRODUCT_AUTHOR_NOT_FOUND(40406, HttpStatus.NOT_FOUND, "해당 공유물품 게시글의 작성자가 아닙니다."),
 
 
     /*

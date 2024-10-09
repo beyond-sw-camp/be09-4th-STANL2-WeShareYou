@@ -30,5 +30,5 @@ public class ProductCreateRequestVO {
     private String endAt;
 
     @NotNull
-    private long adminId;
+    private Long adminId;
 }

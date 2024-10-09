@@ -44,14 +44,15 @@ public enum ErrorCode {
      * */
     USERDETAILS_NOT_FOUND(40000, HttpStatus.NOT_FOUND, "User Details를 찾을 수 없습니다."),
     ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
-    BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
 
 
     /*
      * 500(Internal Server Error)
      *   서버가 처리 방법을 모르는 상황이 발생했습니다. 서버는 아직 처리 방법을 알 수 없습니다.
      * */
-    INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다.");
+    INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
+    BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(40403, HttpStatus.BAD_REQUEST, "해당멤버을 찾을 수 없습니다.");
 
     private final Integer code;
     private final HttpStatus httpStatus;

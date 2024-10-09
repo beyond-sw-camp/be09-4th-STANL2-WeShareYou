@@ -35,7 +35,7 @@ public class Member {
 
     @Column(name="AGE")
     @NotNull
-    private int age;
+    private Integer age;
 
     @Column(name="NATIONALITY")
     @NotNull
@@ -51,7 +51,7 @@ public class Member {
 
     @Column(name="POINT")
     @NotNull
-    private int point = 0;
+    private Integer point = 0;
 
     @Column(name="ROLE")
     @NotNull

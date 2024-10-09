@@ -43,8 +43,8 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 //CSRF 토큰 요청 속성을 사용하여 토큰 값을 헤더나 매개변수 값으로 해결하는 로직을 포함
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
-//        http.csrf(csrfConfig -> csrfConfig.disable());
-        http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http.csrf(csrfConfig -> csrfConfig.disable());
+        http/*.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -57,18 +57,18 @@ public class SecurityConfig {
                         config.setMaxAge(3600L);    // 1시간
                         return config;
                     }
-                }))
-                .csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+                }))*/
+                /*.csrf(csrfConfig -> csrfConfig.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
                         // 아래 API들에 대해서는 CSRF 보호를 무시하도록 지시(공개)
                         .ignoringRequestMatchers("/api/v1/member/register", "/api/v1/member/login")
                         // 로그인 작업 후 처음으로 CSRF 토큰을 생성하는데만 도움을 준다.
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))*/
+//                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
-                        .requestMatchers("/userDetail").authenticated()
+//                        .requestMatchers("/userDetail").authenticated()
 //                .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
 //                .anyRequest().authenticated()
                         .anyRequest().permitAll()));

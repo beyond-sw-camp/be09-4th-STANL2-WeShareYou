@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -62,12 +63,14 @@ public class ProdSecurityConfig {
                         .ignoringRequestMatchers("/api/v1/member/register", "/api/v1/member/login")
                         // 로그인 작업 후 처음으로 CSRF 토큰을 생성하는데만 도움을 준다.
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
-                        .requestMatchers("/userDetail").authenticated()
+//                        .requestMatchers("/userDetail").authenticated()
+//                        .requestMatchers("/userDetail").hasRole("MEMBER")
+                        .requestMatchers("/api/v1/board").hasRole("MEMBER")
                 .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
                 .anyRequest().authenticated()));
         http.formLogin(withDefaults());

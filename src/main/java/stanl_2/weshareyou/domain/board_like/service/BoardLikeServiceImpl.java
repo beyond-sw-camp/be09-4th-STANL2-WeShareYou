@@ -39,7 +39,6 @@ public class BoardLikeServiceImpl implements BoardLikeService{
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-        System.out.println("============================");
         boolean existingLike
                 = boardLikeRepository.findById(new BoardLikeId(memberId,boardId)).isPresent();
 
@@ -49,7 +48,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         else{
             BoardLike newBoardLike = new BoardLike();
             newBoardLike.setMember(member);
-            newBoardLike.setBoardId(board);
+            newBoardLike.setBoard(board);
             board.setLikesCount(board.getLikesCount()+1);
             boardLikeRepository.save(newBoardLike);
 
@@ -58,18 +57,24 @@ public class BoardLikeServiceImpl implements BoardLikeService{
 
     }
 
+//    @Transactional
+//    @Override
+//    public List<Member> BoardLikeList(Long boardId) {
+//        Board board = boardRepository.findById(boardId)
+//                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+//        List<Member> members = boardLikeRepository.findMembersByBoard(board);
+//        return members;
+//    }
 
     @Transactional
     @Override
-    public List<BoardLike> BoardLikeList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+    public List<Long> BoardLikeList(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
-        // Member 객체로 좋아요 목록 조회
-        List<BoardLike> likeList = boardLikeRepository.findByMember(member);
-        if (likeList.isEmpty()) {
-            throw new CommonException(ErrorCode.NO_LIKES_FOUND);
-        }
-        return likeList;
+        // Member의 ID만 반환하는 방식으로 변경
+        List<Long> memberIds = boardLikeRepository.findMemberIdsByBoard(board);
+
+        return memberIds;
     }
 }

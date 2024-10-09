@@ -11,5 +11,5 @@ public class BoardLikeId implements Serializable {
 
     private Long member;
 
-    private Long boardId;
+    private Long board;
 }

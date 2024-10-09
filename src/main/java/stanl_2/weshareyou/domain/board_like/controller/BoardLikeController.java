@@ -34,12 +34,14 @@ public class BoardLikeController {
         BoardLikeResponseVO boardLikeResponseVO = modelMapper.map(boardLikeResponse, BoardLikeResponseVO.class);
         return ApiResponse.ok(boardLikeResponseVO);
     }
-
-
-    @GetMapping("/boardlikelist/{memberId}")
-    public ApiResponse<?> likeList(@PathVariable Long memberId) {
-        List<BoardLike> likeList = boardLikeService.BoardLikeList(memberId);
+//    @GetMapping("/boardlikelist/{boardId}")
+//    public ApiResponse<?> BoardlikeList(@PathVariable Long boardId) {
+//        List<Member> likeList = boardLikeService.BoardLikeList(boardId);
+//        return ApiResponse.ok(likeList);
+//    }
+    @GetMapping("/boardlikelist/{boardId}")
+    public ApiResponse<?> BoardlikeList(@PathVariable Long boardId) {
+        List<Long> likeList = boardLikeService.BoardLikeList(boardId);
         return ApiResponse.ok(likeList);
     }
-
 }

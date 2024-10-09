@@ -22,5 +22,5 @@ public class BoardLike {
     @Id
     @ManyToOne
     @JoinColumn(name = "BOARD_ID")
-    private Board boardId; // Board 객체로 매핑
+    private Board board; // Board 객체로 매핑
 }

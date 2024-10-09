@@ -1,9 +1,5 @@
 package stanl_2.weshareyou.global.security.service.redis;
 
-import org.springframework.data.redis.core.ValueOperations;
-
-import java.time.Duration;
-
 public interface RedisService {
     /* key-value 값 가져오는 메소드 */
     String getData(String key);

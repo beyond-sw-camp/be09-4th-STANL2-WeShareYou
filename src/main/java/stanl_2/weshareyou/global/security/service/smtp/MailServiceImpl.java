@@ -1,5 +1,7 @@
 package stanl_2.weshareyou.global.security.service.smtp;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,8 +12,6 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import stanl_2.weshareyou.global.security.service.redis.RedisService;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.security.SecureRandom;
 
 
@@ -22,7 +22,6 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     private final RedisService redisService;
     private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-//    private final RedisConfig redisConfig;
 
     @Value("${spring.mail.host.port.username}")
     private String configEmail;
@@ -66,7 +65,7 @@ public class MailServiceImpl implements MailService {
         // MimeMessage에 코드, 송신 이메일, 내용 보관
         MimeMessage message = mailSender.createMimeMessage();
         message.addRecipients(MimeMessage.RecipientType.TO, email);
-        message.setSubject("STANL2 이메일 확인");
+        message.setSubject("STANL2 본인 확인");
         message.setFrom(configEmail);
         message.setText(setContext(authCode), "utf-8", "html");
 

@@ -1,16 +1,15 @@
 package stanl_2.weshareyou.domain.member.controller;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.request.CheckCodeRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.EmailAddressRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
@@ -20,11 +19,8 @@ import stanl_2.weshareyou.domain.member.service.MemberService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
-import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
-import stanl_2.weshareyou.global.security.service.redis.RedisService;
 import stanl_2.weshareyou.global.security.service.smtp.MailService;
 
-import javax.mail.MessagingException;
 import java.util.Optional;
 
 @Slf4j

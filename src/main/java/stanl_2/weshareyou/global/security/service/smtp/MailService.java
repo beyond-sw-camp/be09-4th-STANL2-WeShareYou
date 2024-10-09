@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.global.security.service.smtp;
 
-import javax.mail.MessagingException;
+
+import jakarta.mail.MessagingException;
 
 public interface MailService {
 

@@ -14,6 +14,7 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, BoardLikeI
 
 //    @Query("SELECT bl.member FROM BoardLike bl WHERE bl.board = :board")
 //    List<Member> findMembersByBoard(@Param("board") Board board);
+
     @Query("SELECT bl.member.id FROM BoardLike bl WHERE bl.board = :board")
     List<Long> findMemberIdsByBoard(@Param("board") Board board);
 

@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @Service
-public class BoardLikeServiceImpl implements BoardLikeService{
+public class BoardLikeServiceImpl implements BoardLikeService {
     private final BoardLikeRepository boardLikeRepository;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
@@ -40,22 +40,39 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         boolean existingLike
-                = boardLikeRepository.findById(new BoardLikeId(memberId,boardId)).isPresent();
+                = boardLikeRepository.findById(new BoardLikeId(memberId, boardId)).isPresent();
 
-        if(existingLike){
+        if (existingLike) {
             throw new CommonException(ErrorCode.ALREADY_LIKED);
-        }
-        else{
+        } else {
             BoardLike newBoardLike = new BoardLike();
             newBoardLike.setMember(member);
             newBoardLike.setBoard(board);
-            board.setLikesCount(board.getLikesCount()+1);
+            board.setLikesCount(board.getLikesCount() + 1);
             boardLikeRepository.save(newBoardLike);
+
 
             return boardLikeDto;
         }
-
     }
+
+    @Transactional
+    @Override
+    public BoardLikeDto BoardUnLike(BoardLikeDto boardUnLikeDto) {
+        Long boardId = boardUnLikeDto.getBoardId();
+        Long memberId = boardUnLikeDto.getMemberId();
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        BoardLike existingLike =
+                boardLikeRepository.findById(new BoardLikeId(memberId,boardId))
+                        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_LIKE));
+        System.out.println("existingLike 3"+existingLike.getBoard());
+        boardLikeRepository.delete(existingLike);
+        board.setLikesCount(board.getLikesCount()-1);
+
+        return boardUnLikeDto;
+    }
+
 //  Member전체 반환
 //    @Transactional
 //    @Override

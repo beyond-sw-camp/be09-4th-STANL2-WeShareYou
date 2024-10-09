@@ -47,6 +47,9 @@ public enum ErrorCode {
     BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당 게시글을 찾을 수 없습니다."),
     MEMBER_NOT_FOUND(40403, HttpStatus.BAD_REQUEST, "해당 멤버을 찾을 수 없습니다."),
     NO_LIKES_FOUND(40404, HttpStatus.BAD_REQUEST, "해당 멤버의 좋아요를 찾을 수 없습니다."),
+    NOT_FOUND_LIKE(40404, HttpStatus.BAD_REQUEST, "좋아요를 찾을 수 없습니다."),
+
+
     /*
      * 500(Internal Server Error)
      *   서버가 처리 방법을 모르는 상황이 발생했습니다. 서버는 아직 처리 방법을 알 수 없습니다.

@@ -26,7 +26,8 @@ public class BoardLikeController {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping("")
+    //좋아요
+    @PostMapping
     public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
         BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
         BoardLikeDto boardLikeResponse = boardLikeService.BoardLike(boardLikeDTO);
@@ -34,11 +35,23 @@ public class BoardLikeController {
         BoardLikeResponseVO boardLikeResponseVO = modelMapper.map(boardLikeResponse, BoardLikeResponseVO.class);
         return ApiResponse.ok(boardLikeResponseVO);
     }
+
+    //좋아요 취소
+    @DeleteMapping
+    public ApiResponse<?> unlike(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
+        BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
+        BoardLikeDto boardLikeResponse = boardLikeService.BoardUnLike(boardLikeDTO);
+        BoardLikeResponseVO boardLikeResponseVO = modelMapper.map(boardLikeResponse, BoardLikeResponseVO.class);
+        return ApiResponse.ok(boardLikeResponseVO);
+    }
+
+
 //    @GetMapping("/boardlikelist/{boardId}")
 //    public ApiResponse<?> BoardlikeList(@PathVariable Long boardId) {
 //        List<Member> likeList = boardLikeService.BoardLikeList(boardId);
 //        return ApiResponse.ok(likeList);
 //    }
+
     @GetMapping("/boardlikelist/{boardId}")
     public ApiResponse<?> BoardlikeList(@PathVariable Long boardId) {
         List<Long> likeList = boardLikeService.BoardLikeList(boardId);

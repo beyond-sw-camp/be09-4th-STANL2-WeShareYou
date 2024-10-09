@@ -9,7 +9,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class BoardLikeId implements Serializable {
 
-    private Long memberId;
+    private Long member;
 
-    private Long boardId;  // Long 타입의 boardId 그대로 유지
+    private Long board;
 }

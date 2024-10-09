@@ -25,4 +25,9 @@ public class ProductReadAllResponseVO {
 
     @NotNull
     private Boolean rental;
+
+    @NotNull
+    private Long adminId;
+
+    private Long memberId;
 }

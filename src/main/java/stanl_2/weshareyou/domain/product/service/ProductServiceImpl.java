@@ -10,14 +10,12 @@ import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
-import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.repository.ProductRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -134,29 +132,5 @@ public class ProductServiceImpl implements ProductService {
         ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
 
         return productResponseDTO;
-    }
-
-    @Override
-    @Transactional
-    public List<ProductDTO> readProductByCategory(String category) {
-        ProductCategory enumCategory = ProductCategory.valueOf(category.toUpperCase());
-        List<Product> productList = productRepository.findByCategory(enumCategory);
-
-        if (productList.isEmpty()) {
-            throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
-        } else {
-            List<ProductDTO> productDTOList = new ArrayList<>();
-            for (Product product : productList) {
-                ProductDTO productDTO = new ProductDTO();
-                productDTO.setId(product.getId());
-                productDTO.setTitle(product.getTitle());
-                productDTO.setImageUrl(product.getImageUrl());
-                productDTO.setCategory(product.getCategory());
-                productDTO.setRental(product.isRental());
-
-                productDTOList.add(productDTO);
-            }
-            return productDTOList;
-        }
     }
 }

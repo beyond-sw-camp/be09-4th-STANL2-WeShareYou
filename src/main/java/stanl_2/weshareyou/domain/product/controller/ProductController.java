@@ -204,7 +204,7 @@ public class ProductController {
      *         "id": 4,
      *         "title": "스탠리 텀블러1",
      *         "content": "스탠리 상태 좋습니다1.",
-     *         "imageUrl": jacket_image_url,
+     *         "imageUrl": null,
      *         "category": "KITCHENWARES",
      *         "startAt": "2024-10-08T00:00:00",
      *         "endAt": "2024-10-10T00:00:00",
@@ -225,42 +225,5 @@ public class ProductController {
         ProductReadResponseVO productReadResponseVO = modelMapper.map(productDTO, ProductReadResponseVO.class);
 
         return ApiResponse.ok(productReadResponseVO);
-    }
-
-    /**
-     * 내용: 공유물품 카테고리별 검색
-     * req: localhost:8080/api/v1/product/category/TOY
-     * res:
-     * {
-     *     "success": true,
-     *     "result": [
-     *         {
-     *             "id": 6,
-     *             "title": "스탠리 텀블러",
-     *             "imageUrl": jacket_image_url,
-     *             "category": "TOY",
-     *             "rental": false
-     *         },
-     *         {
-     *             "id": 7,
-     *             "title": "스탠리 텀블러",
-     *             "imageUrl": jacket_image_url,
-     *             "category": "TOY",
-     *             "rental": false
-     *         }
-     *     ],
-     *     "error": null
-     * }
-     */
-    @GetMapping("/category/{category}")
-    public ApiResponse<?> readProductByCategory(@PathVariable String category) {
-
-        List<ProductDTO> productDTOList = productService.readProductByCategory(category);
-
-        List<ProductReadCategoryResponseVO> productReadCategoryResponseVOList = productDTOList.stream()
-                .map(productList -> modelMapper.map(productList, ProductReadCategoryResponseVO.class))
-                .collect(Collectors.toList());
-
-        return ApiResponse.ok(productReadCategoryResponseVOList);
     }
 }

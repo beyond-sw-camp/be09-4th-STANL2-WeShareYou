@@ -17,7 +17,9 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -103,5 +105,18 @@ public class ProductServiceImpl implements ProductService {
         ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
 
         return productResponseDTO;
+    }
+
+    @Override
+    @Transactional
+    public List<ProductDTO> readAllProductList() {
+
+        List<Product> productList = productRepository.findAll();
+
+        List<ProductDTO> productDTOList = productList.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+
+        return productDTOList;
     }
 }

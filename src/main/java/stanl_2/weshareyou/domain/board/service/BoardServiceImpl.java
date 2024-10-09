@@ -40,12 +40,12 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     public BoardDTO createBoard(BoardDTO boardDTO) {
 
-        Board board = new Board();
         Long memberId = boardDTO.getMemberId();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
+        Board board = new Board();
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         board.setImageUrl(boardDTO.getImageUrl());

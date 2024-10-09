@@ -13,7 +13,6 @@ import javax.xml.stream.events.Comment;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
 @Table(name = "BOARD")
 public class Board {
 

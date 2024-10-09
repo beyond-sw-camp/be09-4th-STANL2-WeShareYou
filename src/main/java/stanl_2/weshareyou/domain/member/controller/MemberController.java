@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.request.CheckCodeRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.EmailAddressRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
@@ -76,6 +77,14 @@ public class MemberController {
     public ApiResponse<?> sendEmailCheck(@RequestBody EmailAddressRequestVO emailAddressRequestVO) throws MessagingException {
         mailService.sendEmail(emailAddressRequestVO.getLoginId());
         return ApiResponse.ok("이메일 전송 성공!");
+    }
+
+    @PostMapping("/check")
+    public ApiResponse<?> checkCode(@RequestBody CheckCodeRequestVO checkCodeRequestVO){
+        if(!mailService.verifyEmailCode(checkCodeRequestVO.getLoginId(), checkCodeRequestVO.getCode())) {
+            throw new CommonException(ErrorCode.EMAIL_VERIFY_FAIL);
+        }
+        return ApiResponse.ok("이메일 인증 성공!");
     }
 
 }

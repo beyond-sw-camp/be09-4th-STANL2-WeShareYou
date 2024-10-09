@@ -11,4 +11,6 @@ import lombok.*;
 public class CheckCodeRequestVO {
     @NotNull
     private String loginId;
+    @NotNull
+    private String code;
 }

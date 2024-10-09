@@ -2,7 +2,6 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 
 @Setter
 @Getter
@@ -22,10 +21,13 @@ public class ProductUpdateResponseVO {
     private String content;
 
     @NotNull
+    private String imageUrl;
+
+    @NotNull
     private String category;
 
     @NotNull
-    private String startAt;;
+    private String startAt;
 
     @NotNull
     private String endAt;

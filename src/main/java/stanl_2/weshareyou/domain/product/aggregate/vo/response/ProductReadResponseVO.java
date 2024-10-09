@@ -26,7 +26,7 @@ public class ProductReadResponseVO {
     private String category;
 
     @NotNull
-    private String startAt;;
+    private String startAt;
 
     @NotNull
     private String endAt;

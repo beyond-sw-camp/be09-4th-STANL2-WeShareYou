@@ -37,6 +37,7 @@ public class ProductController {
      * {
      *     "title": "스탠리 텀블러",
      *     "content": "스탠리 상태 좋습니다.",
+     *     "imageUrl": "tumbler_image_url",
      *     "category": "TOY",
      *     "startAt": "2024-10-08T00:00:00",
      *     "endAt": "2024-10-10T00:00:00",
@@ -48,7 +49,7 @@ public class ProductController {
      *     "result": {
      *         "title": "스탠리 텀블러2",
      *         "content": "스탠리 상태 좋습니다2.",
-     *         "imageUrl": null,
+     *         "imageUrl": "tumbler_image_url",
      *         "category": "TOY",
      *         "startAt": "2024-10-08T00:00:00",
      *         "endAt": "2024-10-10T00:00:00",
@@ -83,6 +84,7 @@ public class ProductController {
      *     "id": 4,
      *     "title": "스탠리 텀블러1",
      *     "content": "스탠리 상태 좋습니다1.",
+     *     "imageUrl": "tumbler_image_url",
      *     "category": "KITCHENWARES",
      *     "startAt": "2024-10-08T00:00:00",
      *     "endAt": "2024-10-10T00:00:00",
@@ -95,6 +97,7 @@ public class ProductController {
      *         "id": 4,
      *         "title": "스탠리 텀블러1",
      *         "content": "스탠리 상태 좋습니다1.",
+     *         "imageUrl": "tumbler_image_url",
      *         "category": "KITCHENWARES",
      *         "startAt": "2024-10-08T00:00:00",
      *         "endAt": "2024-10-10T00:00:00",

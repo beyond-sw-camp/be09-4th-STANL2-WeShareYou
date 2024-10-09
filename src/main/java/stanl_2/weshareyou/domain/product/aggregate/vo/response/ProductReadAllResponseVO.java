@@ -18,27 +18,13 @@ public class ProductReadAllResponseVO {
     private String title;
 
     @NotNull
-    private String content;
-
     private String imageUrl;
 
     @NotNull
     private String category;
 
     @NotNull
-    private String startAt;;
-
-    @NotNull
-    private String endAt;
-
-    @NotNull
     private Boolean rental;
-
-    @NotNull
-    private String createdAt;
-
-    @NotNull
-    private String updatedAt;
 
     @NotNull
     private Long adminId;

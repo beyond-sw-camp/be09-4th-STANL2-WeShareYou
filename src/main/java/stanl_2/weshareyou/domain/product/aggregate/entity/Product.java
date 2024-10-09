@@ -32,7 +32,7 @@ public class Product {
     @NotNull
     @Column(name = "PRODUCT_CATEGORY")
     @Enumerated(EnumType.STRING)
-    private ProuctCategory category;
+    private ProductCategory category;
 
     @NotNull
     @Column(name = "PRODUCT_START_AT")

@@ -42,12 +42,13 @@ public class ProductController {
      * {
      *     "success": true,
      *     "result": {
-     *         "title": "스탠리 텀블러",
-     *         "content": "스탠리 상태 좋습니다.",
-     *         "category": {},
+     *         "title": "스탠리 텀블러2",
+     *         "content": "스탠리 상태 좋습니다2.",
+     *         "imageUrl": null,
+     *         "category": "TOY",
      *         "startAt": "2024-10-08T00:00:00",
      *         "endAt": "2024-10-10T00:00:00",
-     *         "adminId": null
+     *         "adminId": 1
      *     },
      *     "error": null
      * }

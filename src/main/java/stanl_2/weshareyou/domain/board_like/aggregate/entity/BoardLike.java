@@ -13,7 +13,6 @@ import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 @Setter
 public class BoardLike {
 
-
     @Id
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")

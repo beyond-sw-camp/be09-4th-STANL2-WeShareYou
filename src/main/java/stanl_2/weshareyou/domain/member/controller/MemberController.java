@@ -104,6 +104,7 @@ public class MemberController {
         return ApiResponse.ok("이메일 전송 성공!");
     }
 
+    // 인증번호 체크
     @PostMapping("/check")
     public ApiResponse<?> checkCode(@RequestBody CheckCodeRequestVO checkCodeRequestVO){
         if(!mailService.verifyEmailCode(checkCodeRequestVO.getLoginId(), checkCodeRequestVO.getCode())) {

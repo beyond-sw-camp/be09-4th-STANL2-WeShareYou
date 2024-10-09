@@ -66,7 +66,6 @@ public class BoardLikeServiceImpl implements BoardLikeService {
         BoardLike existingLike =
                 boardLikeRepository.findById(new BoardLikeId(memberId,boardId))
                         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_LIKE));
-        System.out.println("existingLike 3"+existingLike.getBoard());
         boardLikeRepository.delete(existingLike);
         board.setLikesCount(board.getLikesCount()-1);
 

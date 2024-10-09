@@ -31,7 +31,6 @@ public class BoardLikeController {
     public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
         BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
         BoardLikeDto boardLikeResponse = boardLikeService.BoardLike(boardLikeDTO);
-
         BoardLikeResponseVO boardLikeResponseVO = modelMapper.map(boardLikeResponse, BoardLikeResponseVO.class);
         return ApiResponse.ok(boardLikeResponseVO);
     }

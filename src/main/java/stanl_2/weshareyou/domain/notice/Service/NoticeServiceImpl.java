@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
-import stanl_2.weshareyou.domain.member.aggregate.repository.MemberRepository;
+import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.notice.aggregate.dto.NoticeDTO;
 import stanl_2.weshareyou.domain.notice.aggregate.entity.Notice;
-import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeReadByIdResponseVO;
 import stanl_2.weshareyou.domain.notice.repository.NoticeRepository;
 
 import java.time.LocalDateTime;

@@ -7,6 +7,8 @@ import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
 import javax.xml.stream.events.Comment;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @RequiredArgsConstructor
@@ -61,4 +63,7 @@ public class Board {
     @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
     @NotNull
     private Member member;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BoardLike> boardLikes = new ArrayList<>();
 }

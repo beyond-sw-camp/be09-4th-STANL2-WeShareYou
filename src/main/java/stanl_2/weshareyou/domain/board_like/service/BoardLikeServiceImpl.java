@@ -9,24 +9,26 @@ import stanl_2.weshareyou.domain.board_like.aggregate.dto.BoardLikeDto;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLikeId;
 import stanl_2.weshareyou.domain.board_like.repository.BoardLikeRepository;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
-import java.util.Optional;
+import java.util.List;
 
 
 @Service
 public class BoardLikeServiceImpl implements BoardLikeService{
     private final BoardLikeRepository boardLikeRepository;
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public BoardLikeServiceImpl(BoardLikeRepository boardLikeRepository, BoardRepository boardRepository) {
+    public BoardLikeServiceImpl(BoardLikeRepository boardLikeRepository, BoardRepository boardRepository, MemberRepository memberRepository) {
         this.boardLikeRepository = boardLikeRepository;
         this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
     }
-
-
 
     @Transactional
     @Override
@@ -35,9 +37,8 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         Long memberId = boardLikeDto.getMemberId();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         boolean existingLike
                 = boardLikeRepository.findById(new BoardLikeId(memberId,boardId)).isPresent();
 
@@ -46,8 +47,8 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         }
         else{
             BoardLike newBoardLike = new BoardLike();
-            newBoardLike.setMemberId(memberId);
-            newBoardLike.setBoardId(board);
+            newBoardLike.setMember(member);
+            newBoardLike.setBoard(board);
             board.setLikesCount(board.getLikesCount()+1);
             boardLikeRepository.save(newBoardLike);
 
@@ -55,35 +56,25 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         }
 
     }
-
-    @Override
-    public BoardLikeDto BoardUnLike(BoardLikeDto boardLikeDto) {
-        return null;
-    }
-
+//  Member전체 반환
+//    @Transactional
 //    @Override
-//    public BoardLikeDto BoardUnLike(BoardLikeDto boardLikeDto) {
-//        Long boardId = boardLikeDto.getBoardId();
-//        Long memberId = boardLikeDto.getMemberId();
+//    public List<Member> BoardLikeList(Long boardId) {
 //        Board board = boardRepository.findById(boardId)
 //                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-////        Member member = memberRepository.findById(memberId)
-////                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-//
-//        boolean existingLike
-//                = boardLikeRepository.findById(new BoardLikeId(memberId,boardId)).isPresent();
-//
-//        if(!existingLike){
-//            throw new CommonException(ErrorCode.ALREADY_LIKED);
-//        }
-//        else{
-//            BoardLike newBoardLike = new BoardLike();
-//            newBoardLike.setMemberId(memberId);
-//            newBoardLike.setBoardId(board);
-//            board.setLikesCount(board.getLikesCount()+1);
-//            boardLikeRepository.save(newBoardLike);
-//
-//            return boardLikeDto;
-//        }
+//        List<Member> members = boardLikeRepository.findMembersByBoard(board);
+//        return members;
+//    }
 
+
+    //Id만 반환
+    @Transactional
+    @Override
+    public List<Long> BoardLikeList(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        List<Long> memberIds = boardLikeRepository.findMemberIdsByBoard(board);
+
+        return memberIds;
+    }
 }

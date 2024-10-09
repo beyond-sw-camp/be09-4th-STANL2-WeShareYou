@@ -60,7 +60,7 @@ public class Product {
     private Member adminId;
 
     @ManyToOne
-    @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
+    @JoinColumn(name = "MEMBER_ID")
     private Member memberId;
 
 }

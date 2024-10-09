@@ -1,11 +1,6 @@
-package stanl_2.weshareyou.domain.member.aggregate.dto.reponse;
+package stanl_2.weshareyou.domain.member.aggregate.dto;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
 
@@ -13,7 +8,8 @@ import stanl_2.weshareyou.domain.member.aggregate.Sex;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class reponseMemberDetailDTO {
+@ToString
+public class MemberDTO {
     private Long id;
     private String loginId;
     private String password;

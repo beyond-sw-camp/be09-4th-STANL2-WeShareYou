@@ -67,7 +67,7 @@ public class ProdSecurityConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
-                        .requestMatchers("/userDetail").authenticated()
+//                        .requestMatchers("/userDetail").authenticated()
                 .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
                 .anyRequest().authenticated()));
         http.formLogin(withDefaults());

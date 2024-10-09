@@ -32,23 +32,25 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationConstants applicationConstants;
-    private final Environment env;
     private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
-
+    private static final long JWT_EXPIRATION_TIME = 30000000L; // 8 hours in milliseconds
 
     @Override
     @Transactional
     public MemberDTO registMember(MemberDTO memberRequestDTO) {
 
+        // 비밀번호 해싱
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
         memberRequestDTO.setPassword(hashPwd);
+
         Member registMember = modelMapper.map(memberRequestDTO, Member.class);
         registMember.setUpdatedAt(LocalDateTime.now()
                 .format(FORMATTER));
         registMember.setCreatedAt(LocalDateTime.now()
                 .format(FORMATTER));
         registMember.setActive(true);
+
         Member newMember = memberRepository.save(registMember);
 
         return modelMapper.map(newMember, MemberDTO.class);
@@ -67,22 +69,25 @@ public class MemberServiceImpl implements MemberService {
     public String loginMember(Authentication authenticationResponse) {
 
         String jwt = "";
-        if(authenticationResponse != null && authenticationResponse.isAuthenticated()){
-            if (null != env) {
-                String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
-                        applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
-                SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                jwt = Jwts.builder()
-                        .setIssuer("STANL2")
-                        .setSubject("JWT Token")
-                        .claim("username", authenticationResponse.getName())
-                        .claim("authorities", authenticationResponse.getAuthorities().stream().map(
-                                GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
-                        .setIssuedAt(new java.util.Date())
-                        .setExpiration(new java.util.Date((new java.util.Date()).getTime() + 30000000)) // 만료시간 8시간
-                        .signWith(secretKey)
-                        .compact(); // Digital Signature 생성
-            }
+        if (authenticationResponse != null && authenticationResponse.isAuthenticated()) {
+
+            // 비밀키 생성 및 JWT 생성
+            String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
+            SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+            log.info("33시크릿 Secret Key: {}", secretKey);
+
+            jwt = Jwts.builder()
+                    .setIssuer("STANL2")
+                    .setSubject("JWT Token")
+                    .claim("username", authenticationResponse.getName())
+                    .claim("authorities", authenticationResponse.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
+                    .setIssuedAt(new java.util.Date())
+                    .setExpiration(new java.util.Date((new java.util.Date()).getTime() + JWT_EXPIRATION_TIME)) // 만료시간 8시간
+                    .signWith(secretKey)
+                    .compact(); // Digital Signature 생성
+
+            log.info("제이이이: {}", jwt);
         }
         return jwt;
     }

@@ -1,5 +1,8 @@
 package stanl_2.weshareyou.domain.member.controller;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,8 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Slf4j
@@ -31,10 +36,33 @@ public class MemberController {
     private final MemberService memberService;
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
+    private final ApplicationConstants applicationConstants;
 
     @GetMapping("/health")
-    public ApiResponse<?> healthCheck(@RequestParam("role") String role){
-        return ApiResponse.ok(role);
+    public ApiResponse<?> healthCheck(@RequestHeader("Authorization") String token) {
+        // "Bearer " 접두사를 제거하여 순수한 토큰만 추출
+        String jwtToken = token.substring(7);
+        log.info("jwtToken: {}", jwtToken);
+        // 시크릿 키로 JWT를 파싱하여 클레임을 추출
+        SecretKey secretKey = Keys.hmacShaKeyFor(applicationConstants.getJWT_SECRET_DEFAULT_VALUE().getBytes(StandardCharsets.UTF_8));
+        log.info("secretKey: {}", secretKey);
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(jwtToken)
+                .getBody();
+        log.info("claims ID: {}", claims.getId());
+        log.info("claims SUBJECT: {}", claims.getSubject());
+        log.info("claims ISSUER: {}", claims.getIssuer());
+        log.info("claims AUDIENCE: {}", claims.getAudience());
+//        log.info("claims AUDIENCE: {}", claims.);
+
+
+
+        // nickname 클레임에서 값 추출
+        String nickname = claims.get("nickname", String.class);
+
+        return ApiResponse.ok(nickname);
     }
 
     @PostMapping("/register")

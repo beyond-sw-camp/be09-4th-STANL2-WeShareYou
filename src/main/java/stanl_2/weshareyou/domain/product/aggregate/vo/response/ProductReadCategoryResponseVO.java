@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class ProductReadAllResponseVO {
+public class ProductReadCategoryResponseVO {
 
     @NotNull
     private Long id;
@@ -25,4 +25,5 @@ public class ProductReadAllResponseVO {
 
     @NotNull
     private Boolean rental;
+
 }

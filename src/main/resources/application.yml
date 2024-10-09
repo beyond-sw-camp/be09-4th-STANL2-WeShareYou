@@ -14,7 +14,7 @@ spring:
   config:
     import: application_prod.yml
   profiles:
-    active: local
+    active: ${SPRING_PROFILES_ACTIVE}
 
   devtools:
     livereload:

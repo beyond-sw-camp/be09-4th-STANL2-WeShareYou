@@ -97,8 +97,8 @@ public class ProdSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder){
         // 인증 제공자 객체
-        UsernamePwdAuthenticationProvider authenticationProvider =
-                new UsernamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
+        ProdUsernamePwdAuthenticationProvider authenticationProvider =
+                new ProdUsernamePwdAuthenticationProvider(userDetailsService, passwordEncoder);
 
         ProviderManager providerManager = new ProviderManager(authenticationProvider);
         // provider manager는 Authentication 객체 내부의 비밀번호를 지우지 못하게 설정(유효성 검사)

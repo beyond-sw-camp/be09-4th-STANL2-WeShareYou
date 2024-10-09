@@ -11,9 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.MemberRequestDTO;
-import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.reponseMemberDetailDTO;
-import stanl_2.weshareyou.domain.member.aggregate.dto.request.MemberResponseDTO;
+import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
@@ -41,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDTO registMember(MemberRequestDTO memberRequestDTO) {
+    public MemberDTO registMember(MemberDTO memberRequestDTO) {
 
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
         memberRequestDTO.setPassword(hashPwd);
@@ -50,16 +48,16 @@ public class MemberServiceImpl implements MemberService {
                 .format(FORMATTER));
         registMember.setCreatedAt(LocalDateTime.now()
                 .format(FORMATTER));
-
+        registMember.setActive(true);
         Member newMember = memberRepository.save(registMember);
 
-        return modelMapper.map(newMember, MemberResponseDTO.class);
+        return modelMapper.map(newMember, MemberDTO.class);
     }
 
 
     @Override
     @Transactional
-    public Optional<reponseMemberDetailDTO> findMemberDetail(String username) {
+    public Optional<MemberDTO> findMemberDetail(String username) {
         return memberRepository.findByLoginId(username);
     }
 

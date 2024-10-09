@@ -11,6 +11,8 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  config:
+    import: application_prod.yml
   profiles:
     active: local
 
@@ -23,9 +25,20 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate.format_sql: true
 test:
   project:
     topic: dev-topic
+
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:
+
+JWT:
+  SECRET_KEY: ${SCRET_KEY}
+  JWT_SECRET_DEFAULT_VALUE: ${JWT_SECRET_DEFAULT_VALUE}
+  JWT_HEADER: ${JWT_HEADER}

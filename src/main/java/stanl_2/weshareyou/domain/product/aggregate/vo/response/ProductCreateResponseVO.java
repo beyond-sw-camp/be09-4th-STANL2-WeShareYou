@@ -21,7 +21,7 @@ public class ProductCreateResponseVO {
     private String imageUrl;
 
     @NotNull
-    private ProuctCategory category;
+    private String category;
 
     @NotNull
     private String startAt;;

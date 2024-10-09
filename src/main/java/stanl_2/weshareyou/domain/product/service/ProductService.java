@@ -6,4 +6,6 @@ public interface ProductService {
     ProductDTO createProduct(ProductDTO productRequestDTO);
 
     ProductDTO updateProduct(ProductDTO productRequestDTO);
+
+    ProductDTO deleteProduct(ProductDTO productRequestDTO);
 }

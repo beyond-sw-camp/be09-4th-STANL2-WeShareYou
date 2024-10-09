@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductCreateResponseVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductDeleteResponseVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductUpdateResponseVO;
 import stanl_2.weshareyou.domain.product.service.ProductService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
@@ -108,5 +110,33 @@ public class ProductController {
         ProductUpdateResponseVO productUpdateResponseVO = modelMapper.map(productResponseDTO, ProductUpdateResponseVO.class);
 
         return ApiResponse.ok(productUpdateResponseVO);
+    }
+
+    /**
+     * 내용: 공유물품 삭제
+     * req:
+     * {
+     *     "id": 5,
+     *     "adminId": 1
+     * }
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 5,
+     *         "adminId": 1
+     *     },
+     *     "error": null
+     * }
+     */
+    @DeleteMapping("")
+    public ApiResponse<?> deleteProduct(@RequestBody ProductDeleteRequestVO productDeleteRequestVO) {
+
+        ProductDTO productRequestDTO = modelMapper.map(productDeleteRequestVO, ProductDTO.class);
+        ProductDTO productResponseDTO = productService.deleteProduct(productRequestDTO);
+
+        ProductDeleteResponseVO productDeleteResponse = modelMapper.map(productResponseDTO, ProductDeleteResponseVO.class);
+
+        return ApiResponse.ok(productDeleteResponse);
     }
 }

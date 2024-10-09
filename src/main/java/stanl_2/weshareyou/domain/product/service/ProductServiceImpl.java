@@ -83,4 +83,25 @@ public class ProductServiceImpl implements ProductService {
 
         return productResponseDTO;
     }
+
+    @Override
+    @Transactional
+    public ProductDTO deleteProduct(ProductDTO productDTO) {
+
+        Member member = memberRepository.findById(productDTO.getAdminId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Product productId = productRepository.findByIdAndAdminId(productDTO.getId(), member)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
+
+        Product product = new Product();
+        product.setId(productDTO.getId());
+        product.setAdminId(member);
+
+        productRepository.delete(product);
+
+        ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
+
+        return productResponseDTO;
+    }
 }

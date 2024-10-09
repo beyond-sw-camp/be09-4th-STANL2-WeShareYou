@@ -24,7 +24,6 @@ public class ProductController {
     @Autowired
     public ProductController(ModelMapper modelMapper, ProductService productService) {
         this.modelMapper = modelMapper;
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.productService = productService;
     }
 
@@ -55,9 +54,16 @@ public class ProductController {
      */
     @PostMapping("")
     public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO) {
-        log.info("id1값: " + productCreateRequestVO.getAdminId());
-        ProductDTO productRequestDTO = modelMapper.map(productCreateRequestVO, ProductDTO.class);
-        log.info("id2값: " + productRequestDTO.getAdminId());
+
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setAdminId(productCreateRequestVO.getAdminId());
+        productRequestDTO.setTitle(productCreateRequestVO.getTitle());
+        productRequestDTO.setContent(productCreateRequestVO.getContent());
+        productRequestDTO.setCategory(productCreateRequestVO.getCategory());
+        productRequestDTO.setStartAt(productCreateRequestVO.getStartAt());
+        productRequestDTO.setEndAt(productCreateRequestVO.getEndAt());
+        productRequestDTO.setImageUrl(productCreateRequestVO.getImageUrl());
+
         ProductDTO productResponseDTO = productService.createProduct(productRequestDTO);
 
         ProductCreateResponseVO productCreateResponseVO = modelMapper.map(productResponseDTO, ProductCreateResponseVO.class);

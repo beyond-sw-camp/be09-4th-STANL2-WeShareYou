@@ -12,24 +12,24 @@ import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 @ToString
 public class ProductUpdateResponseVO {
 
-    @NonNull
+    @NotNull
     private Long id;
 
-    @NonNull
+    @NotNull
     private String title;
 
-    @NonNull
+    @NotNull
     private String content;
 
-    @NonNull
+    @NotNull
     private ProuctCategory category;
 
-    @NonNull
+    @NotNull
     private String startAt;;
 
-    @NonNull
+    @NotNull
     private String endAt;
 
-    @NonNull
+    @NotNull
     private Long adminId;
 }

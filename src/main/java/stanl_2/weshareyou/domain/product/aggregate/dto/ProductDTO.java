@@ -20,6 +20,6 @@ public class ProductDTO {
     private Boolean rental;
     private String createdAt;
     private String updatedAt;
-    private Member adminId;
+    private Long adminId;
     private Long memberId;
 }

@@ -18,6 +18,8 @@ public class ProductCreateResponseVO {
     @NotNull
     private String content;
 
+    private String imageUrl;
+
     @NotNull
     private String category;
 

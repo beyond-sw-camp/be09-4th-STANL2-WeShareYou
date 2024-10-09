@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.product.aggregate.vo.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 
@@ -10,24 +11,27 @@ import stanl_2.weshareyou.domain.product.aggregate.entity.ProuctCategory;
 @EqualsAndHashCode
 public class ProductUpdateRequestVO {
 
-    @NonNull
+    @NotNull
     private Long id;
 
-    @NonNull
+    @NotNull(message = "수정하실 게시글의 제목을 입력해 주세요.")
     private String title;
 
-    @NonNull
+    @NotNull
+    @Size(min = 1, max = 1000, message = "1000자 이내로 입력해 주세요.")
     private String content;
 
-    @NonNull
+    private String imageUrl;
+
+    @NotNull(message = "카테고리를 선택해 주세요.")
     private ProuctCategory category;
 
-    @NonNull
+    @NotNull(message = "대여 시작 날짜를 선택해 주세요.")
     private String startAt;
 
-    @NonNull
+    @NotNull(message = "대여 종료 날짜를 선택해 주세요.")
     private String endAt;
 
-    @NonNull
+    @NotNull
     private Long adminId;
 }

@@ -8,6 +8,12 @@ spring:
       port: ${MONGO_DATABASE_PORT}
       database: ${MONGO_DATABASE_NAME}
 
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: 30000
+
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://${DATABASE_HOST}:${MARIA_DATABASE_PORT}/${MARIA_DATABASE_NAME}
@@ -31,6 +37,19 @@ spring:
       ddl-auto: update
     properties:
       hibernate.format_sql: true
+
+  mail:
+    host:
+      port:
+        username: ${EMAIL_ID}
+        password: ${EMAIL_PWD}
+        properties:
+          mail.smtp.auth: true
+          mail.smtp.ssl.enable: true
+          mail.smtp.ssl.trust: smtp.naver.com
+          mail.smtp.ssl.protocols: TLSv1.2
+          mail.debug: true
+
 test:
   project:
     topic: dev-topic

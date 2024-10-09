@@ -1,10 +1,6 @@
 package stanl_2.weshareyou.global.security.service.smtp;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-
-import java.security.NoSuchAlgorithmException;
-
+import javax.mail.MessagingException;
 
 public interface MailService {
 
@@ -22,7 +18,4 @@ public interface MailService {
 
     // 보낸 이메일과 인증번호 일치하는지 확인
     Boolean verifyEmailCode(String email, String code);
-
-    // 인증 성공했을 경우 사용
-    String makeMemberId(String email) throws NoSuchAlgorithmException;
 }

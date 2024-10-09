@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
-    /*
+    /**
      * 400(Bad Request)
      *   이 응답은 잘못된 문법으로 인하여 서버가 요청을 이해할 수 없음을 의미합니다.
      * */
@@ -26,7 +26,7 @@ public enum ErrorCode {
 
 
 
-    /*
+    /**
      * 401(Unauthorized)
      *   비록 HTTP 표준에서는 "미승인(unauthorized)"를 명확히 하고 있지만,
      *   의미상 이 응답은 "비인증(unauthenticated)"을 의미합니다.
@@ -36,10 +36,14 @@ public enum ErrorCode {
     INVALID_TOKEN_ERROR(40101, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EMAIL_VERIFY_FAIL(40102, HttpStatus.UNAUTHORIZED, "이메일 인증 실패하셨습니다."),
 
-    // 403
+    /**
+     * 403(Forbidden)
+     * 클라이언트는 콘텐츠에 접근할 권리를 가지고 있지 않습니다.
+     * 예를들어 그들은 미승인이어서 서버는 거절을 위한 적절한 응답을 보냅니다. 401과 다른 점은 서버가 클라이언트가 누구인지 알고 있습니다.
+     */
     FORBIDDEN_ROLE(40300, HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),
 
-    /*
+    /**
      * 404(Not Found)
      *   서버는 요청받은 리소스를 찾을 수 없습니다. 브라우저에서는 알려지지 않은 URL을 의미합니다.
      *   이것은 API에서 종점은 적절하지만 리소스 자체는 존재하지 않음을 의미할 수도 있습니다.
@@ -53,7 +57,8 @@ public enum ErrorCode {
     NO_LIKES_FOUND(40404, HttpStatus.BAD_REQUEST, "해당 멤버의 좋아요를 찾을 수 없습니다."),
     NOTICE_NOT_FOUND(40405, HttpStatus.BAD_REQUEST, "해당 공지를 찾을 수 없습니다."),
     NOT_FOUND_LIKE(40406, HttpStatus.BAD_REQUEST, "좋아요를 누르지 않았습니다."),
-    /*
+
+    /**
      * 500(Internal Server Error)
      *   서버가 처리 방법을 모르는 상황이 발생했습니다. 서버는 아직 처리 방법을 알 수 없습니다.
      * */

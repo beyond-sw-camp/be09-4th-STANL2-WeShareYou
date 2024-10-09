@@ -1,23 +1,18 @@
 package stanl_2.weshareyou.global.security.service.smtp;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import stanl_2.weshareyou.global.config.RedisConfig;
 import stanl_2.weshareyou.global.security.service.redis.RedisService;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 
 
 @Service(value = "MailService")
@@ -27,9 +22,9 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     private final RedisService redisService;
     private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private final RedisConfig redisConfig;
+//    private final RedisConfig redisConfig;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.host.port.username}")
     private String configEmail;
 
     /* 6자리 난수 생성 */
@@ -100,19 +95,6 @@ public class MailServiceImpl implements MailService {
             return false;
         }
         return codeFoundByEmail.equals(code);
-    }
-
-    // 인증 성공했을 경우 사용
-    public String makeMemberId(String email) throws NoSuchAlgorithmException {
-        // hash 암호화 SHA-256
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(email.getBytes());
-        md.update(LocalDateTime.now().toString().getBytes());
-        StringBuilder builder = new StringBuilder();
-        for (byte b : md.digest()) {
-            builder.append(String.format("%02x", b));
-        }
-        return builder.toString();
     }
 
 }

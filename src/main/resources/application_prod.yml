@@ -15,9 +15,8 @@ spring:
     password: ${DB_PASSWORD}
 
   config:
-    import: application_prod.yml
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE}
+    activate:
+      on-profile: ${SPRING_PROFILES_ACTIVE}
 
   devtools:
     livereload:

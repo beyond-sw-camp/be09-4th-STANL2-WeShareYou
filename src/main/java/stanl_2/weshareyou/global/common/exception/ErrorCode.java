@@ -20,6 +20,9 @@ public enum ErrorCode {
     DATA_INTEGRITY_VIOLATION(40005, HttpStatus.BAD_REQUEST,
             "데이터 무결성 위반입니다. 필수 값이 누락되었거나 유효하지 않습니다."),
     REGISTER_FAIL(40006, HttpStatus.BAD_REQUEST, "회원 가입 실패!"),
+    NOTICE_REGISTER_FAIL(40007, HttpStatus.BAD_REQUEST, "공지 생성 실패!"),
+    NOTICE_UPDATE_FAIL(40008, HttpStatus.BAD_REQUEST, "공지 수정 실패!"),
+    NOTICE_DELETE_FAIL(40009, HttpStatus.BAD_REQUEST, "공지 삭제 실패!"),
 
 
 
@@ -46,6 +49,7 @@ public enum ErrorCode {
     ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
     BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
     MEMBER_NOT_FOUND(40403, HttpStatus.BAD_REQUEST, "해당멤버을 찾을 수 없습니다."),
+    NOTICE_NOT_FOUND(40404, HttpStatus.BAD_REQUEST, "해당 공지를 찾을 수 없습니다."),
 
     /*
      * 500(Internal Server Error)

@@ -12,7 +12,7 @@ public interface NoticeService {
 
     List<NoticeDTO> readAllNotices();
     NoticeDTO readNoticeById(Long noticeId);
-    NoticeDTO createNotice(NoticeDTO noticeCreateRequestDTO) throws IllegalAccessException;
-    Boolean updateNotice(NoticeDTO noticeUpdateRequestDTO) throws IllegalAccessException;
-    Boolean deleteNotice(NoticeDTO noticeDeleteRequestDTO) throws IllegalAccessException;
+    NoticeDTO createNotice(NoticeDTO noticeCreateRequestDTO);
+    Boolean updateNotice(NoticeDTO noticeUpdateRequestDTO);
+    Boolean deleteNotice(NoticeDTO noticeDeleteRequestDTO);
 }

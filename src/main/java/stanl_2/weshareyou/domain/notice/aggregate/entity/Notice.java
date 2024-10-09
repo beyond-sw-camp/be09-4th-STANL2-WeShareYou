@@ -38,7 +38,6 @@ public class Notice {
     private Boolean active = true;
 
     @ManyToOne
-//    @Column(name="ADMIN_ID")
     @JoinColumn(name = "ADMIN_ID")
     @NotNull
     private Member adminId;

@@ -11,6 +11,8 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.notice.aggregate.dto.NoticeDTO;
 import stanl_2.weshareyou.domain.notice.aggregate.entity.Notice;
 import stanl_2.weshareyou.domain.notice.repository.NoticeRepository;
+import stanl_2.weshareyou.global.common.exception.CommonException;
+import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +59,8 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     @Transactional
     public NoticeDTO readNoticeById(Long noticeId) {
-        Notice notice = noticeRepository.findById(noticeId).orElse(null);
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOTICE_NOT_FOUND));
 
         /* 설명. @ManyToOne 관계일 때, dto에 엔티티 타입 제외하면 편해질 수 있다. (따로 setter) */
 
@@ -78,7 +81,7 @@ public class NoticeServiceImpl implements NoticeService{
     @Transactional
     public NoticeDTO createNotice(NoticeDTO noticeCreateRequestDTO){
         Member admin = memberRepository.findById(noticeCreateRequestDTO.getAdminId())
-                .orElseThrow(() -> new NoSuchElementException("해당 관리자 계정이 존재하지 않습니다."));
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         Notice notice = modelMapper.map(noticeCreateRequestDTO, Notice.class);
 
@@ -91,7 +94,7 @@ public class NoticeServiceImpl implements NoticeService{
         Notice savedNotice = noticeRepository.save(notice);
 
         if (savedNotice == null || savedNotice.getId() == null) {
-            throw new IllegalStateException("공지사항 생성에 실패했습니다.");
+            throw new CommonException(ErrorCode.NOTICE_REGISTER_FAIL);
         }
         NoticeDTO noticeCreateResponseDTO = new NoticeDTO();
 
@@ -106,9 +109,9 @@ public class NoticeServiceImpl implements NoticeService{
     @Transactional
     public Boolean updateNotice(NoticeDTO noticeUpdateRequestDTO)
     {
-        Notice notice = noticeRepository.findById(noticeUpdateRequestDTO.getId())
-                .orElseThrow(() -> new NoSuchElementException("해당 공지가 존재하지 않습니다."));
 
+        Notice notice = noticeRepository.findById(noticeUpdateRequestDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.NOTICE_NOT_FOUND));
 
         notice.setTitle(noticeUpdateRequestDTO.getTitle());
         notice.setContent(noticeUpdateRequestDTO.getContent());
@@ -117,7 +120,7 @@ public class NoticeServiceImpl implements NoticeService{
         Notice updatedNotice = noticeRepository.save(notice);
 
         if (updatedNotice != null && !updatedNotice.getId().equals(noticeUpdateRequestDTO.getId())) {
-            throw new IllegalStateException("공지사항 비활성화 실패");
+            throw new CommonException(ErrorCode.NOTICE_UPDATE_FAIL);
         }
 
         return true;
@@ -128,7 +131,7 @@ public class NoticeServiceImpl implements NoticeService{
     public Boolean deleteNotice(NoticeDTO noticeDeleteRequestDTO) {
 
         Notice notice = noticeRepository.findById(noticeDeleteRequestDTO.getId())
-                .orElseThrow(() -> new NoSuchElementException("해당 공지가 존재하지 않습니다."));
+                .orElseThrow(() -> new CommonException(ErrorCode.NOTICE_NOT_FOUND));
 
         notice.setActive(false);
         notice.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
@@ -136,7 +139,7 @@ public class NoticeServiceImpl implements NoticeService{
         Notice deleteNotice = noticeRepository.save(notice);
 
         if (deleteNotice != null && !deleteNotice.getId().equals(noticeDeleteRequestDTO.getId())) {
-            throw new IllegalStateException("공지사항 비활성화 실패");
+            throw new CommonException(ErrorCode.NOTICE_DELETE_FAIL);
         }
 
         return true;

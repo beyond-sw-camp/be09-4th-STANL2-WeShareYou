@@ -65,7 +65,7 @@ public class ProdSecurityConfig {
                         .ignoringRequestMatchers("/api/v1/member/register", "/api/v1/member/login")
                         // 로그인 작업 후 처음으로 CSRF 토큰을 생성하는데만 도움을 준다.
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
 //                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())

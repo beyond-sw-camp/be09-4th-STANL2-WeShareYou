@@ -40,5 +40,5 @@ public class Notice {
     @ManyToOne
     @JoinColumn(name = "ADMIN_ID")
     @NotNull
-    private Member adminId;
+    private Member member;
 }

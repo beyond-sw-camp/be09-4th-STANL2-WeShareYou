@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
-import stanl_2.weshareyou.domain.board.aggregate.repository.BoardRepository;
+import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_like.aggregate.dto.BoardLikeDto;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLikeId;

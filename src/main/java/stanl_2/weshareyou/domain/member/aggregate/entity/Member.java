@@ -21,65 +21,65 @@ public class Member {
     @Column(name="MEMBER_ID")
     private Long id;
 
-    @Column(name="LOGIN_ID")
+    @Column(name="MEMBER_LOGIN_ID")
     @NotNull
     private String loginId;
 
-    @Column(name="PASSWORD")
+    @Column(name="MEMBER_PASSWORD")
     @NotNull
     private String password;
 
-    @Column(name="NAME")
+    @Column(name="MEMBER_NAME")
     @NotNull
     private String name;
 
-    @Column(name="AGE")
+    @Column(name="MEMBER_AGE")
     @NotNull
-    private int age;
+    private Integer age;
 
-    @Column(name="NATIONALITY")
+    @Column(name="MEMBER_NATIONALITY")
     @NotNull
     private String nationality;
 
-    @Column(name="SEX")
+    @Column(name="MEMBER_SEX")
     @NotNull
     private Sex sex;
 
-    @Column(name="PHONE")
+    @Column(name="MEMBER_PHONE")
     @NotNull
     private String phone;
 
-    @Column(name="POINT")
+    @Column(name="MEMBER_POINT")
     @NotNull
-    private int point = 0;
+    private Integer point = 0;
 
-    @Column(name="ROLE")
+    @Column(name="MEMBER_ROLE")
     @NotNull
     private Role role = Role.ROLE_MEMBER;
 
-    @Column(name="NICKNAME")
+    @Column(name="MEMBER_NICKNAME")
     @NotNull
     private String nickname;
 
-    @Column(name="PROFILE_URL")
+    @Column(name="MEMBER_PROFILE_URL")
     private String profileUrl;
 
-    @Column(name="INTRODUCTION")
+    @Column(name="MEMBER_INTRODUCTION")
     private String introduction;
 
-    @Column(name="LANGUAGE")
+    @Column(name="MEMBER_LANGUAGE")
     @NotNull
     private String language;
 
-    @Column(name="CREATED_AT")
+    @Column(name="MEMBER_CREATED_AT")
     @NotNull
     private String createdAt;
 
-    @Column(name="UPDATED_AT")
+    @Column(name="MEMBER_UPDATED_AT")
     @NotNull
     private String updatedAt;
 
-    @Column(name="ACTIVE")
+    @Column(name="MEMBER_ACTIVE")
     @NotNull
     private Boolean active = true;
 }

@@ -9,9 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.MemberRequestDTO;
-import stanl_2.weshareyou.domain.member.aggregate.dto.reponse.reponseMemberDetailDTO;
-import stanl_2.weshareyou.domain.member.aggregate.dto.request.MemberResponseDTO;
+import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
@@ -39,8 +37,8 @@ public class MemberController {
 
     @PostMapping("/register")
     public ApiResponse<?> registerMember(@RequestBody RegisterRequestVO memberInfo) {
-        MemberRequestDTO memberRequestDTO = modelMapper.map(memberInfo, MemberRequestDTO.class);
-        MemberResponseDTO memberResponseDTO = memberService.registMember(memberRequestDTO);
+        MemberDTO memberRequestDTO = modelMapper.map(memberInfo, MemberDTO.class);
+        MemberDTO memberResponseDTO = memberService.registMember(memberRequestDTO);
 
         if(memberResponseDTO.getId() <= 0) {
             throw new CommonException(ErrorCode.REGISTER_FAIL);
@@ -52,8 +50,8 @@ public class MemberController {
     }
 
     @RequestMapping("/userDetail")
-    public reponseMemberDetailDTO getUserDetailsAfterLogin(Authentication authentication){
-        Optional<reponseMemberDetailDTO> memberDetailDTO = memberService.findMemberDetail(authentication.getName());
+    public MemberDTO getUserDetailsAfterLogin(Authentication authentication){
+        Optional<MemberDTO> memberDetailDTO = memberService.findMemberDetail(authentication.getName());
 
         return memberDetailDTO.orElse(null);
     }

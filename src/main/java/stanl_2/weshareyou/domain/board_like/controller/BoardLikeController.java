@@ -22,12 +22,17 @@ public class BoardLikeController {
     }
 
     @PostMapping("")
-    public ApiResponse<?> AddLike(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
+    public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
         BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
-        BoardLikeDto boardLikeResponse = boardLikeService.addBoardLike(boardLikeDTO);
+        BoardLikeDto boardLikeResponse = boardLikeService.BoardLike(boardLikeDTO);
 
         BoardLikeResponseVO boardLikeResponseVO = modelMapper.map(boardLikeResponse, BoardLikeResponseVO.class);
         return ApiResponse.ok(boardLikeResponseVO);
     }
 
+//    @GetMapping("/boardlikelist")
+//    public ApiResponse<?> likeList(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
+//        BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
+//        BoardLikeDto boardLikeResponse = boardLikeService.BoardLike(boardLikeDTO);
+//    }
 }

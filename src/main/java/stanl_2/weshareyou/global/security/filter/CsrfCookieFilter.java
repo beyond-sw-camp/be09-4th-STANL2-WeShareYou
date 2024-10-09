@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 
@@ -16,7 +17,11 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         // Render the token value to a cookie by causing the deferred token to be loaded
         // lazy된 토큰을 로드하여 토큰 값을 쿠키로 렌터링 합니다.
+
         csrfToken.getToken();
+//        if (csrfToken != null) {
+//            response.setHeader("XSRF-TOKEN", csrfToken.getToken());
+//        }
 
         filterChain.doFilter(request, response);
     }

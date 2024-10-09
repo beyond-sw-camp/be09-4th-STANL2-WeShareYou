@@ -34,13 +34,21 @@ test:
   project:
     topic: dev-topic
 
-logging:
-  level:
-    org:
-      springframework:
-        security=DEBUG:
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security=DEBUG:
 
 JWT:
   SECRET_KEY: ${SCRET_KEY}
   JWT_SECRET_DEFAULT_VALUE: ${JWT_SECRET_DEFAULT_VALUE}
   JWT_HEADER: ${JWT_HEADER}
+
+logging:
+  pattern:
+    console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
+  level:
+    org:
+      springframework:
+        security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}

@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.global.security.service;
+package stanl_2.weshareyou.global.security.service.userdetail;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

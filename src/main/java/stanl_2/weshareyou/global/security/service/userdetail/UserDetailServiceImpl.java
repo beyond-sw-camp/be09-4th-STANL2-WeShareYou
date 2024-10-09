@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.global.security.service;
+package stanl_2.weshareyou.global.security.service.userdetail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

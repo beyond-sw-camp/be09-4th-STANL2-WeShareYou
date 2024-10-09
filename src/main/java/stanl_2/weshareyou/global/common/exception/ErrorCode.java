@@ -34,6 +34,7 @@ public enum ErrorCode {
      * */
     LOGIN_FAILURE(40100, HttpStatus.UNAUTHORIZED, "로그인에 실패했습니다"),
     INVALID_TOKEN_ERROR(40101, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    EMAIL_VERIFY_FAIL(40102, HttpStatus.UNAUTHORIZED, "이메일 인증 실패하셨습니다."),
 
     // 403
     FORBIDDEN_ROLE(40300, HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),

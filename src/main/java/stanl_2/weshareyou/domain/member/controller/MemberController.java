@@ -31,9 +31,11 @@ public class MemberController {
     private final MemberService memberService;
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
-    private final Environment env;
-    private final ApplicationConstants applicationConstants;
 
+    @GetMapping("/health")
+    public ApiResponse<?> healthCheck(@RequestParam("role") String role){
+        return ApiResponse.ok(role);
+    }
 
     @PostMapping("/register")
     public ApiResponse<?> registerMember(@RequestBody RegisterRequestVO memberInfo) {

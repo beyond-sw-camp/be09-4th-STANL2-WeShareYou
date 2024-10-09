@@ -56,7 +56,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         }
 
     }
-
+//  Member전체 반환
 //    @Transactional
 //    @Override
 //    public List<Member> BoardLikeList(Long boardId) {
@@ -66,13 +66,13 @@ public class BoardLikeServiceImpl implements BoardLikeService{
 //        return members;
 //    }
 
+
+    //Id만 반환
     @Transactional
     @Override
     public List<Long> BoardLikeList(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-
-        // Member의 ID만 반환하는 방식으로 변경
         List<Long> memberIds = boardLikeRepository.findMemberIdsByBoard(board);
 
         return memberIds;

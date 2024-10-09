@@ -2,17 +2,13 @@ package stanl_2.weshareyou.domain.product.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
-import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductCreateResponseVO;
-import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductDeleteResponseVO;
-import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductReadResponseVO;
-import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductUpdateResponseVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -188,14 +184,43 @@ public class ProductController {
 
         List<ProductDTO> productDTOList = productService.readAllProductList();
 
-        List<ProductReadResponseVO> productReadResponseVOList = productDTOList.stream()
-                .map(productList -> modelMapper.map(productList, ProductReadResponseVO.class))
+        List<ProductReadAllResponseVO> productReadResponseVOList = productDTOList.stream()
+                .map(productList -> modelMapper.map(productList, ProductReadAllResponseVO.class))
                 .collect(Collectors.toList());
 
-        if(productReadResponseVOList.isEmpty()) {
-            throw new CommonException(ErrorCode.MEMBER_NOT_FOUND);
-        } else {
-            return ApiResponse.ok(productReadResponseVOList);
-        }
+        return ApiResponse.ok(productReadResponseVOList);
+    }
+
+    /**
+     * 내용: 공유물품 상세 조회
+     * req: localhost:8080/api/v1/product/4
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 4,
+     *         "title": "스탠리 텀블러1",
+     *         "content": "스탠리 상태 좋습니다1.",
+     *         "imageUrl": null,
+     *         "category": "KITCHENWARES",
+     *         "startAt": "2024-10-08T00:00:00",
+     *         "endAt": "2024-10-10T00:00:00",
+     *         "rental": false,
+     *         "createdAt": null,
+     *         "updatedAt": "2024-10-09T17:21:47",
+     *         "adminId": 1,
+     *         "memberId": null
+     *     },
+     *     "error": null
+     * }
+     */
+    @GetMapping("/{productId}")
+    public ApiResponse<?> readProduct(@PathVariable Long productId) {
+
+        ProductDTO productDTO = productService.readProduct(productId);
+
+        ProductReadResponseVO productReadResponseVO = modelMapper.map(productDTO, ProductReadResponseVO.class);
+
+        return ApiResponse.ok(productReadResponseVO);
     }
 }

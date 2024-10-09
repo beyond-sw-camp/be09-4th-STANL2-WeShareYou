@@ -12,4 +12,6 @@ public interface ProductService {
     ProductDTO deleteProduct(ProductDTO productRequestDTO);
 
     List<ProductDTO> readAllProductList();
+
+    ProductDTO readProduct(Long productId);
 }

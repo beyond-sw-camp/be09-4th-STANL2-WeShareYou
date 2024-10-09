@@ -113,10 +113,26 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> productList = productRepository.findAll();
 
-        List<ProductDTO> productDTOList = productList.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .collect(Collectors.toList());
+        if (productList.isEmpty()) {
+            throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
+        } else {
+            List<ProductDTO> productDTOList = productList.stream()
+                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .collect(Collectors.toList());
 
-        return productDTOList;
+            return productDTOList;
+        }
+    }
+
+    @Override
+    @Transactional
+    public ProductDTO readProduct(Long productId) {
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
+
+        return productResponseDTO;
     }
 }

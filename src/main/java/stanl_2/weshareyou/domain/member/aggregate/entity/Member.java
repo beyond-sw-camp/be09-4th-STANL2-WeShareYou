@@ -42,6 +42,7 @@ public class Member {
     private String nationality;
 
     @Column(name="MEMBER_SEX")
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Sex sex;
 
@@ -54,6 +55,7 @@ public class Member {
     private Integer point = 0;
 
     @Column(name="MEMBER_ROLE")
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Role role = Role.ROLE_MEMBER;
 

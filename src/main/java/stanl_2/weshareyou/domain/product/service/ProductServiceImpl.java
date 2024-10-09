@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
             throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
         } else {
             List<ProductDTO> productDTOList = productList.stream()
-                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .map(productdto -> modelMapper.map(productdto, ProductDTO.class))
                     .collect(Collectors.toList());
 
             return productDTOList;

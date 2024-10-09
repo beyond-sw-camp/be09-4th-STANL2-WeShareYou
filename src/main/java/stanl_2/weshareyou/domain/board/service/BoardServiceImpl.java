@@ -10,7 +10,7 @@ import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
-import stanl_2.weshareyou.domain.member.aggregate.repository.MemberRepository;
+import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
@@ -55,11 +55,12 @@ public class BoardServiceImpl implements BoardService{
         board.setCreatedAt(LocalDateTime.now().format(FORMATTER));
         board.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
         board.setActive(true);
-        board.setMemberId(member);
+        board.setMember(member);
 
         boardRepository.save(board);
 
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
+        boardResponseDTO.setMemberId(member.getId());
 
         return boardResponseDTO;
     }

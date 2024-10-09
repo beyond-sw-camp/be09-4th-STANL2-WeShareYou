@@ -45,7 +45,7 @@ public class BoardController {
      * {
      *     "success": true,
      *     "result": {
-     *         "title": "가이드 해드립니다25.",
+     *         "title": "가이드 해드립니다.",
      *         "content": "안녕",
      *         "imageUrl": "image1",
      *         "tag": "GUIDE",
@@ -80,7 +80,7 @@ public class BoardController {
      *     "success": true,
      *     "result": {
      *         "title": "guide",
-     *         "content": "안녕하세요, 가이드 6년차 홍길동입니다. 가이드가 필요하신분 연락주세요",
+     *         "content": "안녕하세요, 가이드 5년차 홍길동입니다. 가이드가 필요하신분 연락주세요",
      *         "imageUrl": "image5",
      *         "tag": "GUIDE",
      *         "memberId": 1

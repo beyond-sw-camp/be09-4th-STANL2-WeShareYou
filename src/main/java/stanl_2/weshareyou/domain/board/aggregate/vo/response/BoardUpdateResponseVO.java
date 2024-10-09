@@ -17,7 +17,6 @@ public class BoardUpdateResponseVO {
     @NotNull
     private String content;
 
-    @NotNull
     private String imageUrl;
 
     @NotNull

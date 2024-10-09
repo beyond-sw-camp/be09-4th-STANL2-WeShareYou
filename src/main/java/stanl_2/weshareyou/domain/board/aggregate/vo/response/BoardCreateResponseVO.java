@@ -18,7 +18,6 @@ public class BoardCreateResponseVO {
     @NotNull
     private String content;
 
-    @NotNull
     private String imageUrl;
 
     @NotNull

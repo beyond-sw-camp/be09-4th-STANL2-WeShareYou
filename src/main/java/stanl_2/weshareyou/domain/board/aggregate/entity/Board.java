@@ -31,7 +31,6 @@ public class Board {
     private String content;
 
     @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-    @NotNull
     private String imageUrl;
 
     @Column(name = "BOARD_TAG")
@@ -62,5 +61,5 @@ public class Board {
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
     @NotNull
-    private Member memberId;
+    private Member member;
 }

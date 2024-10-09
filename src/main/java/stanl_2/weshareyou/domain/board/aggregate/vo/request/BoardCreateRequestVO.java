@@ -18,10 +18,9 @@ public class BoardCreateRequestVO {
     private String title;
 
     @NotBlank(message = "내용을 입력해 주세요.")
-    @Size(min=500, max=1000, message = "1000자 이내로 입력하여 주세요.")
+    @Size(min=2, max=1000, message = "1자 이상 1000자 이내로 입력하여 주세요.")
     private String content;
 
-    @NotNull
     private String imageUrl;
 
     @NotNull(message = "태그를 선택하여 주세요.")

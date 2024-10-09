@@ -15,6 +15,7 @@ import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
+import stanl_2.weshareyou.global.security.service.userdetail.CustomUserDetails;
 //import stanl_2.weshareyou.global.security.service.CustomUserDetails;
 
 import javax.crypto.SecretKey;

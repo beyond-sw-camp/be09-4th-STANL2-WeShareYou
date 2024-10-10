@@ -35,7 +35,7 @@ public class MemberController {
     private final ApplicationConstants applicationConstants;
 
     @GetMapping("/health")
-    public ApiResponse<?> healthCheck(@RequestAttribute("id") int id,
+    public ApiResponse<?> healthCheck(@RequestAttribute("id") long id,
                                       @RequestAttribute("loginId") String loginId,
                                       @RequestAttribute("nationality") String nationality,
                                       @RequestAttribute("sex") String sex,

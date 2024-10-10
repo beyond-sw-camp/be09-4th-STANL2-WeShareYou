@@ -41,11 +41,10 @@ public class TokenFilter extends OncePerRequestFilter {
                     .parseClaimsJws(jwtToken)
                     .getBody();
 
-            // 뭐가 있나 확인
-            claims.entrySet().forEach(entry -> log.info("Key: {}, Value: {}", entry.getKey(), entry.getValue()));
-
+            log.info("1");
+            log.info("id값 : {}", claims.getId());
             // jwt 토큰에서 추출
-            int id = claims.get("id", Integer.class);
+            long id = claims.get("id", Long.class);
             String loginId = claims.get("loginId", String.class);
             String nationality = claims.get("nationality", String.class);
             String sex = claims.get("sex", String.class);
@@ -55,7 +54,6 @@ public class TokenFilter extends OncePerRequestFilter {
 //            String introduction = claims.get("introduction", String.class);
             String language = claims.get("language", String.class);
 
-            log.info("Extracted nationality: {}", nationality);
             // request에 넣기
             request.setAttribute("id", id);
             request.setAttribute("loginId", loginId);
@@ -76,7 +74,7 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/api/v1/member/userDetail");
+        return request.getServletPath().equals("/api/v1/member/login");
     }
 
 }

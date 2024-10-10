@@ -38,11 +38,11 @@ public class MemberController {
     private final MailService mailService;
 
     @GetMapping("/health")
-    public ApiResponse<?> healthCheck(@RequestAttribute("id") long id,
+    public ApiResponse<?> healthCheck(@RequestAttribute("id") Long id,
                                       @RequestAttribute("loginId") String loginId,
                                       @RequestAttribute("nationality") String nationality,
                                       @RequestAttribute("sex") String sex,
-                                      @RequestAttribute("point") int point,
+                                      @RequestAttribute("point") Integer point,
                                       @RequestAttribute("nickname") String nickname,
 //                                      @RequestAttribute("profile") String profile,
 //                                      @RequestAttribute("introduction") String introduction,

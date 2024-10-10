@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
+import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentUpdateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
@@ -13,6 +14,8 @@ import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentUpdateResponseVO;
 import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
+
+import java.util.Optional;
 
 @RestController(value = "boardCommentController")
 @RequestMapping("/api/v1/board_comment")
@@ -51,8 +54,14 @@ public class BoardCommentController {
 
     @DeleteMapping("/{boardId}")
     public ApiResponse<?> updateBoardComment(@PathVariable("boardId") Long boardId){
-        boardCommentService.deleterBoardComment(boardId);
+        boardCommentService.deleteBoardComment(boardId);
         return ApiResponse.ok("삭제 성공");
+    }
+
+    @GetMapping("/{boardId}")
+    public ApiResponse<?> readOnlyOneComment(@PathVariable("boardId") Long boardId) {
+        Optional<BoardComment> boardComment=boardCommentService.readCommentById(boardId);
+        return ApiResponse.ok(boardComment);
     }
 
 

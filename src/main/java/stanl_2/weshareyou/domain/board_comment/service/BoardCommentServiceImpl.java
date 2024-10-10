@@ -5,7 +5,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
@@ -19,6 +18,7 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -83,11 +83,19 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardCommentDto1.setBoardId(boardcomment.getId());
         return boardCommentDto1;
     }
-
+    @Transactional
     @Override
-    public void deleterBoardComment(Long boardId) {
+    public void deleteBoardComment(Long boardId) {
         BoardComment boardcomment = boardCommentRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
         boardCommentRepository.delete(boardcomment);
     }
+
+    @Transactional
+    @Override
+    public Optional<BoardComment> readCommentById(Long boardId) {
+        Optional<BoardComment> boardComment = boardCommentRepository.findById(boardId);
+        return boardComment;
+    }
+
 }

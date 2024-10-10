@@ -66,4 +66,21 @@ public class BoardCommentServiceImpl implements BoardCommentService{
 
         return boardCommentDto1;
     }
+
+    @Transactional
+    @Override
+    public BoardCommentDto updateBoardComment(Long boardId,BoardCommentDto boardCommentDto) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
+
+        BoardComment boardcomment = boardCommentRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+
+        boardcomment.setContent(boardCommentDto.getContent());
+        boardcomment.setUpdatedAt(currentTimestamp);
+        boardCommentRepository.save(boardcomment);
+
+        BoardCommentDto boardCommentDto1 = modelMapper.map(boardcomment, BoardCommentDto.class);
+        boardCommentDto1.setBoardId(boardcomment.getId());
+        return boardCommentDto1;
+    }
 }

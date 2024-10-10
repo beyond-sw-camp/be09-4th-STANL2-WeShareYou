@@ -1,19 +1,18 @@
 package stanl_2.weshareyou.global.security.constants;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
+@RequiredArgsConstructor
 public class ApplicationConstants {
 
-    @Value("${JWT.SECRET_KEY}")
-    private String JWT_SECRET_KEY;
+    // 비밀키는 자동으로 생성하여 상수로 설정
+    public final String JWT_SECRET_KEY = "JWT_SECRET";
 
-    @Value("${JWT.JWT_SECRET_DEFAULT_VALUE}")
-    private String JWT_SECRET_DEFAULT_VALUE;
+    private final String JWT_SECRET_DEFAULT_VALUE="jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4";
 
-    @Value("${JWT.JWT_HEADER}")
-    private String JWT_HEADER;
+    public final String JWT_HEADER = "Authorization";
 }

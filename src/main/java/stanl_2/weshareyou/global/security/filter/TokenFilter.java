@@ -27,7 +27,11 @@ public class TokenFilter extends OncePerRequestFilter {
         String token = request.getHeader("Authorization");
 
         if(token == null || token.isEmpty() || !token.startsWith("Bearer ")){
-            throw new CommonException(ErrorCode.NOT_FOUND_JWT_TOKEN);
+            // 보안 X
+            filterChain.doFilter(request, response);  // 토큰이 없으면 필터를 그냥 통과시킴
+
+            // 보안 O
+//            throw new CommonException(ErrorCode.NOT_FOUND_JWT_TOKEN);
         }else {
             String jwtToken = token.substring(7);
 
@@ -41,14 +45,12 @@ public class TokenFilter extends OncePerRequestFilter {
                     .parseClaimsJws(jwtToken)
                     .getBody();
 
-            log.info("1");
-            log.info("id값 : {}", claims.getId());
             // jwt 토큰에서 추출
-            long id = claims.get("id", Long.class);
+            Long id = claims.get("id", Long.class);
             String loginId = claims.get("loginId", String.class);
             String nationality = claims.get("nationality", String.class);
             String sex = claims.get("sex", String.class);
-            int point = claims.get("point", Integer.class);
+            Integer point = claims.get("point", Integer.class);
             String nickname = claims.get("nickname", String.class);
 //            String profile = claims.get("profile", String.class);
 //            String introduction = claims.get("introduction", String.class);

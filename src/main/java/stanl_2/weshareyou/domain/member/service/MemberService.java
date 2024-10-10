@@ -13,4 +13,6 @@ public interface MemberService {
     String loginMember(Authentication authenticationResponse);
 
     void deleteMember(Long id);
+
+    void resetPwd(MemberDTO memberRequestDTO);
 }

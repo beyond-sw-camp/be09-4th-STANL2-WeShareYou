@@ -13,6 +13,7 @@ import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.CheckCodeRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.request.ResetPwdRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.RegisterResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
@@ -156,6 +157,7 @@ public class MemberController {
      * 내용 : 회원탈퇴(회원 비활성화)
      * [Delete] localhost:8080/api/v1/member
      * JWT 토큰의 pk 값으로 회원 비활성화
+     * member_active -> false(0)
      */
     @DeleteMapping("")
     public ApiResponse<?> resign(@RequestAttribute("id") Long id){
@@ -165,4 +167,25 @@ public class MemberController {
         return ApiResponse.ok("회원 탈퇴에 성공했습니다.");
     }
 
+    /**
+     * 내용: 비밀번호 재설정
+     * [Put] localhost:8080/api/v1/member/password
+     * JWT 토큰의 pk 값으로 회원 비밀번호 재설정
+     * Request Body
+     * {
+     *     "password": "abc"
+     * }
+     */
+    @PutMapping("/password")
+    public ApiResponse<?> resetPwd(@RequestAttribute("id") Long id,
+                                   @RequestBody ResetPwdRequestVO resetPwdRequestVO){
+        MemberDTO memberRequestDTO = modelMapper.map(resetPwdRequestVO, MemberDTO.class);
+        memberRequestDTO.setId(id);
+
+        memberService.resetPwd(memberRequestDTO);
+
+        return ApiResponse.ok("비밀번호 재설정 성공!");
+    }
+
+    
 }

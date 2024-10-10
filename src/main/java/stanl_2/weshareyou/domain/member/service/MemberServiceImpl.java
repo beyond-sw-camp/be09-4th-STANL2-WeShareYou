@@ -112,4 +112,17 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
     }
+
+    @Override
+    @Transactional
+    public void resetPwd(MemberDTO memberRequestDTO) {
+
+        Member member = memberRepository.findById(memberRequestDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
+
+        member.setPassword(hashPwd);
+
+        memberRepository.save(member);
+    }
 }

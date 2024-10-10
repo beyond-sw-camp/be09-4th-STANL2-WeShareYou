@@ -1,16 +1,14 @@
 package stanl_2.weshareyou.domain.member.aggregate.vo.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResetPwdRequestVO {
+@EqualsAndHashCode
+public class UpdatePwdRequestVO {
     @NotNull
     private String password;
 }

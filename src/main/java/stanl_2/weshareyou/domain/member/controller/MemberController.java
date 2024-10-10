@@ -10,12 +10,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.request.CheckCodeRequestVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.request.ResetPwdRequestVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.RegisterResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.UpdateProfileResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -155,7 +153,7 @@ public class MemberController {
 
     /**
      * 내용 : 회원탈퇴(회원 비활성화)
-     * [Delete] localhost:8080/api/v1/member
+     * [DELETE] localhost:8080/api/v1/member
      * JWT 토큰의 pk 값으로 회원 비활성화
      * member_active -> false(0)
      */
@@ -169,7 +167,7 @@ public class MemberController {
 
     /**
      * 내용: 비밀번호 재설정
-     * [Put] localhost:8080/api/v1/member/password
+     * [PUT] localhost:8080/api/v1/member/password
      * JWT 토큰의 pk 값으로 회원 비밀번호 재설정
      * Request Body
      * {
@@ -177,15 +175,39 @@ public class MemberController {
      * }
      */
     @PutMapping("/password")
-    public ApiResponse<?> resetPwd(@RequestAttribute("id") Long id,
-                                   @RequestBody ResetPwdRequestVO resetPwdRequestVO){
-        MemberDTO memberRequestDTO = modelMapper.map(resetPwdRequestVO, MemberDTO.class);
+    public ApiResponse<?> updatePwd(@RequestAttribute("id") Long id,
+                                    @RequestBody UpdatePwdRequestVO updatePwdRequestVO){
+        MemberDTO memberRequestDTO = modelMapper.map(updatePwdRequestVO, MemberDTO.class);
         memberRequestDTO.setId(id);
 
-        memberService.resetPwd(memberRequestDTO);
+        memberService.updatePwd(memberRequestDTO);
 
         return ApiResponse.ok("비밀번호 재설정 성공!");
     }
 
-    
+    /**
+     * 내용: 회원 프로필 수정
+     * [PUT] localhost:8080/api/v1/member/profile
+     * JWT 토큰의 pk 값과 Request Body를 활용한 프로필 수정
+     * {
+     *     "phone": "01012345678",
+     *     "nickname": "나자나",
+     *     "profile_url": "www.gaodls.com",
+     *     "introduction": "안뇽!",
+     *     "language": "Deutsch"
+     * }
+     */
+    @PutMapping("/profile")
+    public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
+                                        @RequestBody UpdateProfileRequestVO updateProfileRequestVO) {
+
+        MemberDTO requestMemberDTO = modelMapper.map(updateProfileRequestVO, MemberDTO.class);
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.updateProfile(requestMemberDTO);
+
+        UpdateProfileResponseVO updateProfileResponseVO = modelMapper.map(responseMemberDTO, UpdateProfileResponseVO.class);
+
+        return ApiResponse.ok(updateProfileResponseVO);
+    }
 }

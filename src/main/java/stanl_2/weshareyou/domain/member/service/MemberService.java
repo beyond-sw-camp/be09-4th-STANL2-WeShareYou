@@ -14,5 +14,7 @@ public interface MemberService {
 
     void deleteMember(Long id);
 
-    void resetPwd(MemberDTO memberRequestDTO);
+    void updatePwd(MemberDTO memberRequestDTO);
+
+    MemberDTO updateProfile(MemberDTO requestMemberDTO);
 }

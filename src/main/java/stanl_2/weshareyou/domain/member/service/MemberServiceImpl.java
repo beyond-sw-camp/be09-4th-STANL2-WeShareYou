@@ -115,7 +115,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void resetPwd(MemberDTO memberRequestDTO) {
+    public void updatePwd(MemberDTO memberRequestDTO) {
 
         Member member = memberRepository.findById(memberRequestDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -124,5 +124,30 @@ public class MemberServiceImpl implements MemberService {
         member.setPassword(hashPwd);
 
         memberRepository.save(member);
+    }
+
+    @Override
+    public MemberDTO updateProfile(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.setPhone(requestMemberDTO.getPhone());
+        member.setNickname(requestMemberDTO.getNickname());
+        member.setProfileUrl(requestMemberDTO.getProfileUrl());
+        member.setIntroduction(requestMemberDTO.getIntroduction());
+        member.setLanguage(requestMemberDTO.getLanguage());
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
+        memberRepository.save(member);
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        // 보안상
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
     }
 }

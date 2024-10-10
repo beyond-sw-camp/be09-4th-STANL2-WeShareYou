@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="BoardComment")
+@Table(name="BOARDCOMMENT")
 @RequiredArgsConstructor
 @Getter
 @Setter

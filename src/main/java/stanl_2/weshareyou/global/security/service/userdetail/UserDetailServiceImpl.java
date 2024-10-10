@@ -1,8 +1,7 @@
-package stanl_2.weshareyou.global.security.service;
+package stanl_2.weshareyou.global.security.service.userdetail;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +10,7 @@ import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
+
 
 @Service(value = "UserDetailService")
 @RequiredArgsConstructor
@@ -26,11 +26,13 @@ public class UserDetailServiceImpl implements UserDetailsService, UserDetailServ
                new CommonException(ErrorCode.USERDETAILS_NOT_FOUND));
 
        /* 필요하면 권한 설정 가능 */
+//        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(member.getRole().name()));
 
-        return User.builder()
+        /*return User.builder()
                 .username(member.getLoginId())
                 .password(member.getPassword())
                 .authorities("ROLE_MEMBER")
-                .build();
+                .build();*/
+        return new CustomUserDetails(member);
     }
 }

@@ -15,6 +15,8 @@ import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
+import stanl_2.weshareyou.global.security.service.userdetail.CustomUserDetails;
+//import stanl_2.weshareyou.global.security.service.CustomUserDetails;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -67,22 +69,34 @@ public class MemberServiceImpl implements MemberService {
     public String loginMember(Authentication authenticationResponse) {
 
         String jwt = "";
-        if(authenticationResponse != null && authenticationResponse.isAuthenticated()){
-            if (null != env) {
-                String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
-                        applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
-                SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                jwt = Jwts.builder()
-                        .setIssuer("STANL2")
-                        .setSubject("JWT Token")
-                        .claim("username", authenticationResponse.getName())
-                        .claim("authorities", authenticationResponse.getAuthorities().stream().map(
-                                GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
-                        .setIssuedAt(new java.util.Date())
-                        .setExpiration(new java.util.Date((new java.util.Date()).getTime() + 30000000)) // 만료시간 8시간
-                        .signWith(secretKey)
-                        .compact(); // Digital Signature 생성
-            }
+        if (authenticationResponse != null && authenticationResponse.isAuthenticated()) {
+//            if (null != env) {
+//                String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
+//                        applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
+            CustomUserDetails customUserDetails = (CustomUserDetails) authenticationResponse.getPrincipal();
+            Member member = customUserDetails.getMember();
+
+            log.warn("여기여기여기 {}", member.toString());
+
+            String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
+            SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+
+//            Member member = (Member) authenticationResponse.getPrincipal();
+
+            jwt = Jwts.builder()
+                    .setIssuer("STANL2")
+                    .setSubject("JWT Token")
+//                    .claim("username", authenticationResponse.getName())
+                    .claim("username", member.getLoginId())
+                    .claim("role", member.getRole().name())
+//                    .claim("authorities", authenticationResponse.getAuthorities().stream()
+//                            .map(GrantedAuthority::getAuthority)
+//                            .collect(Collectors.joining(",")))
+                    .setIssuedAt(new java.util.Date())
+                    .setExpiration(new java.util.Date((new java.util.Date()).getTime() + 30000000)) // 만료시간 8시간
+                    .signWith(secretKey)    // Digital Signature 생성
+                    .compact();
+//            }
         }
         return jwt;
     }

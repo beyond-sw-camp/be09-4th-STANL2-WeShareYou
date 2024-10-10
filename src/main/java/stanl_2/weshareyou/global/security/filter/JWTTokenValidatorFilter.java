@@ -34,12 +34,15 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = request.getHeader(applicationConstants.getJWT_HEADER());
+        if (jwt != null && jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);  // "Bearer " 부분 제거
+        }
+
         if(null != jwt) {
             try {
                 Environment env = getEnvironment();
                 if (null != env) {
-                    String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
-                            applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
+                    String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
                     SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                     if(null !=secretKey) {
                         // JWT 토큰 검증
@@ -49,8 +52,11 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                                 .parseClaimsJws(jwt)        // 권한 정보
                                 .getBody();                 // 사용자 관련 정보
 
-                        String username = String.valueOf(claims.get("username"));
-                        String authorities = String.valueOf(claims.get("authorities"));
+//                        String username = String.valueOf(claims.get("username"));
+//                        String authorities = String.valueOf(claims.get("authorities"));
+                        String username = claims.get("username", String.class);
+                        String authorities = claims.get("role", String.class);
+
                         Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
                                 AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                         // SecurityContextHolder에 저장

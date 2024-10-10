@@ -23,6 +23,7 @@ public enum ErrorCode {
     NOTICE_REGISTER_FAIL(40007, HttpStatus.BAD_REQUEST, "공지 생성 실패!"),
     NOTICE_UPDATE_FAIL(40008, HttpStatus.BAD_REQUEST, "공지 수정 실패!"),
     NOTICE_DELETE_FAIL(40009, HttpStatus.BAD_REQUEST, "공지 삭제 실패!"),
+    PRODUCT_IS_RENTAL(40010, HttpStatus.BAD_REQUEST, "이미 대여된 물품입니다."),
 
 
 

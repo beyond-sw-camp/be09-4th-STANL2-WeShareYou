@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductRentalRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
@@ -262,5 +263,34 @@ public class ProductController {
                 .collect(Collectors.toList());
 
         return ApiResponse.ok(productReadCategoryResponseVOList);
+    }
+
+    /**
+     * 내용: 공유물품 대여신청
+     * req:
+     * {
+     *     "id": 1,
+     *     "memberId": 2
+     * }
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "memberId": 2,
+     *         "rental": false
+     *     },
+     *     "error": null
+     * }
+     */
+    @PutMapping("/share")
+    public ApiResponse<?> updateRentalProduct(@RequestBody ProductRentalRequestVO productRentalRequestVO) {
+
+        ProductDTO productRequestDTO = modelMapper.map(productRentalRequestVO, ProductDTO.class);
+        ProductDTO productResponseDTO = productService.updateRentalProduct(productRequestDTO);
+
+        ProductRentalResponseVO productRentalResponseVO = modelMapper.map(productResponseDTO, ProductRentalResponseVO.class);
+
+        return ApiResponse.ok(productRentalResponseVO);
     }
 }

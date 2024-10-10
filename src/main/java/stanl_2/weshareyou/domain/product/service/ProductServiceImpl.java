@@ -181,6 +181,7 @@ public class ProductServiceImpl implements ProductService {
             productResponseDTO.setId(product.getId());
             productResponseDTO.setRental(product.isRental());
             productResponseDTO.setMemberId(product.getMemberId().getId());
+            productResponseDTO.setTitle(product.getTitle());
 
             return productResponseDTO;
         }

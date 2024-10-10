@@ -152,5 +152,17 @@ public class MemberController {
     }
 
 
-    public
+    /**
+     * 내용 : 회원탈퇴(회원 비활성화)
+     * [Delete] localhost:8080/api/v1/member
+     * JWT 토큰의 pk 값으로 회원 비활성화
+     */
+    @DeleteMapping("")
+    public ApiResponse<?> resign(@RequestAttribute("id") Long id){
+
+        memberService.deleteMember(id);
+
+        return ApiResponse.ok("회원 탈퇴에 성공했습니다.");
+    }
+
 }

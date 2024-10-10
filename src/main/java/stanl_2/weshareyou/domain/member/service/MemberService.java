@@ -11,4 +11,6 @@ public interface MemberService {
     Optional<MemberDTO> findMemberDetail(String username);
 
     String loginMember(Authentication authenticationResponse);
+
+    void deleteMember(Long id);
 }

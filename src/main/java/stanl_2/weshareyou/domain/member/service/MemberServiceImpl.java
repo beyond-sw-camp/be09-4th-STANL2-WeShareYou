@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
+import stanl_2.weshareyou.global.common.exception.CommonException;
+import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 import stanl_2.weshareyou.global.security.service.MemberDetails;
 
@@ -56,13 +58,11 @@ public class MemberServiceImpl implements MemberService {
         return modelMapper.map(newMember, MemberDTO.class);
     }
 
-
     @Override
     @Transactional
     public Optional<MemberDTO> findMemberDetail(String username) {
         return memberRepository.findByLoginId(username);
     }
-
 
     @Override
     @Transactional
@@ -99,5 +99,17 @@ public class MemberServiceImpl implements MemberService {
 
         }
         return jwt;
+    }
+
+    @Override
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        member.setActive(false);
+
+        memberRepository.save(member);
     }
 }

@@ -1,11 +1,13 @@
 package stanl_2.weshareyou.domain.member.aggregate.vo.response;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
-import stanl_2.weshareyou.domain.member.aggregate.Role;
-import stanl_2.weshareyou.domain.member.aggregate.Sex;
+import lombok.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class UpdateProfileResponseVO {
     @NotNull
     private String loginId;
@@ -20,8 +22,7 @@ public class UpdateProfileResponseVO {
     private String nationality;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private Sex sex;
+    private String sex;
 
     @NotNull
     private String phone;
@@ -30,8 +31,7 @@ public class UpdateProfileResponseVO {
     private Integer point;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String role;
 
     @NotNull
     private String nickname;

@@ -24,7 +24,7 @@ public class RegisterRequestVO {
     private String name;
 
     @NotNull
-    private int age;
+    private Integer age;
 
     @NotNull
     private String nationality;

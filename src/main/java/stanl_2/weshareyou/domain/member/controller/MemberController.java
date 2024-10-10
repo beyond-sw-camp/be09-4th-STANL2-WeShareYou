@@ -189,6 +189,7 @@ public class MemberController {
      * 내용: 회원 프로필 수정
      * [PUT] localhost:8080/api/v1/member/profile
      * JWT 토큰의 pk 값과 Request Body를 활용한 프로필 수정
+     * request
      * {
      *     "phone": "01012345678",
      *     "nickname": "나자나",
@@ -196,6 +197,23 @@ public class MemberController {
      *     "introduction": "안뇽!",
      *     "language": "Deutsch"
      * }
+     *
+     * response
+     * {
+     *         "loginId": "bangdh1593@gmail.com",
+     *         "name": "user1",
+     *         "age": 21,
+     *         "nationality": "seoul",
+     *         "sex": "FEMALE",
+     *         "phone": "01012345678",
+     *         "point": 0,
+     *         "role": "ROLE_MEMBER",
+     *         "nickname": "나자나",
+     *         "introduction": "안뇽!",
+     *         "language": "Deutsch",
+     *         "createdAt": "2024-10-10T20:26:05",
+     *         "updatedAt": "2024-10-10T23:51:35"
+     *     }
      */
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
@@ -210,4 +228,6 @@ public class MemberController {
 
         return ApiResponse.ok(updateProfileResponseVO);
     }
+
+
 }

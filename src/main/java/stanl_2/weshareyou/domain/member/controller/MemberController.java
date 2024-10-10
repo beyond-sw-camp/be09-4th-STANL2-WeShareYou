@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.CheckCodeRequestVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.request.EmailAddressRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.LoginRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.RegisterRequestVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
@@ -37,6 +36,7 @@ public class MemberController {
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
 
+    /* 설명. jwt토큰 활용 샘플 예시 코드 */
     @GetMapping("/health")
     public ApiResponse<?> healthCheck(@RequestAttribute("id") Long id,
                                       @RequestAttribute("loginId") String loginId,
@@ -61,6 +61,23 @@ public class MemberController {
         return ApiResponse.ok(result);
     }
 
+    /**
+     * 내용 : 회원가입
+     * URL: [POST] localhost:8080/api/v1/member/register
+     * Request body
+     * {
+     *     "loginId": "test@gmail.com",
+     *     "password": "test",
+     *     "name": "user1",
+     *     "age": 21,
+     *     "nationality": "seoul",
+     *     "sex": "FEMALE",
+     *     "phone": "01012345678",
+     *     "role": "ROLE_MEMBER",
+     *     "nickname": "가지남",
+     *     "language": "KOREAN"
+     * }
+     * */
     @PostMapping("/register")
     public ApiResponse<?> registerMember(@RequestBody RegisterRequestVO memberInfo) {
         MemberDTO memberRequestDTO = modelMapper.map(memberInfo, MemberDTO.class);
@@ -82,7 +99,16 @@ public class MemberController {
         return memberDetailDTO.orElse(null);
     }
 
-    @PostMapping("/login")
+    /**
+     * 내용 : 로그인
+     * URL: [GET] localhost:8080/api/v1/member/login
+     * Request body
+     * {
+     *     "loginId": "test@gmail.com",
+     *     "password": "test"
+     * }
+     */
+    @GetMapping("/login")
     public ApiResponse<?> loginMember(@RequestBody LoginRequestVO loginRequestVO){
 
         Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
@@ -97,20 +123,34 @@ public class MemberController {
         return ApiResponse.ok(new LoginResponseVO(HttpStatus.OK.getReasonPhrase(), jwt));
     }
 
-    // 이메일 전송
-    @GetMapping("/mail")
-    public ApiResponse<?> sendEmailCheck(@RequestBody EmailAddressRequestVO emailAddressRequestVO) throws MessagingException {
-        mailService.sendEmail(emailAddressRequestVO.getLoginId());
+
+    /**
+     * 내용 : 인증번호 이메일 전송
+     * URL: [POST] localhost:8080/api/v1/member/mail
+     *
+     * JWT 토큰만 있으면 된다.
+     */
+    @PostMapping("/mail")
+    public ApiResponse<?> sendEmailCheck(@RequestAttribute("loginId") String loginId) throws MessagingException {
+        mailService.sendEmail(loginId);
         return ApiResponse.ok("이메일 전송 성공!");
     }
 
-    // 인증번호 체크
-    @PostMapping("/check")
-    public ApiResponse<?> checkCode(@RequestBody CheckCodeRequestVO checkCodeRequestVO){
-        if(!mailService.verifyEmailCode(checkCodeRequestVO.getLoginId(), checkCodeRequestVO.getCode())) {
+    /**
+     * 내용 : 인증번호 확인
+     * URL: [GET] localhost:8080/api/v1/member/check
+     *
+     * JWT Token, 인증번호(Request Body)
+     */
+    @GetMapping("/check")
+    public ApiResponse<?> checkCode(@RequestAttribute("loginId") String loginId,
+                                    @RequestBody CheckCodeRequestVO checkCodeRequestVO){
+        if(!mailService.verifyEmailCode(loginId, checkCodeRequestVO.getCode())) {
             throw new CommonException(ErrorCode.EMAIL_VERIFY_FAIL);
         }
         return ApiResponse.ok("이메일 인증 성공!");
     }
 
+
+    public
 }

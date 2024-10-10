@@ -10,7 +10,5 @@ import lombok.*;
 @EqualsAndHashCode
 public class CheckCodeRequestVO {
     @NotNull
-    private String loginId;
-    @NotNull
     private String code;
 }

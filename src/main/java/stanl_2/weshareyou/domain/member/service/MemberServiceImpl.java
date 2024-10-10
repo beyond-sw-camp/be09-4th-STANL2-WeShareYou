@@ -132,7 +132,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(requestMemberDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        member.setPhone(requestMemberDTO.getPhone());
         member.setNickname(requestMemberDTO.getNickname());
         member.setProfileUrl(requestMemberDTO.getProfileUrl());
         member.setIntroduction(requestMemberDTO.getIntroduction());
@@ -143,7 +142,7 @@ public class MemberServiceImpl implements MemberService {
 
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
 
-        // 보안상
+        // 보안상 null
         responseMemberDTO.setId(null);
         responseMemberDTO.setPassword(null);
         responseMemberDTO.setActive(null);

@@ -11,9 +11,6 @@ import lombok.*;
 public class UpdateProfileRequestVO {
 
     @NotNull
-    private String phone;
-
-    @NotNull
     private String nickname;
 
     @NotNull

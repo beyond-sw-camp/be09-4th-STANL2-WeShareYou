@@ -200,20 +200,11 @@ public class MemberController {
      *
      * response
      * {
-     *         "loginId": "bangdh1593@gmail.com",
-     *         "name": "user1",
-     *         "age": 21,
-     *         "nationality": "seoul",
-     *         "sex": "FEMALE",
-     *         "phone": "01012345678",
-     *         "point": 0,
-     *         "role": "ROLE_MEMBER",
-     *         "nickname": "나자나",
-     *         "introduction": "안뇽!",
-     *         "language": "Deutsch",
-     *         "createdAt": "2024-10-10T20:26:05",
-     *         "updatedAt": "2024-10-10T23:51:35"
-     *     }
+     *      "nickname": "나자나",
+     *      "profile_url": null,
+     *      "introduction": "안뇽!",
+     *      "language": "Deutsch"
+     *}
      */
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,

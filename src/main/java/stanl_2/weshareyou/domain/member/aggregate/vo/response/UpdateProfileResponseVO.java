@@ -10,41 +10,14 @@ import lombok.*;
 @EqualsAndHashCode
 public class UpdateProfileResponseVO {
     @NotNull
-    private String loginId;
-
-    @NotNull
-    private String name;
-
-    @NotNull
-    private Integer age;
-
-    @NotNull
-    private String nationality;
-
-    @NotNull
-    private String sex;
-
-    @NotNull
-    private String phone;
-
-    @NotNull
-    private Integer point;
-
-    @NotNull
-    private String role;
-
-    @NotNull
     private String nickname;
+
+    @NotNull
+    private String profile_url;
 
     @NotNull
     private String introduction;
 
     @NotNull
     private String language;
-
-    @NotNull
-    private String createdAt;
-
-    @NotNull
-    private String updatedAt;
 }

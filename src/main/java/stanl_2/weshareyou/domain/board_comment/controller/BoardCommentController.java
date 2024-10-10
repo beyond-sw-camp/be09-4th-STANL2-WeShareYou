@@ -16,7 +16,7 @@ import stanl_2.weshareyou.global.common.response.ApiResponse;
 import java.util.List;
 
 @RestController(value = "boardCommentController")
-@RequestMapping("/api/v1/board_comment")
+@RequestMapping("/api/v1/board-comment")
 @Slf4j
 public class BoardCommentController {
     private final BoardCommentService boardCommentService;

@@ -22,6 +22,8 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 import stanl_2.weshareyou.global.security.service.smtp.MailService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -35,6 +37,29 @@ public class MemberController {
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
 
+    @GetMapping("/health")
+    public ApiResponse<?> healthCheck(@RequestAttribute("id") long id,
+                                      @RequestAttribute("loginId") String loginId,
+                                      @RequestAttribute("nationality") String nationality,
+                                      @RequestAttribute("sex") String sex,
+                                      @RequestAttribute("point") int point,
+                                      @RequestAttribute("nickname") String nickname,
+//                                      @RequestAttribute("profile") String profile,
+//                                      @RequestAttribute("introduction") String introduction,
+                                      @RequestAttribute("language") String language) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("loginId", loginId);
+        result.put("nationality", nationality);
+        result.put("sex", sex);
+        result.put("point", point);
+        result.put("nickname", nickname);
+//        result.put("profile", profile);
+//        result.put("introduction", introduction);
+        result.put("language", language);
+
+        return ApiResponse.ok(result);
+    }
 
     @PostMapping("/register")
     public ApiResponse<?> registerMember(@RequestBody RegisterRequestVO memberInfo) {

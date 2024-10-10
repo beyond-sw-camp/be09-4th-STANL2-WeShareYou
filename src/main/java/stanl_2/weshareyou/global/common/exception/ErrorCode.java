@@ -46,7 +46,9 @@ public enum ErrorCode {
      */
     FORBIDDEN_ROLE(40300, HttpStatus.FORBIDDEN, "권한이 존재하지 않습니다."),
 
+
     /**
+
      * 404(Not Found)
      *   서버는 요청받은 리소스를 찾을 수 없습니다. 브라우저에서는 알려지지 않은 URL을 의미합니다.
      *   이것은 API에서 종점은 적절하지만 리소스 자체는 존재하지 않음을 의미할 수도 있습니다.
@@ -62,6 +64,8 @@ public enum ErrorCode {
     NOT_FOUND_LIKE(40406, HttpStatus.BAD_REQUEST, "좋아요를 누르지 않았습니다."),
     PRODUCT_NOT_FOUND(40407, HttpStatus.NOT_FOUND, "해당 공유물품 게시글을 찾을 수 없습니다."),
     PRODUCT_AUTHOR_NOT_FOUND(40408, HttpStatus.NOT_FOUND, "해당 공유물품 게시글의 작성자가 아닙니다."),
+    NOT_FOUND_CSRF_TOKEN(40409, HttpStatus.NOT_FOUND, "CSRF 토큰이 요청에 존재하지 않습니다."),
+    NOT_FOUND_JWT_TOKEN(40410, HttpStatus.NOT_FOUND, "JWT 토큰이 없습니다."),
   
     /**
      * 500(Internal Server Error)

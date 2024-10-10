@@ -233,12 +233,12 @@ public class ProductServiceImpl implements ProductService {
             productResponseDTO.setRental(product.isRental());
 
             if (product.getMemberId() != null) {
-                productResponseDTO.setMemberId(product.getMemberId().getId());
+                throw new CommonException(ErrorCode.PRODUCT_IS_NOT_RETURN);
             } else {
                 productResponseDTO.setMemberId(null);
             }
-
             return productResponseDTO;
+
         } else {
             throw new CommonException(ErrorCode.PRODUCT_IS_RETURN);
         }

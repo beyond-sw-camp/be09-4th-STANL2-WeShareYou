@@ -8,6 +8,7 @@ import stanl_2.weshareyou.domain.alarm.aggregate.entity.AlatmType;
 import stanl_2.weshareyou.domain.alarm.repository.AlarmRepository;
 import stanl_2.weshareyou.domain.alarm.repository.EmitterRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
 
 import java.io.IOException;
 import java.util.Map;
@@ -82,5 +83,13 @@ public class AlarmServiceImpl implements AlarmService {
             emitterRepository.deleteById(emitterId);
             // 예외처리 날리기
         }
+    }
+
+    public void sendRentalAlarm(Product product, Long memberId) {
+        Member adminId = product.getAdminId();
+        String message = memberId + "번님이 " + product.getTitle() + "을 대여 신청하셨습니다.";
+        String url = "/api/v1/alarm/product/rental/" + product.getId();
+
+        send(adminId, AlatmType.RENTAL, message, url);
     }
 }

@@ -57,10 +57,11 @@ public class ProductController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO) {
+    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO,
+                                        @RequestAttribute("id") long id) {
 
         ProductDTO productRequestDTO = new ProductDTO();
-        productRequestDTO.setAdminId(productCreateRequestVO.getAdminId());
+        productRequestDTO.setAdminId(id);
         productRequestDTO.setTitle(productCreateRequestVO.getTitle());
         productRequestDTO.setContent(productCreateRequestVO.getContent());
         productRequestDTO.setCategory(productCreateRequestVO.getCategory());

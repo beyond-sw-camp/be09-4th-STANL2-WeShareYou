@@ -5,7 +5,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,7 @@ import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
+import stanl_2.weshareyou.global.security.service.MemberDetails;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
     private final ApplicationConstants applicationConstants;
     private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
-    private static final long JWT_EXPIRATION_TIME = 30000000L; // 8 hours in milliseconds
+    private static final long JWT_EXPIRATION_TIME = 30000000L;
 
     @Override
     @Transactional
@@ -74,12 +74,22 @@ public class MemberServiceImpl implements MemberService {
             // 비밀키 생성 및 JWT 생성
             String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
             SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-            log.info("33시크릿 Secret Key: {}", secretKey);
+
+            MemberDetails memberDetails = (MemberDetails) authenticationResponse.getPrincipal();
+            Member member = memberDetails.getMember();  // MemberDetails에서 Member를 얻어옴
 
             jwt = Jwts.builder()
                     .setIssuer("STANL2")
                     .setSubject("JWT Token")
-                    .claim("username", authenticationResponse.getName())
+                    .claim("id", member.getId())
+                    .claim("loginId", authenticationResponse.getName())
+                    .claim("nationality", member.getNationality())
+                    .claim("sex", member.getSex())
+                    .claim("point", member.getPoint())
+                    .claim("nickname", member.getNickname())
+                    .claim("profile", member.getProfileUrl())
+                    .claim("introduction", member.getIntroduction())
+                    .claim("language", member.getLanguage())
                     .claim("authorities", authenticationResponse.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                     .setIssuedAt(new java.util.Date())
@@ -87,7 +97,6 @@ public class MemberServiceImpl implements MemberService {
                     .signWith(secretKey)
                     .compact(); // Digital Signature 생성
 
-            log.info("제이이이: {}", jwt);
         }
         return jwt;
     }

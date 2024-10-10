@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,14 +37,9 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
             // pk, nickname 넣기
             Member member = (Member) authentication.getPrincipal();
 
-            log.info("Generating JWT for Member ID: {}", member.getId());
-            log.info("Nickname: {}", member.getNickname());
-
-
             // 비밀키 생성
             String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
             SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-            log.info("시1크릿 키: {}", secretKey);
 
             String jwt = Jwts.builder()
                     .setIssuer("STANL2")
@@ -54,21 +47,23 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
                     .claim("username", authentication.getName())
                     .claim("id", member.getId())
                     .claim("nickname", member.getNickname())
+
                     .claim("authorities", authentication.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date((new Date()).getTime() + 30000000)) // 만료시간 8시간
+                    .setExpiration(new Date((new Date()).getTime() + 30000000))
                     .signWith(secretKey)
                     .compact(); // Digital Signature 생성
 
             // JWT 토큰을 응답 헤더에 추가
             response.setHeader(applicationConstants.getJWT_HEADER(), jwt);
+            log.error("{}", jwt);
         }
         filterChain.doFilter(request, response);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return !request.getServletPath().equals("/api/v1/member/userDetail");
+        return !request.getServletPath().equals("/api/v1/member/login");
     }
 }

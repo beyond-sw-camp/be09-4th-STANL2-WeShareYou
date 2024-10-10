@@ -36,31 +36,24 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
         String jwt = request.getHeader(applicationConstants.getJWT_HEADER());
         if (null != jwt) {
             try {
-
                 // 비밀키 가져오기
                 String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                log.info("시2크릿키: {}", secretKey);
-                log.info("JWJWJ : {}", jwt);
-                log.warn("1");
                 String jwtToken = jwt.substring(7);
                 // JWT 토큰 검증
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(secretKey)
                         .build()
-                        .parseClaimsJws(jwtToken)        // 권한 정보
-                        .getBody();                 // 사용자 관련 정보
+                        .parseClaimsJws(jwtToken)
+                        .getBody();
 
-                log.warn("3");
                 String username = String.valueOf(claims.get("username"));
                 String authorities = String.valueOf(claims.get("authorities"));
-                log.warn("4");
                 Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
-                log.warn("5");
+
                 // SecurityContextHolder에 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.warn("6");
 
             } catch (Exception exception) {
                 throw new CommonException(ErrorCode.INVALID_TOKEN_ERROR);
@@ -71,6 +64,6 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/api/v1/member/userDetail");
+        return request.getServletPath().equals("/api/v1/member/login");
     }
 }

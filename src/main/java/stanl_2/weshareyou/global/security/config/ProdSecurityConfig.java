@@ -23,6 +23,7 @@ import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 import stanl_2.weshareyou.global.security.filter.CsrfCookieFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenGeneratorFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenValidatorFilter;
+import stanl_2.weshareyou.global.security.filter.TokenFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,12 +63,19 @@ public class ProdSecurityConfig {
                         .ignoringRequestMatchers("/api/v1/member/register", "/api/v1/member/login")
                         // 로그인 작업 후 처음으로 CSRF 토큰을 생성하는데만 도움을 준다.
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                // 로그인 시 사용(jwt 생성)2
                 .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
+                // 다른 api 접근시 사용(인증)1
                 .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
+                // csrf 보호 필터3
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                // 데이터 파싱 필터(파싱해서 request로 )4
+                .addFilterAfter(new TokenFilter(applicationConstants), JWTTokenGeneratorFilter.class)
+
+
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
-//                        .requestMatchers("/userDetail").authenticated()
+                        // 모두 접근 가능
                 .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
                 .anyRequest().authenticated()));
         http.formLogin(withDefaults());

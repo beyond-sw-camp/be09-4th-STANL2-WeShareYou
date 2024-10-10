@@ -264,7 +264,7 @@ public class ProductController {
 
     /**
      * 내용: 공유물품 대여신청
-     * req: localhost:8080/api/v1/product/share/approve/1?memberId=2
+     * req: localhost:8080/api/v1/product/share/1?memberId=2
      * res:
      * {
      *     "success": true,
@@ -318,5 +318,30 @@ public class ProductController {
         ProductRentalApproveResponseVO productRentalApproveResponseVO = modelMapper.map(productResponseDTO, ProductRentalApproveResponseVO.class);
 
         return ApiResponse.ok(productRentalApproveResponseVO);
+    }
+
+    /**
+     * 내용: 공유물품 대여반납
+     * req: localhost:8080/api/v1/product/share/return/1?adminId=1
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "rental": false,
+     *         "memberId": null
+     *     },
+     *     "error": null
+     * }
+     */
+    @PutMapping("/share/return/{productId}")
+    public ApiResponse<?> updateRentalReturnProduct(@PathVariable Long productId,
+                                                    @RequestParam Long adminId) {
+
+        ProductDTO productResponseDTO = productService.updateRentalReturnProduct(productId, adminId);
+
+        ProductRentalReturnResponseVO productRentalReturnResponseVO = modelMapper.map(productResponseDTO, ProductRentalReturnResponseVO.class);
+
+        return ApiResponse.ok(productRentalReturnResponseVO);
     }
 }

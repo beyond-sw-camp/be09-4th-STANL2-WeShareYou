@@ -212,4 +212,36 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
+    @Transactional
+    public ProductDTO updateRentalReturnProduct(Long productId, Long adminId) {
+
+        Member member = memberRepository.findById(adminId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.isRental() && product.getMemberId() != null) {
+            product.setRental(false);
+            product.setMemberId(null);
+
+            productRepository.save(product);
+
+            ProductDTO productResponseDTO = new ProductDTO();
+            productResponseDTO.setId(product.getId());
+            productResponseDTO.setRental(product.isRental());
+
+            if (product.getMemberId() != null) {
+                productResponseDTO.setMemberId(product.getMemberId().getId());
+            } else {
+                productResponseDTO.setMemberId(null);
+            }
+
+            return productResponseDTO;
+        } else {
+            throw new CommonException(ErrorCode.PRODUCT_IS_RETURN);
+        }
+    }
+
 }

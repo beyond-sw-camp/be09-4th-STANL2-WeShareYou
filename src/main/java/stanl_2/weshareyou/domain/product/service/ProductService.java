@@ -20,4 +20,6 @@ public interface ProductService {
     ProductDTO updateRentalProduct(Long productId, Long memberId);
 
     ProductDTO updateRentalApproveProduct(Long productId, Long adminId);
+
+    ProductDTO updateRentalReturnProduct(Long productId, Long adminId);
 }

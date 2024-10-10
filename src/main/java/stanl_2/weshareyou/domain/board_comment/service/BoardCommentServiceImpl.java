@@ -83,4 +83,11 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardCommentDto1.setBoardId(boardcomment.getId());
         return boardCommentDto1;
     }
+
+    @Override
+    public void deleterBoardComment(Long boardId) {
+        BoardComment boardcomment = boardCommentRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        boardCommentRepository.delete(boardcomment);
+    }
 }

@@ -49,5 +49,11 @@ public class BoardCommentController {
         return ApiResponse.ok(boardCommentUpdateResponseVO);
     }
 
+    @DeleteMapping("/{boardId}")
+    public ApiResponse<?> updateBoardComment(@PathVariable("boardId") Long boardId){
+        boardCommentService.deleterBoardComment(boardId);
+        return ApiResponse.ok("삭제 성공");
+    }
+
 
 }

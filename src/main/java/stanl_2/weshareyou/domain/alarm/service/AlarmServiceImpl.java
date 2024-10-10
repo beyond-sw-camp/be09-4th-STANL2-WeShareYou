@@ -1,5 +1,7 @@
 package stanl_2.weshareyou.domain.alarm.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -8,12 +10,19 @@ import stanl_2.weshareyou.domain.alarm.aggregate.entity.AlatmType;
 import stanl_2.weshareyou.domain.alarm.repository.AlarmRepository;
 import stanl_2.weshareyou.domain.alarm.repository.EmitterRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.member.repository.MemberRepository;
+import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
+import stanl_2.weshareyou.global.common.exception.CommonException;
+import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class AlarmServiceImpl implements AlarmService {
 
     // SSE 연결 지속 시간 설정 (한시간)
@@ -21,11 +30,16 @@ public class AlarmServiceImpl implements AlarmService {
 
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
+    private final MemberRepository memberRepository;
+
+    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
 
     @Autowired
-    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository) {
+    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository) {
         this.emitterRepository = emitterRepository;
         this.alarmRepository = alarmRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -52,8 +66,10 @@ public class AlarmServiceImpl implements AlarmService {
         return emitter;
     }
 
-    public void send(Member receiver, AlatmType alatmType, String message, String url) {
-        Alarm alarm = alarmRepository.save(createAlarm(receiver, alatmType, url, message));
+    @Override
+    public void send(Member receiver, AlatmType alatmType, String message, String url, String createdAt) {
+
+        Alarm alarm = alarmRepository.save(createAlarm(receiver, alatmType, url, message, createdAt));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);
@@ -65,16 +81,20 @@ public class AlarmServiceImpl implements AlarmService {
         );
     }
 
-    private Alarm createAlarm(Member receiver, AlatmType alatmType, String url, String message) {
+    @Override
+    public Alarm createAlarm(Member receiver, AlatmType alatmType, String url, String message, String createdAt) {
         Alarm alarm = new Alarm();
         alarm.setMemberId(receiver);
         alarm.setAlatmType(alatmType);
         alarm.setUrl(url);
         alarm.setMessage(message);
+        alarm.setCreatedAt(createdAt);
+        alarm.setReadStatus(false);
         return alarm;
     }
 
-    private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
+    @Override
+    public void sendToClient(SseEmitter emitter, String emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(emitterId)
@@ -85,11 +105,16 @@ public class AlarmServiceImpl implements AlarmService {
         }
     }
 
-    public void sendRentalAlarm(Product product, Long memberId) {
-        Member adminId = product.getAdminId();
-        String message = memberId + "번님이 " + product.getTitle() + "을 대여 신청하셨습니다.";
-        String url = "/api/v1/alarm/product/rental/" + product.getId();
+    @Override
+    public void sendRentalAlarm(ProductDTO productDto, Long memberId) {
 
-        send(adminId, AlatmType.RENTAL, message, url);
+        Member adminId = memberRepository.findById(memberId)
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String message = memberId + "번님이 " + productDto.getTitle() + "을 대여 신청하셨습니다.";
+        String url = "/api/v1/product/share/" + productDto.getId();
+        String createdAt = LocalDateTime.now().format(FORMATTER);
+
+        send(adminId, AlatmType.RENTAL, message, url, createdAt);
     }
 }

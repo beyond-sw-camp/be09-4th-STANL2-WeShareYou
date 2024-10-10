@@ -38,7 +38,7 @@ public class Alarm {
     @NotNull
     private Boolean readStatus;
 
-    @Column(name = "ALARM_CREATE_AT")
+    @Column(name = "ALARM_CREATED_AT")
     @NotNull
     private String createdAt;
 

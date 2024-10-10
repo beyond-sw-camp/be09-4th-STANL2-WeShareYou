@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentUpdateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
@@ -14,8 +13,10 @@ import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommen
 import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
+import java.util.List;
+
 @RestController(value = "boardCommentController")
-@RequestMapping("/api/v1/board_comment")
+@RequestMapping("/api/v1/board-comment")
 @Slf4j
 public class BoardCommentController {
     private final BoardCommentService boardCommentService;
@@ -51,9 +52,19 @@ public class BoardCommentController {
 
     @DeleteMapping("/{boardId}")
     public ApiResponse<?> updateBoardComment(@PathVariable("boardId") Long boardId){
-        boardCommentService.deleterBoardComment(boardId);
+        boardCommentService.deleteBoardComment(boardId);
         return ApiResponse.ok("삭제 성공");
     }
 
+    @GetMapping("/{boardId}")
+    public ApiResponse<?> readCommentsByBoardId(@PathVariable("boardId") Long boardCommentId) {
+        BoardCommentDto comments = boardCommentService.readCommentsByBoardId(boardCommentId);
+        return ApiResponse.ok(comments);
+    }
 
+    @GetMapping
+    public ApiResponse<?> getAllBoardComments() {
+        List<BoardCommentDto> boardCommentDtos = boardCommentService.readComments();
+        return ApiResponse.ok(boardCommentDtos);
+    }
 }

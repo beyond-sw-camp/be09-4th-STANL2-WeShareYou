@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="BOARDCOMMENT")
+@Table(name="BOARD_COMMENT")
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -21,14 +21,14 @@ public class BoardComment {
     @Column(name="BOARD_COMMENT_ID")
     private Long id;
 
-    @Column(name = "BOARD_CONTENT")
+    @Column(name = "BOARD_COMMENT_CONTENT")
     @Lob
     private String content;
 
-    @Column(name = "BOARD_CREATED_AT",columnDefinition = "TIMESTAMP")
+    @Column(name = "BOARD_COMMENT_CREATED_AT",columnDefinition = "TIMESTAMP")
     private Timestamp createdAt;
 
-    @Column(name = "BOARD_UPDATED_AT")
+    @Column(name = "BOARD_COMMENT_UPDATED_AT")
     private Timestamp updatedAt;
 
     @ManyToOne

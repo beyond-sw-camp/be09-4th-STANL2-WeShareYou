@@ -10,8 +10,6 @@ import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteReque
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
-import stanl_2.weshareyou.global.common.exception.CommonException;
-import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
@@ -262,5 +260,88 @@ public class ProductController {
                 .collect(Collectors.toList());
 
         return ApiResponse.ok(productReadCategoryResponseVOList);
+    }
+
+    /**
+     * 내용: 공유물품 대여신청
+     * req: localhost:8080/api/v1/product/share/1?memberId=2
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "memberId": 2,
+     *         "rental": false
+     *     },
+     *     "error": null
+     * }
+     * {
+     *     "success": false,
+     *     "result": null,
+     *     "error": {
+     *         "code": 40010,
+     *         "message": "이미 대여된 물품입니다."
+     *     }
+     * }
+     */
+    @PutMapping("/share/{productId}")
+    public ApiResponse<?> updateRentalProduct(@PathVariable Long productId,
+                                              @RequestParam Long memberId) {
+
+        ProductDTO productResponseDTO = productService.updateRentalProduct(productId,memberId);
+
+        ProductRentalResponseVO productRentalResponseVO = modelMapper.map(productResponseDTO, ProductRentalResponseVO.class);
+
+        return ApiResponse.ok(productRentalResponseVO);
+    }
+
+    /**
+     * 내용: 공유물품 대여승인
+     * req: localhost:8080/api/v1/product/share/approve/1?adminId=1
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "rental": true,
+     *         "memberId": 2
+     *     },
+     *     "error": null
+     * }
+     */
+    @PutMapping("/share/approve/{productId}")
+    public ApiResponse<?> updateRentalApproveProduct(@PathVariable Long productId,
+                                                     @RequestParam Long adminId) {
+
+        ProductDTO productResponseDTO = productService.updateRentalApproveProduct(productId, adminId);
+
+        ProductRentalApproveResponseVO productRentalApproveResponseVO = modelMapper.map(productResponseDTO, ProductRentalApproveResponseVO.class);
+
+        return ApiResponse.ok(productRentalApproveResponseVO);
+    }
+
+    /**
+     * 내용: 공유물품 대여반납
+     * req: localhost:8080/api/v1/product/share/return/1?adminId=1
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "rental": false,
+     *         "memberId": null
+     *     },
+     *     "error": null
+     * }
+     */
+    @PutMapping("/share/return/{productId}")
+    public ApiResponse<?> updateRentalReturnProduct(@PathVariable Long productId,
+                                                    @RequestParam Long adminId) {
+
+        ProductDTO productResponseDTO = productService.updateRentalReturnProduct(productId, adminId);
+
+        ProductRentalReturnResponseVO productRentalReturnResponseVO = modelMapper.map(productResponseDTO, ProductRentalReturnResponseVO.class);
+
+        return ApiResponse.ok(productRentalReturnResponseVO);
     }
 }

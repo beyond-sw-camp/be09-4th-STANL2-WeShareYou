@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.domain.notice.Service;
+package stanl_2.weshareyou.domain.notice.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -17,7 +17,6 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service

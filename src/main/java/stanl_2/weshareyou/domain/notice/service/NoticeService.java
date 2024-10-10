@@ -1,9 +1,7 @@
-package stanl_2.weshareyou.domain.notice.Service;
+package stanl_2.weshareyou.domain.notice.service;
 
 import org.springframework.stereotype.Service;
 import stanl_2.weshareyou.domain.notice.aggregate.dto.NoticeDTO;
-import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeReadAllResponseVO;
-import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeReadByIdResponseVO;
 
 import java.util.List;
 

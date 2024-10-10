@@ -8,11 +8,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ProductDeleteResponseVO {
+public class ProductRentalResponseVO {
 
     @NotNull
     private Long id;
 
     @NotNull
-    private Long adminId;
+    private Long memberId;
+
+    @NotNull
+    private Boolean rental;
 }

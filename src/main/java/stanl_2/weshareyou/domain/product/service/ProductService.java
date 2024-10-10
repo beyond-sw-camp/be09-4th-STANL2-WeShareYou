@@ -16,4 +16,10 @@ public interface ProductService {
     ProductDTO readProduct(Long productId);
 
     List<ProductDTO> readProductByCategory(String category);
+
+    ProductDTO updateRentalProduct(Long productId, Long memberId);
+
+    ProductDTO updateRentalApproveProduct(Long productId, Long adminId);
+
+    ProductDTO updateRentalReturnProduct(Long productId, Long adminId);
 }

@@ -159,4 +159,89 @@ public class ProductServiceImpl implements ProductService {
             return productDTOList;
         }
     }
+
+    @Override
+    @Transactional
+    public ProductDTO updateRentalProduct(Long proudctId, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(proudctId)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.isRental()) {
+            throw new CommonException(ErrorCode.PRODUCT_IS_RENTAL);
+        } else {
+            product.setMemberId(member);
+
+            productRepository.save(product);
+
+            ProductDTO productResponseDTO = new ProductDTO();
+            productResponseDTO.setId(product.getId());
+            productResponseDTO.setRental(product.isRental());
+            productResponseDTO.setMemberId(product.getMemberId().getId());
+
+            return productResponseDTO;
+        }
+    }
+
+    @Override
+    @Transactional
+    public ProductDTO updateRentalApproveProduct(Long productId, Long adminId) {
+
+        Member member = memberRepository.findById(adminId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (!product.isRental() && product.getMemberId() != null) {
+            product.setRental(true);
+
+            productRepository.save(product);
+
+            ProductDTO productResponseDTO = new ProductDTO();
+            productResponseDTO.setId(product.getId());
+            productResponseDTO.setRental(product.isRental());
+            productResponseDTO.setMemberId(product.getMemberId().getId());
+
+            return productResponseDTO;
+        } else {
+            throw new CommonException(ErrorCode.PRODUCT_IS_RENTAL);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ProductDTO updateRentalReturnProduct(Long productId, Long adminId) {
+
+        Member member = memberRepository.findById(adminId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        if (product.isRental() && product.getMemberId() != null) {
+            product.setRental(false);
+            product.setMemberId(null);
+
+            productRepository.save(product);
+
+            ProductDTO productResponseDTO = new ProductDTO();
+            productResponseDTO.setId(product.getId());
+            productResponseDTO.setRental(product.isRental());
+
+            if (product.getMemberId() != null) {
+                throw new CommonException(ErrorCode.PRODUCT_IS_NOT_RETURN);
+            } else {
+                productResponseDTO.setMemberId(null);
+            }
+            return productResponseDTO;
+
+        } else {
+            throw new CommonException(ErrorCode.PRODUCT_IS_RETURN);
+        }
+    }
+
 }

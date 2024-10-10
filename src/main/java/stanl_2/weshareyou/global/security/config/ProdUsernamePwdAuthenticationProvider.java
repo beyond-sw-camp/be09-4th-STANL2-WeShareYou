@@ -26,6 +26,7 @@ public class ProdUsernamePwdAuthenticationProvider implements AuthenticationProv
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if(passwordEncoder.matches(pwd, userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(userDetails, pwd, userDetails.getAuthorities());

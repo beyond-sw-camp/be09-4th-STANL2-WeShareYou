@@ -74,7 +74,8 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/api/v1/member/login");
+        String path = request.getServletPath();
+        return path.equals("/api/v1/member/login") || path.equals("/api/v1/member/register");
     }
 
 }

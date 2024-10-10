@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 
-@Service(value="MemberDetilsService")
+@Service(value="MemberDetailsService")
 @RequiredArgsConstructor
 public class MemberDetailsService implements UserDetailsService {
 

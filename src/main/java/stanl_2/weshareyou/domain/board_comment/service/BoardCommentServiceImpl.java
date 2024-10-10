@@ -18,7 +18,8 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -93,9 +94,28 @@ public class BoardCommentServiceImpl implements BoardCommentService{
 
     @Transactional
     @Override
-    public Optional<BoardComment> readCommentById(Long boardId) {
-        Optional<BoardComment> boardComment = boardCommentRepository.findById(boardId);
-        return boardComment;
+    public BoardCommentDto readCommentsByBoardId(Long boardCommentId) {
+        BoardComment boardComment = boardCommentRepository.findById(boardCommentId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+        boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+        boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+        return boardCommentDto;
     }
+
+    @Transactional
+    @Override
+    public List<BoardCommentDto> readComments() {
+        List<BoardComment> boardComments = boardCommentRepository.findAll(); // 모든 댓글 조회
+        return boardComments.stream()
+                .map(boardComment -> {
+                    BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+                    boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+                    boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+                    return boardCommentDto;
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }

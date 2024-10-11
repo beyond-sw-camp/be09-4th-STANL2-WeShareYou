@@ -290,7 +290,6 @@ public class MemberController {
      * {
      *      "loginId": "bangdh1593@gmail.com"
      * }
-     *
      */
     @GetMapping("")
     public ApiResponse<?> findId(@RequestAttribute("id") Long id){
@@ -306,5 +305,38 @@ public class MemberController {
     }
 
 
+    /**
+     * 내용 : 마이페이지 조회
+     * [GET] localhost:8080/api/v1/member/mypage
+     * JWT 토큰의 pk 값을 활용한 포인트 적립
+     * Request
+     * Response
+     * {
+     *      "loginId": "bangdh1593@gmail.com",
+     *      "name": "기기지",
+     *      "age": 21,
+     *      "nationality": "seoul",
+     *      "sex": "FEMALE",
+     *      "phone": "01038482048",
+     *      "point": 10,
+     *      "role": "ROLE_MEMBER",
+     *      "createdAt": "2024-10-10T20:26:05",
+     *      "updatedAt": "2024-10-11T12:14:48"
+     * }
+     */
+    @GetMapping("mypage")
+    public ApiResponse<?> findMypage(@RequestAttribute("id") Long id) {
+
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findMypage(requestMemberDTO);
+
+        FindMypageResponseVO findMypageResponseVO = modelMapper.map(responseMemberDTO, FindMypageResponseVO.class);
+
+        return ApiResponse.ok(findMypageResponseVO);
+    }
+
+    
 
 }

@@ -23,4 +23,6 @@ public interface MemberService {
     MemberDTO earnPoint(MemberDTO requestMemberDTO);
 
     MemberDTO findId(MemberDTO requestMemberDTO);
+
+    MemberDTO findMypage(MemberDTO requestMemberDTO);
 }

@@ -33,5 +33,5 @@ public interface AlarmService {
 
     List<AlarmDTO> readMemberAlarms(Long memberId);
 
-    AlarmDTO readStatusAlarm(Long alarmId);
+    AlarmDTO readStatusAlarm(AlarmDTO alarmDTO);
 }

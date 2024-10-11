@@ -27,7 +27,6 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -218,9 +217,14 @@ public class AlarmServiceImpl implements AlarmService {
 
     // 알림 읽음
     @Override
-    public AlarmDTO readStatusAlarm(Long alarmId) {
-        Alarm alarm = alarmRepository.findById(alarmId)
+    public AlarmDTO readStatusAlarm(AlarmDTO alarmDTO) {
+        Alarm alarm = alarmRepository.findById(alarmDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.ALARM_NOT_FOUND));
+
+        if (!alarm.getMemberId().getId().equals(alarmDTO.getMemberId())) {
+            throw new CommonException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
         alarm.setReadStatus(true);
         Alarm alarm1 = alarmRepository.save(alarm);
 

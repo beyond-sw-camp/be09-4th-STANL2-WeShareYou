@@ -114,8 +114,12 @@ public class AlarmController {
      * }
      */
     @PostMapping("/{alarmId}")
-    public ApiResponse<?> readStatusAlarm(@PathVariable Long alarmId) {
-        AlarmDTO alarmResponseDTO = alarmService.readStatusAlarm(alarmId);
+    public ApiResponse<?> readStatusAlarm(@PathVariable Long alarmId, @RequestParam Long memberId) {
+        AlarmDTO alarmDTO = new AlarmDTO();
+        alarmDTO.setId(alarmId);
+        alarmDTO.setMemberId(memberId);
+
+        AlarmDTO alarmResponseDTO = alarmService.readStatusAlarm(alarmDTO);
         AlarmReadStatusResponseVO alarmReadStatusResponseVO = modelMapper.map(alarmResponseDTO, AlarmReadStatusResponseVO.class);
 
         return ApiResponse.ok(alarmReadStatusResponseVO);

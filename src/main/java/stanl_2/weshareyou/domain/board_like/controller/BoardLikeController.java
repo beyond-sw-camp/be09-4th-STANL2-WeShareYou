@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.board_like.aggregate.dto.BoardLikeDto;
-import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.board_like.aggregate.vo.request.BoardLikeRequestVO;
 import stanl_2.weshareyou.domain.board_like.aggregate.vo.response.BoardLikeResponseVO;
 import stanl_2.weshareyou.domain.board_like.service.BoardLikeService;
-import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
-import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
@@ -33,7 +30,7 @@ public class BoardLikeController {
 
     //좋아요
     @PostMapping
-//    public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO, @RequestAttribute("id") id){
+//    public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO, ){
     public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
         BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
         BoardLikeDto boardLikeResponse = boardLikeService.BoardLike(boardLikeDTO);

@@ -68,6 +68,7 @@ public enum ErrorCode {
     NOT_FOUND_CSRF_TOKEN(40409, HttpStatus.NOT_FOUND, "CSRF 토큰이 요청에 존재하지 않습니다."),
     NOT_FOUND_JWT_TOKEN(40410, HttpStatus.NOT_FOUND, "JWT 토큰이 없습니다."),
     COMMENT_NOT_FOUND(40411, HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
+    ALARM_NOT_FOUND(40412, HttpStatus.NOT_FOUND, "해당 알림을 찾을 수 없습니다."),
   
     /**
      * 500(Internal Server Error)

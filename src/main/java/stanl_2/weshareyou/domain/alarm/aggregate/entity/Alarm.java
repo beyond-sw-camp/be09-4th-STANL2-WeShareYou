@@ -32,15 +32,18 @@ public class Alarm {
     @Column(name = "ALARM_TYPE")
     @Enumerated(EnumType.STRING)
     @NotNull
-    private AlatmType alatmType;
+    private AlarmType alarmType;
 
     @Column(name = "ALARM_READ_STATUS")
-    @NotNull
     private Boolean readStatus;
 
     @Column(name = "ALARM_CREATED_AT")
     @NotNull
     private String createdAt;
+
+    @Column(name = "ALARM_SENDER")
+    @NotNull
+    private String sender;
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")

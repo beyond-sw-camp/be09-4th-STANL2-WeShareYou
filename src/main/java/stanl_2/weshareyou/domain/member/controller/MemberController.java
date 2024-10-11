@@ -258,7 +258,14 @@ public class MemberController {
      * 내용 : 포인트 적립
      * [PUT] localhost:8080/api/v1/member/mypage
      * JWT 토큰의 pk 값과 Request Body를 활용한 포인트 적립
-     *
+     * Request
+     * {
+     *     "point": 10
+     * }
+     * Response
+     * {
+     *      "point": 10
+     * }
      */
     @PutMapping("/point")
     public ApiResponse<?> earnPoint(@RequestAttribute("id") Long id,
@@ -271,6 +278,31 @@ public class MemberController {
         EarnPointResponseVO earnPointResponseVO = modelMapper.map(responseMemberDTO, EarnPointResponseVO.class);
 
         return ApiResponse.ok(earnPointResponseVO);
+    }
+
+    /**
+     * 내용 : 아이디 찾기
+     * [GET] localhost:8080/api/v1/member
+     * JWT 토큰의 pk 값을 활용한 포인트 적립
+     * Request
+     * XXX
+     * Response
+     * {
+     *      "loginId": "bangdh1593@gmail.com"
+     * }
+     *
+     */
+    @GetMapping("")
+    public ApiResponse<?> findId(@RequestAttribute("id") Long id){
+
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findId(requestMemberDTO);
+
+        FindIdResponseVO findIdResponseVO = modelMapper.map(responseMemberDTO, FindIdResponseVO.class);
+
+        return ApiResponse.ok(findIdResponseVO);
     }
 
 

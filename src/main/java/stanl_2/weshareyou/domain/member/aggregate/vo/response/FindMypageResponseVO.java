@@ -2,21 +2,16 @@ package stanl_2.weshareyou.domain.member.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import stanl_2.weshareyou.domain.member.aggregate.Role;
-import stanl_2.weshareyou.domain.member.aggregate.Sex;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class RegisterResponseVO {
+public class FindMypageResponseVO {
 
     @NotNull
     private String loginId;
-
-    @NotNull
-    private String password;
 
     @NotNull
     private String name;
@@ -40,14 +35,8 @@ public class RegisterResponseVO {
     private String role;
 
     @NotNull
-    private String nickname;
+    private String createdAt;
 
     @NotNull
-    private String profileUrl;
-
-    @NotNull
-    private String introduction;
-
-    @NotNull
-    private String language;
+    private String updatedAt;
 }

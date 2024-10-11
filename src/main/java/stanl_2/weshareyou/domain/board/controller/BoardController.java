@@ -133,21 +133,6 @@ public class BoardController {
     }
 
     /**
-     * 내용: 전체 게시글 조회(필터 사용)
-     * req:
-     * res:
-     */
-//    @GetMapping("")
-//    public ApiResponse<?> readBoard(@PathVariable TAG tag,
-//                                    @ ){
-//
-//
-//
-//        return ApiResponse.ok();
-//    }
-
-
-    /**
      * 내용: 게시글 상세조회
      * req: X
      * res: {

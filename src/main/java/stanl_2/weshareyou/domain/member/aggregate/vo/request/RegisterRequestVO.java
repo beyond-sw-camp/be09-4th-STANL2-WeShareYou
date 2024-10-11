@@ -43,11 +43,11 @@ public class RegisterRequestVO {
     @NotNull(message = "별칭을 입력해주세요.")
     private String nickname;
 
-    @NotNull(message = "프로필을 넣어주세요.")
+//    @NotNull(message = "프로필을 넣어주세요.")
     @URL
     private String profileUrl;
 
-    @NotNull(message = "자기소개를 작성해주세요.")
+//    @NotNull(message = "자기소개를 작성해주세요.")
     private String introduction;
 
     @NotNull(message = "사용언어를 입력해주세요.")

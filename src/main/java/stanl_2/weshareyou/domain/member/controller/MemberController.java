@@ -360,5 +360,4 @@ public class MemberController {
 
         return ApiResponse.ok(findPointRequestVO);
     }
-
 }

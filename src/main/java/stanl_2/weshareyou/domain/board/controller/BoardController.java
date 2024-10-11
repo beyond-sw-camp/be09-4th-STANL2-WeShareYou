@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
@@ -132,27 +133,27 @@ public class BoardController {
     }
 
     /**
-     * 내용:
+     * 내용: 전체 게시글 조회(필터 사용)
      * req:
      * res:
      */
-    @GetMapping("")
-    public ApiResponse<?> readBoard(){
-        
-
-
-
-        return ApiResponse.ok();
-    }
+//    @GetMapping("")
+//    public ApiResponse<?> readBoard(@PathVariable TAG tag,
+//                                    @ ){
+//
+//
+//
+//        return ApiResponse.ok();
+//    }
 
 
     /**
-     * 내용: 상세조회
+     * 내용: 게시글 상세조회
      * req:
      * res:
      */
 
-    @GetMapping("/detail")
+    @GetMapping("/detail/{id}")
     public ApiResponse<?> readDetailBoard(@PathVariable Long id){
 
         BoardDTO boardDTO = new BoardDTO();

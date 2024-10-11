@@ -4,16 +4,21 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board.aggregate.dto.SliceDTO;
+import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardDeleteResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardUpdateResponseVO;
+import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board.service.BoardService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
@@ -24,11 +29,13 @@ public class BoardController {
 
     private final BoardService boardService;
     private final ModelMapper modelMapper;
+    private final BoardRepository boardRepository;
 
     @Autowired
-    public BoardController(BoardService boardService, ModelMapper modelMapper) {
+    public BoardController(BoardService boardService, ModelMapper modelMapper, BoardRepository boardRepository) {
         this.boardService = boardService;
         this.modelMapper = modelMapper;
+        this.boardRepository = boardRepository;
     }
 
     /**
@@ -55,7 +62,7 @@ public class BoardController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createBoard(@Validated @RequestBody BoardCreateRequestVO boardCreateRequestVO){
+    public ApiResponse<?> createBoard(@RequestBody @Valid BoardCreateRequestVO boardCreateRequestVO){
 
         BoardDTO boardDTO = modelMapper.map(boardCreateRequestVO, BoardDTO.class);
 
@@ -89,7 +96,7 @@ public class BoardController {
      * }
      */
     @PutMapping("/update")
-    public ApiResponse<?> updateBoard(@RequestBody BoardUpdateRequestVO boardUpdateRequestVO) {
+    public ApiResponse<?> updateBoard(@RequestBody @Valid BoardUpdateRequestVO boardUpdateRequestVO) {
 
         BoardDTO boardDTO = modelMapper.map(boardUpdateRequestVO, BoardDTO.class);
 
@@ -118,7 +125,7 @@ public class BoardController {
      * }
      */
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteBoard(@RequestBody BoardDeleteRequestVO boardDeleteRequestVO){
+    public ApiResponse<?> deleteBoard(@RequestBody @Valid BoardDeleteRequestVO boardDeleteRequestVO){
 
         BoardDTO boardDTO = modelMapper.map(boardDeleteRequestVO, BoardDTO.class);
 
@@ -128,4 +135,22 @@ public class BoardController {
 
         return ApiResponse.ok(boardDeleteResponseVO);
     }
+
+    /**
+     * 내용: 게시글 조회
+     * req:
+     * res:
+     */
+    @GetMapping("/{tag}")
+    public ApiResponse<?> readTotalBoard(
+        // 토큰으로 id 받아오면 회원 유효성 검증 예정
+        @PathVariable("tag") TAG tag,
+        @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+
+        SliceDTO sliceDTO = boardService.readBoard(tag, pageable);
+
+        return ApiResponse.ok(sliceDTO);
+    }
+
+    @G
 }

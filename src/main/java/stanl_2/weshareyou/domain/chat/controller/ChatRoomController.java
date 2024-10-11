@@ -2,25 +2,30 @@ package stanl_2.weshareyou.domain.chat.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoom;
+import stanl_2.weshareyou.domain.chat.entity.ChatRoomMessage;
 import stanl_2.weshareyou.domain.chat.service.ChatMessageService;
+import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
-
-@RequestMapping("")
+@Slf4j
+//@RequestMapping("")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomMessageService chatRoomMessageService;
 
     @GetMapping("/chat/rooms")
     @Operation(summary="채팅방 조회하기")
@@ -30,23 +35,32 @@ public class ChatRoomController {
          *  member.nickname으로 찾을 예정
          * */
         //        String loggedInUser = member.getNickname();
-        String loggedInUser = "mins";
+        String loggedInUser = "mins5";
 
-//        List<ChatRoom> rooms = chatRoomService.findAllRoom();
         List<ChatRoom> rooms = chatRoomService.findRoomsByUser(loggedInUser);
         model.addAttribute("rooms", rooms);
         model.addAttribute("user", loggedInUser);
 
-        return "chat/room_list";
+        return "/chat/room_list";
     }
     @GetMapping("/chat/room/{roomId}")
     public String roomDetail(@PathVariable String roomId, Model model) {
-        String loggedInUser = "mins";
+        String loggedInUser = "mins5";
         ChatRoom room = chatRoomService.findRoomById(roomId);
-        List<ChatMessage> messages = chatMessageService.getMessagesByRoomId(roomId);
+        ChatRoomMessage messages = chatRoomMessageService.getMessagesByRoomId(roomId);
         model.addAttribute("user", loggedInUser);
         model.addAttribute("room", room);
-        model.addAttribute("messages", messages);
+        model.addAttribute("messages", messages.getMessages());
+
+        log.info("messages" + messages.toString());
+
+//        log.info("<pure> messages2 : " + messages.getMessages().);
+        log.info("<toList> messages2 : " + messages.getMessages().stream().collect(Collectors.toList()));
+
+        log.info("user: " + loggedInUser);
+        log.info("roomId: " + roomId);
+
+
         return "chat/room_detail";
     }
 

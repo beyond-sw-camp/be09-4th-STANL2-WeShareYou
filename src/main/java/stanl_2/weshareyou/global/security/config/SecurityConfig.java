@@ -36,9 +36,9 @@ public class SecurityConfig {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
         http.csrf(csrfConfig -> csrfConfig.disable());
         http
-                .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
-                .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
-                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
+//                .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
+//                .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
+//                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
                         .anyRequest().permitAll()));
         http.formLogin(withDefaults());

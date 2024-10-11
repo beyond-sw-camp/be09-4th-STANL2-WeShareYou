@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -15,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatRoomMessageService {
 
     private final ChatRoomMessageRepository chatRoomMessageRepository;
@@ -24,6 +26,9 @@ public class ChatRoomMessageService {
 
     // 특정 채팅방의 메시지 조회
     public ChatRoomMessage getMessagesByRoomId(String roomId) {
+
+        log.info("messages: " + chatRoomMessageRepository.findByRoomId(roomId));
+
         return chatRoomMessageRepository.findByRoomId(roomId);
     }
 

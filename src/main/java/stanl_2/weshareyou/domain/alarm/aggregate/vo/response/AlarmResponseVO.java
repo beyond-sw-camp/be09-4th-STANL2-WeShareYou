@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.domain.product.aggregate.vo.response;
+package stanl_2.weshareyou.domain.alarm.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -26,11 +26,19 @@ public class AlarmResponseVO {
     @NotNull
     private String createdAt;
 
+    @NotNull
+    private String sender;
+
+    @NotNull
+    private Long memberId;
+
     public AlarmResponseVO(Alarm alarm) {
         this.id = alarm.getId();
         this.message = alarm.getMessage();
         this.url = alarm.getUrl();
         this.readStatus = alarm.getReadStatus();
         this.createdAt = alarm.getCreatedAt();
+        this.sender = alarm.getSender();
+        this.memberId = alarm.getMemberId().getId();
     }
 }

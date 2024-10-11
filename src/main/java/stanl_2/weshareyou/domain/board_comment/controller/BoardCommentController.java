@@ -28,6 +28,18 @@ public class BoardCommentController {
         this.modelMappper = modelMappper;
     }
 
+//    @PostMapping("")
+//    public ApiResponse<?> createBoardComment(@RequestAttribute("nickname") String nickname,@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
+//        System.out.println("1.============================================");
+//        log.info("nickname : {}", nickname);
+//        BoardCommentDto boardCommentDto = modelMappper.map(boardCommentCreateRequestVO, BoardCommentDto.class);
+//        boardCommentDto.setMemberNickname(nickname);
+//        boardCommentService.createBoardComment(boardCommentDto);
+//        log.info("nickname : "+ nickname);
+//        BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
+////      log.info(boardCommentCreateResponseVO);
+//        return ApiResponse.ok(boardCommentCreateResponseVO);
+//    }
     @PostMapping("")
     public ApiResponse<?> createBoardComment(@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
 
@@ -57,8 +69,8 @@ public class BoardCommentController {
     }
 
     @GetMapping("/{boardId}")
-    public ApiResponse<?> readCommentsByBoardId(@PathVariable("boardId") Long boardCommentId) {
-        BoardCommentDto comments = boardCommentService.readCommentsByBoardId(boardCommentId);
+    public ApiResponse<?> readCommentsByBoardId(@PathVariable("boardId") Long boardId) {
+        List<BoardCommentDto> comments = boardCommentService.readCommentsByBoardId(boardId);
         return ApiResponse.ok(comments);
     }
 

@@ -360,4 +360,23 @@ public class MemberController {
 
         return ApiResponse.ok(findPointRequestVO);
     }
+
+    /**
+     * 내용 : 내가 쓴 글
+     * [GET] localhost:8080/api/v1/member/myboard
+     * JWT 토큰의 pk 값을 활용한 포인트 조회
+     *
+     */
+    @GetMapping("myboard")
+    public ApiResponse<?> findMyBoard(@RequestAttribute("id") Long id) {
+
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findMyBoard(requestMemberDTO);
+
+        FindMypageListResponseVO findMypageListResponseVO = modelMapper.map(responseMemberDTO, FindMypageListResponseVO.class);
+
+        return ApiResponse.ok(findMypageListResponseVO);
+    }
 }

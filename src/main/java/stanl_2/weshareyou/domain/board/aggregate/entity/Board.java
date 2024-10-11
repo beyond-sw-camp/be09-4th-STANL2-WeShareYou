@@ -59,8 +59,8 @@ public class Board {
     @NotNull
     private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     @NotNull
     private Member member;
 

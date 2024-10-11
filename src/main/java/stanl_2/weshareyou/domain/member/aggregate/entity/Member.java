@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -84,4 +88,7 @@ public class Member {
     @Column(name="MEMBER_ACTIVE")
     @NotNull
     private Boolean active = true;
+
+    @OneToMany(mappedBy = "member")
+    private List<Board> board;
 }

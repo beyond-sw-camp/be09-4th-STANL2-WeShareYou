@@ -1,8 +1,12 @@
 package stanl_2.weshareyou.domain.member.aggregate.dto;
 
 import lombok.*;
+import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,4 +31,6 @@ public class MemberDTO {
     private String createdAt;
     private String updatedAt;
     private Boolean active;
+
+    private List<Board> board;
 }

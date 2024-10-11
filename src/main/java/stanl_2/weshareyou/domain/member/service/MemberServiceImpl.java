@@ -52,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
                 .format(FORMATTER));
         registMember.setCreatedAt(LocalDateTime.now()
                 .format(FORMATTER));
+
         registMember.setRole(Role.ROLE_MEMBER);
         registMember.setActive(true);
 
@@ -110,6 +111,8 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND)
                 );
 
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
         member.setActive(false);
 
         memberRepository.save(member);
@@ -142,6 +145,7 @@ public class MemberServiceImpl implements MemberService {
         member.setLanguage(requestMemberDTO.getLanguage());
         member.setUpdatedAt(LocalDateTime.now()
                 .format(FORMATTER));
+
         memberRepository.save(member);
 
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
@@ -161,6 +165,8 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.setPhone(requestMemberDTO.getPhone());
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
 
         Member updataMember = memberRepository.save(member);
 
@@ -181,6 +187,8 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.setPoint(member.getPoint() + requestMemberDTO.getPoint());
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
 
         memberRepository.save(member);
 

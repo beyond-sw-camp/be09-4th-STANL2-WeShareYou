@@ -35,7 +35,6 @@ public class BoardReCommentController {
         BoardReCommentDto boardReCommentDto = modelMappper.map(boardReCommentCreateRequestVO, BoardReCommentDto.class);
 
         boardReCommentService.createBoardReComment(boardReCommentDto);
-        System.out.println(boardReCommentDto);
 
         BoardReCommentCreateResponseVO boardReCommentCreateResponseVO =modelMappper.map(boardReCommentDto,BoardReCommentCreateResponseVO.class);
 

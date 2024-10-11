@@ -8,7 +8,6 @@ import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name="BOARD_COMMENT")

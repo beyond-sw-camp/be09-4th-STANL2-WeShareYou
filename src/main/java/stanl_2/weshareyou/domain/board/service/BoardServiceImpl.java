@@ -116,26 +116,6 @@ public class BoardServiceImpl implements BoardService{
         return boardResponseDTO;
     }
 
-    /*
-            게시글 전체 조회에 띄울 요소
-            1. 게시글 작성자 프로필 (member - profileUrl)
-            2. 게시글 작성자 닉네임 (member - nickname)
-            3. 게시글 이미지 (board - imageUrl)
-            4. 게시글 내용 (board - content)
-            5. 게시글 좋아요 갯수 (board - likesCount)
-            6. 게시글 댓글 갯수 (board - commentCount)
-    */
-
-
-    /*
-            게시글 전체 조회에 띄울 요소
-            1. 게시글 작성자 프로필 (member - profileUrl)
-            2. 게시글 작성자 닉네임 (member - nickname)
-            3. 게시글 이미지 (board - imageUrl)
-            4. 게시글 내용 (board - content)
-            5. 게시글 좋아요 갯수 (board - likesCount)
-            6. 게시글 댓글  (board_comment - commentCount)
-    */
     @Override
     public BoardDTO readDetailBoard(BoardDTO boardDTO) {
 

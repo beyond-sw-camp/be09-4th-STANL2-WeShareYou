@@ -122,6 +122,8 @@ public class MemberServiceImpl implements MemberService {
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
 
         member.setPassword(hashPwd);
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
 
         memberRepository.save(member);
     }
@@ -143,6 +145,25 @@ public class MemberServiceImpl implements MemberService {
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
 
         // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO updateMypage(MemberDTO requestMemberDTO) {
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.setPhone(requestMemberDTO.getPhone());
+
+        Member updataMember = memberRepository.save(member);
+
+        MemberDTO responseMemberDTO = modelMapper.map(updataMember, MemberDTO.class);
+
         responseMemberDTO.setId(null);
         responseMemberDTO.setPassword(null);
         responseMemberDTO.setActive(null);

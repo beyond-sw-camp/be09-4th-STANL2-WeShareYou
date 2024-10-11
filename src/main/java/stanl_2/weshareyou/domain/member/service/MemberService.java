@@ -17,4 +17,6 @@ public interface MemberService {
     void updatePwd(MemberDTO memberRequestDTO);
 
     MemberDTO updateProfile(MemberDTO requestMemberDTO);
+
+    MemberDTO updateMypage(MemberDTO requestMemberDTO);
 }

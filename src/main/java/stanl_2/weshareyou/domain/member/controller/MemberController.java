@@ -14,6 +14,7 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.RegisterResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.UpdateProfileResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.UpdateResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -191,7 +192,6 @@ public class MemberController {
      * JWT 토큰의 pk 값과 Request Body를 활용한 프로필 수정
      * request
      * {
-     *     "phone": "01012345678",
      *     "nickname": "나자나",
      *     "profile_url": "www.gaodls.com",
      *     "introduction": "안뇽!",
@@ -220,5 +220,41 @@ public class MemberController {
         return ApiResponse.ok(updateProfileResponseVO);
     }
 
+
+    /**
+     * 내용: 마이페이지 수정
+     * [PUT] localhost:8080/api/v1/member/mypage
+     * JWT 토큰의 pk 값과 Request Body를 활용한 프로필 수정
+     * Request
+     * {
+     *     "phone": "01038482048"
+     * }
+     *
+     * Response
+     * {
+     *      "loginId": "bangdh1593@gmail.com",
+     *      "name": "기기지",
+     *      "age": 21,
+     *      "sex": "FEMALE",
+     *      "phone": "01038482048",
+     *      "point": 0,
+     *      "role": "ROLE_MEMBER",
+     *      "createdAt": "2024-10-10T20:26:05",
+     *      "updatedAt": "2024-10-11T00:16:46",
+     *      "nationality": "seoul"
+     * }
+     */
+    @PutMapping("/mypage")
+    public ApiResponse<?> updateMypage(@RequestAttribute("id") Long id,
+                                       @RequestBody UpdateMypageRequestVO updateMypageRequestVO){
+
+        MemberDTO requestMemberDTO = modelMapper.map(updateMypageRequestVO, MemberDTO.class);
+        requestMemberDTO.setId(id);
+        MemberDTO responseMemberDTO  = memberService.updateMypage(requestMemberDTO);
+
+        UpdateResponseVO updateResponseVO = modelMapper.map(responseMemberDTO, UpdateResponseVO.class);
+
+        return ApiResponse.ok(updateResponseVO);
+    }
 
 }

@@ -11,7 +11,10 @@ import stanl_2.weshareyou.domain.alarm.repository.EmitterRepository;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
+import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository;
 import stanl_2.weshareyou.domain.board_like.aggregate.dto.BoardLikeDto;
+import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
@@ -35,16 +38,18 @@ public class AlarmServiceImpl implements AlarmService {
     private final AlarmRepository alarmRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final BoardCommentRepository boardCommentRepository;
 
     private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
 
     @Autowired
-    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository, BoardRepository boardRepository) {
+    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository, BoardRepository boardRepository, BoardCommentRepository boardCommentRepository) {
         this.emitterRepository = emitterRepository;
         this.alarmRepository = alarmRepository;
         this.memberRepository = memberRepository;
         this.boardRepository = boardRepository;
+        this.boardCommentRepository = boardCommentRepository;
     }
 
     @Override
@@ -162,7 +167,26 @@ public class AlarmServiceImpl implements AlarmService {
         String url = "/api/v1/board-comment";
         String createdAt = LocalDateTime.now().format(FORMATTER);
 
-        send(member, AlarmType.LIKE, message, url, createdAt, sender.getNickname());
+        send(member, AlarmType.COMMENT, message, url, createdAt, sender.getNickname());
+    }
+
+    // 대댓글 알림
+    @Override
+    public void sendRecommentAlarm(BoardReCommentDto boardReCommentDto) {
+        Member sender = memberRepository.findById(boardReCommentDto.getMemberId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        BoardComment boardComment = boardCommentRepository.findById(boardReCommentDto.getBoardCommentId())
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+
+        Member member = memberRepository.findById(boardComment.getMember().getId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String message = sender.getNickname() + "님이 댓글을 남겼습니다.";
+        String url = "/api/v1/board-recomment";
+        String createdAt = LocalDateTime.now().format(FORMATTER);
+
+        send(member, AlarmType.RECOMMENT, message, url, createdAt, sender.getNickname());
     }
 
 }

@@ -9,4 +9,6 @@ public interface BoardService {
     BoardDTO updateBoard(BoardDTO boardDTO);
 
     BoardDTO deleteBoard(BoardDTO boardDTO);
+
+    BoardDTO readDetailBoard(BoardDTO boardDTO);
 }

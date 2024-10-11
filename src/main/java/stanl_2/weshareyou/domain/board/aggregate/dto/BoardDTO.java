@@ -2,14 +2,16 @@ package stanl_2.weshareyou.domain.board.aggregate.dto;
 
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
-import stanl_2.weshareyou.domain.board.aggregate.vo.BoardLikeVO;
-import stanl_2.weshareyou.domain.board.aggregate.vo.CommentVO;
+import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class BoardDTO {
 
     private Long id;
@@ -19,12 +21,14 @@ public class BoardDTO {
     private TAG tag;
     private Integer commentCount;
     private Integer likesCount;
-    private String createdAt;
-    private String updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
     private Boolean active;
-    private Long memberId;
 
-    private CommentVO comment;
-    private BoardLikeVO boardLike;
+    private Long memberId;
+    private String memberProfileUrl;
+    private String memberNickname;
+
+    private List<BoardCommentDto> comment;
 
 }

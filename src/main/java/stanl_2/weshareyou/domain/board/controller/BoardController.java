@@ -4,14 +4,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
-import stanl_2.weshareyou.domain.board.aggregate.dto.SliceDTO;
-import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
@@ -136,21 +130,15 @@ public class BoardController {
         return ApiResponse.ok(boardDeleteResponseVO);
     }
 
+
     /**
-     * 내용: 게시글 조회
+     * 내용: 상세조회
      * req:
      * res:
      */
-    @GetMapping("/{tag}")
-    public ApiResponse<?> readTotalBoard(
-        // 토큰으로 id 받아오면 회원 유효성 검증 예정
-        @PathVariable("tag") TAG tag,
-        @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
 
-        SliceDTO sliceDTO = boardService.readBoard(tag, pageable);
+    @GetMapping("/detail")
+    public ApiResponse<?> readDetailBoard(@PathVariable Long id){
 
-        return ApiResponse.ok(sliceDTO);
     }
-
-    @G
 }

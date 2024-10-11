@@ -23,6 +23,9 @@ public class BoardDTO {
     private Boolean active;
     private Long memberId;
 
+    private String memberProfileUrl;
+    private String memberNickname;
+
     private CommentVO comment;
     private BoardLikeVO boardLike;
 

@@ -10,7 +10,6 @@ import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository;
-import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardCommentServiceImpl implements BoardCommentService{
     private final BoardCommentRepository boardCommentRepository;
-    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final ModelMapper modelMapper;
     private Timestamp getCurrentTimestamp() {
@@ -34,9 +32,8 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     }
 
     @Autowired
-    public BoardCommentServiceImpl(BoardCommentRepository boardCommentRepository,MemberRepository memberRepository, BoardRepository boardRepository, ModelMapper modelMapper) {
+    public BoardCommentServiceImpl(BoardCommentRepository boardCommentRepository, BoardRepository boardRepository, ModelMapper modelMapper) {
         this.boardCommentRepository = boardCommentRepository;
-        this.memberRepository = memberRepository;
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
     }
@@ -45,7 +42,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     @Override
     public BoardCommentDto createBoardComment(BoardCommentDto boardCommentDto) {
         Timestamp currentTimestamp = getCurrentTimestamp();
-        Long boardId = boardCommentDto.getBoardId();
+        Long boardId = boardCommentDto.getBoardCommentId();
 
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
@@ -58,7 +55,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardCommentRepository.save(boardComment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardComment, BoardCommentDto.class);
-        boardCommentDto1.setBoardId(board.getId());
+        boardCommentDto1.setBoardCommentId(board.getId());
 
         return boardCommentDto1;
     }
@@ -76,7 +73,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardCommentRepository.save(boardcomment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardcomment, BoardCommentDto.class);
-        boardCommentDto1.setBoardId(boardcomment.getId());
+        boardCommentDto1.setBoardCommentId(boardcomment.getId());
         return boardCommentDto1;
     }
     @Transactional
@@ -90,14 +87,24 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     @Transactional
     @Override
     public List<BoardCommentDto> readCommentsByBoardId(Long boardId) {
+        log.info("==============================");
         List<BoardComment> boardComments = boardCommentRepository.findByBoardId(boardId);
-        return boardComments.stream()
-                .map(boardComment -> {
-                    BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
-                    boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
-                    return boardCommentDto;
-                })
-                .collect(Collectors.toList());
+        return boardComments.stream().map(boardComment  -> {
+            BoardCommentDto dto = new BoardCommentDto();
+            dto.setBoardCommentId(boardComment.getId());
+            dto.setContent(boardComment.getContent());
+
+            if (boardComment.getMember() != null) {
+                dto.setNickname(boardComment.getMember().getNickname()); // Member의 닉네임 추가
+            } else {
+                dto.setNickname("Unknown"); // 닉네임이 없을 경우 기본값
+            }
+
+            dto.setCreatedAt(boardComment.getCreatedAt());
+            dto.setUpdatedAt(boardComment.getUpdatedAt());
+            return dto;
+        })
+        .collect(Collectors.toList());
     }
 
 //    @Transactional
@@ -119,7 +126,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
                 .map(boardComment -> {
                     BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
 //                    boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
-                    boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+                    boardCommentDto.setBoardCommentId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
                     return boardCommentDto;
                 })
                 .collect(Collectors.toList());

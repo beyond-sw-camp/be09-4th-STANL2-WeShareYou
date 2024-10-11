@@ -24,4 +24,7 @@ public interface AlarmService {
 
     // 댓글 알림
     void sendCommentAlarm(BoardCommentDto boardCommentDto);
+
+    // 대댓글 알림
+    void sendRecommentAlarm(BoardReCommentDto boardReCommentDto);
 }

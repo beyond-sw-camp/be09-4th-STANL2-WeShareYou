@@ -10,9 +10,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
+import stanl_2.weshareyou.global.common.exception.CommonException;
+import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 import stanl_2.weshareyou.global.security.service.MemberDetails;
 
@@ -49,6 +52,8 @@ public class MemberServiceImpl implements MemberService {
                 .format(FORMATTER));
         registMember.setCreatedAt(LocalDateTime.now()
                 .format(FORMATTER));
+
+        registMember.setRole(Role.ROLE_MEMBER);
         registMember.setActive(true);
 
         Member newMember = memberRepository.save(registMember);
@@ -56,13 +61,11 @@ public class MemberServiceImpl implements MemberService {
         return modelMapper.map(newMember, MemberDTO.class);
     }
 
-
     @Override
     @Transactional
     public Optional<MemberDTO> findMemberDetail(String username) {
         return memberRepository.findByLoginId(username);
     }
-
 
     @Override
     @Transactional
@@ -99,5 +102,153 @@ public class MemberServiceImpl implements MemberService {
 
         }
         return jwt;
+    }
+
+    @Override
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND)
+                );
+
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
+        member.setActive(false);
+
+        memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional
+    public void updatePwd(MemberDTO memberRequestDTO) {
+
+        Member member = memberRepository.findById(memberRequestDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
+
+        member.setPassword(hashPwd);
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
+
+        memberRepository.save(member);
+    }
+
+    @Override
+    public MemberDTO updateProfile(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.setNickname(requestMemberDTO.getNickname());
+        member.setProfileUrl(requestMemberDTO.getProfileUrl());
+        member.setIntroduction(requestMemberDTO.getIntroduction());
+        member.setLanguage(requestMemberDTO.getLanguage());
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
+
+        memberRepository.save(member);
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO updateMypage(MemberDTO requestMemberDTO) {
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.setPhone(requestMemberDTO.getPhone());
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
+
+        Member updataMember = memberRepository.save(member);
+
+        MemberDTO responseMemberDTO = modelMapper.map(updataMember, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+    @Override
+    public MemberDTO earnPoint(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.setPoint(member.getPoint() + requestMemberDTO.getPoint());
+        member.setUpdatedAt(LocalDateTime.now()
+                .format(FORMATTER));
+
+        memberRepository.save(member);
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO findId(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO findMypage(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO findPoint(MemberDTO requestMemberDTO) {
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
     }
 }

@@ -3,6 +3,7 @@ package stanl_2.weshareyou.global.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -55,9 +56,15 @@ public class GlobalExceptionHandler {
     }
 
     // 데이터 무결성 위반 예외 처리기 추가
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
     public ApiResponse<?> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         log.error("handleDataIntegrityViolationException() in GlobalExceptionHandler : {}", e.getMessage());
         return ApiResponse.fail(new CommonException(ErrorCode.DATA_INTEGRITY_VIOLATION));
+    }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ApiResponse<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("유효성 검사 실패: {}", e.getMessage());
+        return ApiResponse.fail(new CommonException(ErrorCode.VALIDATION_FAIL));
     }
 }

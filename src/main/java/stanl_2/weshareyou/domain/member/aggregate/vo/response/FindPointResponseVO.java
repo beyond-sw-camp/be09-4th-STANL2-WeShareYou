@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.domain.member.aggregate.vo.request;
+package stanl_2.weshareyou.domain.member.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -8,8 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class EmailAddressRequestVO {
+public class FindPointResponseVO {
 
     @NotNull
-    private String loginId;
+    private Integer point;
 }

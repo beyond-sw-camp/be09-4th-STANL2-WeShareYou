@@ -33,6 +33,7 @@ public class BoardLikeController {
 
     //좋아요
     @PostMapping
+//    public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO, @RequestAttribute("id") id){
     public ApiResponse<?> like(@RequestBody BoardLikeRequestVO boardLikeRequestVO){
         BoardLikeDto boardLikeDTO = modelMapper.map(boardLikeRequestVO, BoardLikeDto.class);
         log.info("boardLikeDTO: {}", boardLikeDTO);

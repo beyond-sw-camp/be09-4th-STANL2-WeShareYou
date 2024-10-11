@@ -5,7 +5,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
@@ -19,6 +18,8 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -83,11 +84,38 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardCommentDto1.setBoardId(boardcomment.getId());
         return boardCommentDto1;
     }
-
+    @Transactional
     @Override
-    public void deleterBoardComment(Long boardId) {
+    public void deleteBoardComment(Long boardId) {
         BoardComment boardcomment = boardCommentRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
         boardCommentRepository.delete(boardcomment);
     }
+
+    @Transactional
+    @Override
+    public BoardCommentDto readCommentsByBoardId(Long boardCommentId) {
+        BoardComment boardComment = boardCommentRepository.findById(boardCommentId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+        boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+        boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+        return boardCommentDto;
+    }
+
+    @Transactional
+    @Override
+    public List<BoardCommentDto> readComments() {
+        List<BoardComment> boardComments = boardCommentRepository.findAll(); // 모든 댓글 조회
+        return boardComments.stream()
+                .map(boardComment -> {
+                    BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+                    boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+                    boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+                    return boardCommentDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

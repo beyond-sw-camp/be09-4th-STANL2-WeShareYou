@@ -5,7 +5,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.authorization.event.AuthorizationDeniedEvent;
 import org.springframework.stereotype.Component;
 import stanl_2.weshareyou.global.common.exception.CommonException;
-import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import static stanl_2.weshareyou.global.common.exception.ErrorCode.FORBIDDEN_ROLE;
 

@@ -23,5 +23,8 @@ public class BoardCommentCreateRequestVO {
     private String nickname;
 
     @NotNull
+    private String nickname;
+
+    @NotNull
     private Long boardId;
 }

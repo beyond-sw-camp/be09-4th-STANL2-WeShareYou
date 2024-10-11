@@ -10,15 +10,14 @@ import stanl_2.weshareyou.domain.alarm.repository.AlarmRepository;
 import stanl_2.weshareyou.domain.alarm.repository.EmitterRepository;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
+import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_like.aggregate.dto.BoardLikeDto;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
-import stanl_2.weshareyou.domain.product.aggregate.vo.response.AlarmResponseVO;
-import stanl_2.weshareyou.domain.product.repository.ProductRepository;
+import stanl_2.weshareyou.domain.alarm.aggregate.vo.response.AlarmResponseVO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
-import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -134,14 +133,33 @@ public class AlarmServiceImpl implements AlarmService {
         Member sender = memberRepository.findById(boardLikeDto.getMemberId())
                 .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Member member = memberRepository.findById(boardLikeDto.getBoardId())
-                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-
         Board board = boardRepository.findById(boardLikeDto.getBoardId())
                 .orElseThrow(()-> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
+        Member member = memberRepository.findById(board.getMember().getId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
         String message = sender.getNickname() + "님이 " + "회원님의 " + board.getTitle() + " 글을 좋아합니다.";
         String url = "/api/v1/board_like";
+        String createdAt = LocalDateTime.now().format(FORMATTER);
+
+        send(member, AlarmType.LIKE, message, url, createdAt, sender.getNickname());
+    }
+
+    // 댓글 알림
+    @Override
+    public void sendCommentAlarm(BoardCommentDto boardCommentDto) {
+        Member sender = memberRepository.findById(boardCommentDto.getMemberId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Board board = boardRepository.findById(boardCommentDto.getBoardId())
+                .orElseThrow(()-> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+
+        Member member = memberRepository.findById(board.getMember().getId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String message = sender.getNickname() + "님이 " + "회원님의 " + board.getTitle() + " 글에 댓글을 남겼습니다.";
+        String url = "/api/v1/board-comment";
         String createdAt = LocalDateTime.now().format(FORMATTER);
 
         send(member, AlarmType.LIKE, message, url, createdAt, sender.getNickname());

@@ -58,7 +58,7 @@ public class BoardReCommentController {
 
     @GetMapping("/{boardCommentId}")
     public ApiResponse<?> readReCommentsByBoardId(@PathVariable("boardCommentId") Long boardCommentId) {
-        BoardReCommentDto comments = boardReCommentService.readReCommentsByBoardId(boardCommentId);
+        List<BoardReCommentDto> comments = boardReCommentService.readReCommentsByBoardId(boardCommentId);
         return ApiResponse.ok(comments);
     }
 

@@ -95,13 +95,15 @@ public class BoardReCommentServiceImpl implements BoardReCommentService{
 
     @Transactional
     @Override
-    public BoardReCommentDto readReCommentsByBoardId(Long boardReCommentId) {
-        BoardReComment boardReComment = boardReCommentRepository.findById(boardReCommentId)
-                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-        BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);
-        boardReCommentDto.setMemberId(boardReComment.getMember() != null ? boardReComment.getMember().getId() : null);
-        boardReCommentDto.setBoardCommentId(boardReComment.getBoardComment() != null ? boardReComment.getBoardComment().getId() : null);
-        return boardReCommentDto;
+    public List<BoardReCommentDto> readReCommentsByBoardId(Long boardCommentId) {
+        List<BoardReComment> boardReComments = boardReCommentRepository.findByBoardCommentId(boardCommentId);
+        return boardReComments.stream()
+                .map(boardReComment -> {
+                    BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);
+                    boardReCommentDto.setBoardCommentId(boardReComment.getBoardComment() != null ? boardReComment.getBoardComment().getId() : null);
+                    return boardReCommentDto;
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional

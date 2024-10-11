@@ -19,4 +19,6 @@ public interface MemberService {
     MemberDTO updateProfile(MemberDTO requestMemberDTO);
 
     MemberDTO updateMypage(MemberDTO requestMemberDTO);
+
+    MemberDTO earnPoint(MemberDTO requestMemberDTO);
 }

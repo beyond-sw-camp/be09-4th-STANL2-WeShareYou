@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class UpdateResponseVO {
+public class UpdateMypageResponseVO {
 
     @NotNull
     private String loginId;

@@ -11,10 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
-import stanl_2.weshareyou.domain.member.aggregate.vo.response.LoginResponseVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.response.RegisterResponseVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.response.UpdateProfileResponseVO;
-import stanl_2.weshareyou.domain.member.aggregate.vo.response.UpdateResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.member.service.MemberService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -252,9 +249,30 @@ public class MemberController {
         requestMemberDTO.setId(id);
         MemberDTO responseMemberDTO  = memberService.updateMypage(requestMemberDTO);
 
-        UpdateResponseVO updateResponseVO = modelMapper.map(responseMemberDTO, UpdateResponseVO.class);
+        UpdateMypageResponseVO updateMypageResponseVO = modelMapper.map(responseMemberDTO, UpdateMypageResponseVO.class);
 
-        return ApiResponse.ok(updateResponseVO);
+        return ApiResponse.ok(updateMypageResponseVO);
     }
+
+    /**
+     * 내용 : 포인트 적립
+     * [PUT] localhost:8080/api/v1/member/mypage
+     * JWT 토큰의 pk 값과 Request Body를 활용한 포인트 적립
+     *
+     */
+    @PutMapping("/point")
+    public ApiResponse<?> earnPoint(@RequestAttribute("id") Long id,
+                                     @RequestBody EarnPointRequestVO earnPointRequestVO){
+        MemberDTO requestMemberDTO = modelMapper.map(earnPointRequestVO, MemberDTO.class);
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.earnPoint(requestMemberDTO);
+
+        EarnPointResponseVO earnPointResponseVO = modelMapper.map(responseMemberDTO, EarnPointResponseVO.class);
+
+        return ApiResponse.ok(earnPointResponseVO);
+    }
+
+
 
 }

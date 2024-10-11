@@ -162,8 +162,27 @@ public class MemberServiceImpl implements MemberService {
 
         Member updataMember = memberRepository.save(member);
 
+        // 보안상 null
         MemberDTO responseMemberDTO = modelMapper.map(updataMember, MemberDTO.class);
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
 
+        return responseMemberDTO;
+    }
+
+    @Override
+    public MemberDTO earnPoint(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        member.setPoint(member.getPoint() + requestMemberDTO.getPoint());
+
+        memberRepository.save(member);
+
+        // 보안상 null
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
         responseMemberDTO.setId(null);
         responseMemberDTO.setPassword(null);
         responseMemberDTO.setActive(null);

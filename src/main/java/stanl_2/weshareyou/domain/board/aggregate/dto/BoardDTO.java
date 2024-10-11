@@ -9,7 +9,6 @@ import stanl_2.weshareyou.domain.board.aggregate.vo.CommentVO;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class BoardDTO {
 
     private Long id;

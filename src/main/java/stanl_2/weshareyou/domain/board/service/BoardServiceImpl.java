@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board.aggregate.dto.SliceDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
@@ -86,6 +90,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional
     public BoardDTO deleteBoard(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())
@@ -99,4 +104,33 @@ public class BoardServiceImpl implements BoardService{
 
         return boardResponseDTO;
     }
+
+    /*
+            게시글 전체 조회에 띄울 요소
+            1. 게시글 작성자 프로필 (user - profileUrl)
+            2. 게시글 작성자 닉네임 (user - nickname)
+            3. 게시글 이미지 (board - imageUrl)
+            4. 게시글 내용 (board - content)
+            5. 게시글 좋아요 갯수 (board - likesCount)
+            6. 게시글 댓글 갯수 (board - commentCount)
+    */
+    @Override
+    public SliceDTO readBoard(TAG tag, Pageable pageable) {
+
+        Slice<Board> boardSlice = boardRepository.findByTagOrderByCreatedAtDesc(tag, pageable);
+
+        SliceDTO<Board> sliceDTO = new SliceDTO<>(
+                boardSlice.getContent(),             // 페이징된 데이터 리스트
+                pageable.getSort().toList(),         // 정렬 정보
+                boardSlice.getNumber(),              // 현재 페이지 번호
+                boardSlice.getSize(),                // 페이지당 데이터 수
+                boardSlice.isFirst(),                // 첫 페이지 여부
+                boardSlice.isLast()                  // 마지막 페이지 여부
+        );
+
+        return sliceDTO;
+    }
+
+
+
 }

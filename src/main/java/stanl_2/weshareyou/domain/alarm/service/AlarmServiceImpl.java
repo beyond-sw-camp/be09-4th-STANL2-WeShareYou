@@ -154,20 +154,18 @@ public class AlarmServiceImpl implements AlarmService {
     // 댓글 알림
     @Override
     public void sendCommentAlarm(BoardCommentDto boardCommentDto) {
-        Member sender = memberRepository.findById(boardCommentDto.getMemberId())
-                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-
+        String sender = boardCommentDto.getMemberNickname();
         Board board = boardRepository.findById(boardCommentDto.getBoardId())
                 .orElseThrow(()-> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
         Member member = memberRepository.findById(board.getMember().getId())
                 .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        String message = sender.getNickname() + "님이 " + "회원님의 " + board.getTitle() + " 글에 댓글을 남겼습니다.";
+        String message = sender + "님이 " + "회원님의 " + board.getTitle() + " 글에 댓글을 남겼습니다.";
         String url = "/api/v1/board-comment";
         String createdAt = LocalDateTime.now().format(FORMATTER);
 
-        send(member, AlarmType.COMMENT, message, url, createdAt, sender.getNickname());
+        send(member, AlarmType.COMMENT, message, url, createdAt, sender);
     }
 
     // 대댓글 알림
@@ -177,7 +175,7 @@ public class AlarmServiceImpl implements AlarmService {
                 .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         BoardComment boardComment = boardCommentRepository.findById(boardReCommentDto.getBoardCommentId())
-                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new CommonException(ErrorCode.COMMENT_NOT_FOUND));
 
         Member member = memberRepository.findById(boardComment.getMember().getId())
                 .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));

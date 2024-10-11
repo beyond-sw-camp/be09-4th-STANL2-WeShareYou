@@ -35,7 +35,7 @@ public class ChatRoomController {
          *  member.nickname으로 찾을 예정
          * */
         //        String loggedInUser = member.getNickname();
-        String loggedInUser = "mins5";
+        String loggedInUser = "mins";
 
         List<ChatRoom> rooms = chatRoomService.findRoomsByUser(loggedInUser);
         model.addAttribute("rooms", rooms);
@@ -48,17 +48,11 @@ public class ChatRoomController {
         String loggedInUser = "mins5";
         ChatRoom room = chatRoomService.findRoomById(roomId);
         ChatRoomMessage messages = chatRoomMessageService.getMessagesByRoomId(roomId);
+        chatRoomMessageService.markMessagesAsRead(roomId, "mins");
+
         model.addAttribute("user", loggedInUser);
         model.addAttribute("room", room);
         model.addAttribute("messages", messages.getMessages());
-
-        log.info("messages" + messages.toString());
-
-//        log.info("<pure> messages2 : " + messages.getMessages().);
-        log.info("<toList> messages2 : " + messages.getMessages().stream().collect(Collectors.toList()));
-
-        log.info("user: " + loggedInUser);
-        log.info("roomId: " + roomId);
 
 
         return "chat/room_detail";

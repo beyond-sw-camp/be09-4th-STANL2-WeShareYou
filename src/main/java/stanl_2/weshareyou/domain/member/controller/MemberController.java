@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.member.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -37,7 +38,7 @@ public class MemberController {
 
 
     @PostMapping("/register")
-    public ApiResponse<?> registerMember(@RequestBody RegisterRequestVO memberInfo) {
+    public ApiResponse<?> registerMember(@RequestBody @Valid RegisterRequestVO memberInfo) {
         MemberDTO memberRequestDTO = modelMapper.map(memberInfo, MemberDTO.class);
         MemberDTO memberResponseDTO = memberService.registMember(memberRequestDTO);
 

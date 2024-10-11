@@ -1,17 +1,26 @@
 package stanl_2.weshareyou.domain.chat.service;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.data.mongodb.core.MongoTemplate;
+//import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoomMessage;
 import stanl_2.weshareyou.domain.chat.repository.ChatRoomMessageRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -51,9 +60,29 @@ public class ChatRoomMessageService {
     }
 
     public void markMessagesAsRead(String roomId, String user) {
-        Query query = new Query(Criteria.where("roomId").is(roomId).and("messages.sender").ne(user).and("messages.readYn").is(false));
-        Update update = new Update().set("messages.$[].readYn", true);
-        mongoTemplate.updateMulti(query, update, ChatRoomMessage.class);
+
+        MongoCollection<Document> collection = mongoTemplate.getCollection("roomMessages");
+
+
+// MongoDB 쿼리: roomId에 해당하는 문서 찾기
+        Document query = new Document("roomId", roomId);
+
+// 업데이트: sender가 지정된 사용자가 아니고 readYn이 false인 메시지의 readYn을 true로 설정
+        Document update = new Document("$set", new Document("messages.$[elem].readYn", true));
+// 배열 필터 정의
+        List<Document> arrayFilters = Collections.singletonList(
+                new Document("elem.sender", new Document("$ne", user))
+                        .append("elem.readYn", false)
+        );
+
+
+// UpdateOptions 설정
+        UpdateOptions options = new UpdateOptions().arrayFilters(arrayFilters);
+
+// MongoDB에서 배열 필드를 업데이트
+        UpdateResult result = collection.updateMany(query, update, options);
+
+
     }
 
 }

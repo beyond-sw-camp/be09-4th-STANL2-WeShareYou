@@ -47,6 +47,8 @@
                 <span th:text="${message.message}"></span>
                 <!-- 본인의 메시지일 경우 읽음 여부 표시 -->
                 <span th:if="${#strings.equals(message.sender, user) && message.readYn}" class="read-status">읽음</span>
+                <!-- 내가 추가한 생성시각 -->
+                <span th:text="${message.createdAt}"></span>
             </div>
         </div>
     </div>
@@ -61,6 +63,7 @@
     let stompClient = null;
     const user = /*[[${user}]]*/ 'defaultUser';
     const roomId = /*[[${room.roomId}]]*/ 'default-room-id';  // 수정된 부분
+
 
     function connect() {
         const socket = new SockJS('/ws-stomp');  // WebSocket 엔드포인트
@@ -105,6 +108,12 @@
         messageArea.appendChild(newMessage);
         messageArea.scrollTop = messageArea.scrollHeight;  // 스크롤을 가장 아래로
     }
+
+    document.querySelector("#messageInput").addEventListener("keydown", (e) => {
+        if (e.keyCode === 13) {
+            sendMessage();
+        }
+    });
 
     connect();
 </script>

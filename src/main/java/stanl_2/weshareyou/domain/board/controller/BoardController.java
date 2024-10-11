@@ -149,8 +149,27 @@ public class BoardController {
 
     /**
      * 내용: 게시글 상세조회
-     * req:
-     * res:
+     * req: X
+     * res: {
+     *     "success": true,
+     *     "result": {
+     *         "imageUrl": "image1",
+     *         "content": "A detailed guide to traveling in Paris.",
+     *         "likesCount": 0,
+     *         "memberProfileUrl": null,
+     *         "memberNickname": "userone",
+     *         "comment": [
+     *             {
+     *                 "content": "string",
+     *                 "createdAt": "2024-10-11T15:54:42.000+00:00",
+     *                 "updatedAt": "2024-10-11T15:54:42.907+00:00",
+     *                 "memberNickname": null,
+     *                 "boardId": null
+     *             } , ...
+     *         ]
+     *     },
+     *     "error": null
+     * }
      */
 
     @GetMapping("/detail/{id}")

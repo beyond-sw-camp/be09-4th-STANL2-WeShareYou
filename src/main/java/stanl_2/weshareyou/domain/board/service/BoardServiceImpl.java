@@ -32,6 +32,9 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
     private final ModelMapper modelMapper;
+
+    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
     private final MemberRepository memberRepository;
     private final BoardCommentRepository boardCommentRepository;
     private Timestamp getCurrentTimestamp() {

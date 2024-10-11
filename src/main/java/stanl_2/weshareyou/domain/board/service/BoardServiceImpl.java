@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
+import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
+import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
@@ -18,6 +21,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("boardServiceImpl")
@@ -26,16 +31,19 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
+    private final BoardCommentRepository boardCommentRepository;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
     }
 
     @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper, MemberRepository memberRepository) {
+    public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper,
+                            MemberRepository memberRepository, BoardCommentRepository boardCommentRepository) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
+        this.boardCommentRepository = boardCommentRepository;
     }
 
 
@@ -134,14 +142,19 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
-        BoardDTO boardResponseDTO = new BoardDTO();
+        List<BoardComment> boardComments = boardCommentRepository.findByBoardId(board.getId());
 
+        List<BoardCommentDto> boardCommentDTOs = boardComments.stream()
+                .map(comment -> modelMapper.map(comment, BoardCommentDto.class))
+                .collect(Collectors.toList());
+
+        BoardDTO boardResponseDTO = new BoardDTO();
         boardResponseDTO.setImageUrl(board.getImageUrl());
         boardResponseDTO.setContent(board.getContent());
         boardResponseDTO.setLikesCount(board.getLikesCount());
         boardResponseDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
         boardResponseDTO.setMemberNickname(board.getMember().getNickname());
-        boardResponseDTO.setComment();
+        boardResponseDTO.setComment(boardCommentDTOs);
 
         return boardResponseDTO;
     }

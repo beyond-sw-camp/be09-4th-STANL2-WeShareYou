@@ -40,9 +40,15 @@ public class SecurityConfig {
         http
                 // 로그인 시 사용(jwt 생성)2
 //                .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
+<<<<<<< HEAD
                 // 다른 api 접근시 사용(인증)1
 //                .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 // 데이터 파싱 필터(파싱해서 request로 )4
+=======
+//                // 다른 api 접근시 사용(인증)1
+//                .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
+//                // 데이터 파싱 필터(파싱해서 request로 )4
+>>>>>>> 12109bf (feat: 게시글 상세조회 구현 중 변경사항 merge 전 commit)
 //                .addFilterAfter(new TokenFilter(applicationConstants), JWTTokenGeneratorFilter.class)
 
                 .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())

@@ -283,7 +283,7 @@ public class MemberController {
     /**
      * 내용 : 아이디 찾기
      * [GET] localhost:8080/api/v1/member
-     * JWT 토큰의 pk 값을 활용한 포인트 적립
+     * JWT 토큰의 pk 값을 활용한 아이디 찾기
      * Request
      * XXX
      * Response
@@ -308,7 +308,7 @@ public class MemberController {
     /**
      * 내용 : 마이페이지 조회
      * [GET] localhost:8080/api/v1/member/mypage
-     * JWT 토큰의 pk 값을 활용한 포인트 적립
+     * JWT 토큰의 pk 값을 활용한 마이페이지 조회
      * Request
      * Response
      * {
@@ -337,6 +337,27 @@ public class MemberController {
         return ApiResponse.ok(findMypageResponseVO);
     }
 
-    
+    /**
+     * 내용 : 마이페이지 조회
+     * [GET] localhost:8080/api/v1/member/mypage
+     * JWT 토큰의 pk 값을 활용한 포인트 조회
+     * Request
+     * Response
+     * {
+     *      "point": 10
+     * }
+     */
+    @GetMapping("point")
+    public ApiResponse<?> findPoint(@RequestAttribute("id") Long id) {
+
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findPoint(requestMemberDTO);
+
+        FindPointResponseVO findPointRequestVO = modelMapper.map(responseMemberDTO, FindPointResponseVO.class);
+
+        return ApiResponse.ok(findPointRequestVO);
+    }
 
 }

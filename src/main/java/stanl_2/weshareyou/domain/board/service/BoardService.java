@@ -13,5 +13,4 @@ public interface BoardService {
 
     BoardDTO deleteBoard(BoardDTO boardDTO);
 
-    SliceDTO readBoard(TAG tag, Pageable pageable);
 }

@@ -47,6 +47,10 @@ public class Alarm {
     @NotNull
     private String sender;
 
+    @Column(name = "ALARM_SENDER")
+    @NotNull
+    private String sender;
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     @NotNull

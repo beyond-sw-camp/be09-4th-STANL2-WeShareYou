@@ -1,20 +1,24 @@
 package stanl_2.weshareyou.domain.alarm.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import stanl_2.weshareyou.domain.alarm.aggregate.entity.Alarm;
-import stanl_2.weshareyou.domain.alarm.aggregate.entity.AlatmType;
+import stanl_2.weshareyou.domain.alarm.aggregate.entity.AlarmType;
 import stanl_2.weshareyou.domain.alarm.repository.AlarmRepository;
 import stanl_2.weshareyou.domain.alarm.repository.EmitterRepository;
+import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board.repository.BoardRepository;
+import stanl_2.weshareyou.domain.board_like.aggregate.dto.BoardLikeDto;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
-import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
+import stanl_2.weshareyou.domain.product.aggregate.vo.response.AlarmResponseVO;
+import stanl_2.weshareyou.domain.product.repository.ProductRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
+import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,15 +35,17 @@ public class AlarmServiceImpl implements AlarmService {
     private final EmitterRepository emitterRepository;
     private final AlarmRepository alarmRepository;
     private final MemberRepository memberRepository;
+    private final BoardRepository boardRepository;
 
     private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
 
     @Autowired
-    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository) {
+    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository, BoardRepository boardRepository) {
         this.emitterRepository = emitterRepository;
         this.alarmRepository = alarmRepository;
         this.memberRepository = memberRepository;
+        this.boardRepository = boardRepository;
     }
 
     @Override
@@ -67,29 +73,29 @@ public class AlarmServiceImpl implements AlarmService {
     }
 
     @Override
-    public void send(Member receiver, AlatmType alatmType, String message, String url, String createdAt) {
-
-        Alarm alarm = alarmRepository.save(createAlarm(receiver, alatmType, url, message, createdAt));
+    public void send(Member receiver, AlarmType alarmType, String message, String url, String createdAt, String sender) {
+        Alarm alarm = alarmRepository.save(createAlarm(receiver, alarmType, url, message, createdAt, sender));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);
         sseEmitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, alarm);
-                    sendToClient(emitter, key, "새로운 알림");
+                    sendToClient(emitter, key, new AlarmResponseVO(alarm));
                 }
         );
     }
 
     @Override
-    public Alarm createAlarm(Member receiver, AlatmType alatmType, String url, String message, String createdAt) {
+    public Alarm createAlarm(Member receiver, AlarmType alarmType, String url, String message, String createdAt, String sender) {
         Alarm alarm = new Alarm();
         alarm.setMemberId(receiver);
-        alarm.setAlatmType(alatmType);
+        alarm.setAlarmType(alarmType);
         alarm.setUrl(url);
         alarm.setMessage(message);
         alarm.setCreatedAt(createdAt);
         alarm.setReadStatus(false);
+        alarm.setSender(sender);
         return alarm;
     }
 
@@ -105,16 +111,40 @@ public class AlarmServiceImpl implements AlarmService {
         }
     }
 
+    // 대여신청 알림
     @Override
     public void sendRentalAlarm(ProductDTO productDto, Long memberId) {
 
-        Member adminId = memberRepository.findById(memberId)
-                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(productDto.getAdminId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        String message = memberId + "번님이 " + productDto.getTitle() + "을 대여 신청하셨습니다.";
+        Member sender = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String message = sender.getNickname() + "님이 " + productDto.getTitle() + "을 대여 신청하셨습니다.";
         String url = "/api/v1/product/share/" + productDto.getId();
         String createdAt = LocalDateTime.now().format(FORMATTER);
 
-        send(adminId, AlatmType.RENTAL, message, url, createdAt);
+        send(member, AlarmType.RENTAL, message, url, createdAt, sender.getNickname());
     }
+
+    // 좋아요 알림
+    @Override
+    public void sendLikeAlarm(BoardLikeDto boardLikeDto) {
+        Member sender = memberRepository.findById(boardLikeDto.getMemberId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Member member = memberRepository.findById(boardLikeDto.getBoardId())
+                .orElseThrow(()-> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Board board = boardRepository.findById(boardLikeDto.getBoardId())
+                .orElseThrow(()-> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+
+        String message = sender.getNickname() + "님이 " + "회원님의 " + board.getTitle() + " 글을 좋아합니다.";
+        String url = "/api/v1/board_like";
+        String createdAt = LocalDateTime.now().format(FORMATTER);
+
+        send(member, AlarmType.LIKE, message, url, createdAt, sender.getNickname());
+    }
+
 }

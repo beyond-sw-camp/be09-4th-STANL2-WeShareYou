@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
@@ -51,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
                 .format(FORMATTER));
         registMember.setCreatedAt(LocalDateTime.now()
                 .format(FORMATTER));
+        registMember.setRole(Role.ROLE_MEMBER);
         registMember.setActive(true);
 
         Member newMember = memberRepository.save(registMember);
@@ -106,7 +108,7 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+                );
 
         member.setActive(false);
 

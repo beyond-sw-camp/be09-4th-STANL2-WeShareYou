@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.member.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -76,7 +77,7 @@ public class MemberController {
      * }
      * */
     @PostMapping("/register")
-    public ApiResponse<?> registerMember(@RequestBody RegisterRequestVO memberInfo) {
+    public ApiResponse<?> registerMember(@RequestBody @Valid RegisterRequestVO memberInfo) {
         MemberDTO memberRequestDTO = modelMapper.map(memberInfo, MemberDTO.class);
         MemberDTO memberResponseDTO = memberService.registMember(memberRequestDTO);
 
@@ -106,7 +107,7 @@ public class MemberController {
      * }
      */
     @GetMapping("/login")
-    public ApiResponse<?> loginMember(@RequestBody LoginRequestVO loginRequestVO){
+    public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO){
 
         Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
 
@@ -205,7 +206,7 @@ public class MemberController {
      */
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
-                                        @RequestBody UpdateProfileRequestVO updateProfileRequestVO) {
+                                        @RequestBody @Valid UpdateProfileRequestVO updateProfileRequestVO) {
 
         MemberDTO requestMemberDTO = modelMapper.map(updateProfileRequestVO, MemberDTO.class);
         requestMemberDTO.setId(id);
@@ -269,7 +270,7 @@ public class MemberController {
      */
     @PutMapping("/point")
     public ApiResponse<?> earnPoint(@RequestAttribute("id") Long id,
-                                     @RequestBody EarnPointRequestVO earnPointRequestVO){
+                                    @RequestBody EarnPointRequestVO earnPointRequestVO){
         MemberDTO requestMemberDTO = modelMapper.map(earnPointRequestVO, MemberDTO.class);
         requestMemberDTO.setId(id);
 

@@ -9,6 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class EarnPointRequestVO {
-    @NotNull
+    @NotNull(message = "적립한 포인트를 입력해주세요.")
     private Integer point;
 }

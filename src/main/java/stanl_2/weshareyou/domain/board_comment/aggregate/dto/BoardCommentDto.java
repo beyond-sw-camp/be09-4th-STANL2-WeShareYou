@@ -9,9 +9,11 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardCommentDto {
+        private Long boardCommentId;
+        private String nickname;
         private String content;
         private Timestamp createdAt;
         private Timestamp updatedAt;
-        private String memberNickname;
-        private Long boardId;
+
+
 }

@@ -28,29 +28,27 @@ public class BoardCommentController {
         this.modelMappper = modelMappper;
     }
 
-//    @PostMapping("")
-//    public ApiResponse<?> createBoardComment(@RequestAttribute("nickname") String nickname,@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
-//        System.out.println("1.============================================");
-//        log.info("nickname : {}", nickname);
-//        BoardCommentDto boardCommentDto = modelMappper.map(boardCommentCreateRequestVO, BoardCommentDto.class);
-//        boardCommentDto.setMemberNickname(nickname);
-//        boardCommentService.createBoardComment(boardCommentDto);
-//        log.info("nickname : "+ nickname);
-//        BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
-////      log.info(boardCommentCreateResponseVO);
-//        return ApiResponse.ok(boardCommentCreateResponseVO);
-//    }
     @PostMapping("")
-    public ApiResponse<?> createBoardComment(@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
-
+    public ApiResponse<?> createBoardComment(@RequestAttribute("nickname") String nickname,@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
+        System.out.println("1.============================================"+nickname);
         BoardCommentDto boardCommentDto = modelMappper.map(boardCommentCreateRequestVO, BoardCommentDto.class);
-
+        boardCommentDto.setNickname(nickname);
         boardCommentService.createBoardComment(boardCommentDto);
-
         BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
-
+        log.info("nickname : "+ nickname);
         return ApiResponse.ok(boardCommentCreateResponseVO);
     }
+//    @PostMapping("")
+//    public ApiResponse<?> createBoardComment(@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
+//
+//        BoardCommentDto boardCommentDto = modelMappper.map(boardCommentCreateRequestVO, BoardCommentDto.class);
+//
+//        boardCommentService.createBoardComment(boardCommentDto);
+//
+//        BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
+//
+//        return ApiResponse.ok(boardCommentCreateResponseVO);
+//    }
 
     @PutMapping("/{boardId}")
     public ApiResponse<?> updateBoardComment(@PathVariable("boardId") Long boardId ,@RequestBody BoardCommentUpdateRequestVO boardCommentUpdateRequestVO){

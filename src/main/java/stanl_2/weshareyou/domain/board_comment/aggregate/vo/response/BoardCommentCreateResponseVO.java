@@ -16,7 +16,7 @@ public class BoardCommentCreateResponseVO {
     private String content;
 
     @NotNull
-    private Long memberId;
+    private String nickname;
 
     @NotNull
     private Long boardId;

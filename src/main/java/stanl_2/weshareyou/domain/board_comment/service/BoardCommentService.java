@@ -8,7 +8,7 @@ public interface BoardCommentService {
     BoardCommentDto createBoardComment(BoardCommentDto boardCommentDto);
     BoardCommentDto updateBoardComment(Long boardId, BoardCommentDto boardCommentDto);
     void deleteBoardComment(Long boardCommentId);
-    BoardCommentDto readCommentsByBoardId(Long boardId);
+    List<BoardCommentDto> readCommentsByBoardId(Long boardId);
 
     List<BoardCommentDto> readComments();
 }

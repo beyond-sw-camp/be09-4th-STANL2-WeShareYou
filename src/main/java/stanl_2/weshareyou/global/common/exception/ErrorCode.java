@@ -26,6 +26,7 @@ public enum ErrorCode {
     PRODUCT_IS_RENTAL(40010, HttpStatus.BAD_REQUEST, "이미 대여된 물품입니다."),
     PRODUCT_IS_RETURN(40011, HttpStatus.BAD_REQUEST, "이미 반납된 물품입니다."),
     PRODUCT_IS_NOT_RETURN(40012, HttpStatus.BAD_REQUEST, "물품 반납에 실패하였습니다."),
+    VALIDATION_FAIL(40013, HttpStatus.BAD_REQUEST, "유효성 검사 실패"),
 
 
 
@@ -58,7 +59,7 @@ public enum ErrorCode {
     USERDETAILS_NOT_FOUND(40400, HttpStatus.NOT_FOUND, "User Details를 찾을 수 없습니다."),
     ALREADY_LIKED(40401, HttpStatus.BAD_REQUEST, "이미 좋아요한 게시글입니다."),
     BOARD_NOT_FOUND(40402, HttpStatus.BAD_REQUEST, "해당게시글을 찾을 수 없습니다."),
-    MEMBER_NOT_FOUND(40403, HttpStatus.BAD_REQUEST, "해당멤버을 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(40403, HttpStatus.BAD_REQUEST, "해당 멤버을 찾을 수 없습니다."),
     NO_LIKES_FOUND(40404, HttpStatus.BAD_REQUEST, "해당 멤버의 좋아요를 찾을 수 없습니다."),
     NOTICE_NOT_FOUND(40405, HttpStatus.BAD_REQUEST, "해당 공지를 찾을 수 없습니다."),
     NOT_FOUND_LIKE(40406, HttpStatus.BAD_REQUEST, "좋아요를 누르지 않았습니다."),

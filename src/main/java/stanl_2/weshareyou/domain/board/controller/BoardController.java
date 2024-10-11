@@ -11,6 +11,7 @@ import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardDeleteResponseVO;
+import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardReadDetailResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardUpdateResponseVO;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board.service.BoardService;
@@ -130,6 +131,20 @@ public class BoardController {
         return ApiResponse.ok(boardDeleteResponseVO);
     }
 
+    /**
+     * 내용:
+     * req:
+     * res:
+     */
+    @GetMapping("")
+    public ApiResponse<?> readBoard(){
+        
+
+
+
+        return ApiResponse.ok();
+    }
+
 
     /**
      * 내용: 상세조회
@@ -140,5 +155,14 @@ public class BoardController {
     @GetMapping("/detail")
     public ApiResponse<?> readDetailBoard(@PathVariable Long id){
 
+        BoardDTO boardDTO = new BoardDTO();
+        boardDTO.setId(id);
+
+        BoardDTO boardResponseDTO = boardService.readDetailBoard(boardDTO);
+
+        BoardReadDetailResponseVO boardReadDetailResponseVO =
+                modelMapper.map(boardResponseDTO,BoardReadDetailResponseVO.class);
+
+        return ApiResponse.ok(boardReadDetailResponseVO);
     }
 }

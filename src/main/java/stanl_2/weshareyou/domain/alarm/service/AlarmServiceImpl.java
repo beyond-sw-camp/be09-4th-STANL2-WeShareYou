@@ -1,9 +1,11 @@
 package stanl_2.weshareyou.domain.alarm.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import stanl_2.weshareyou.domain.alarm.aggregate.dto.AlarmDTO;
 import stanl_2.weshareyou.domain.alarm.aggregate.entity.Alarm;
 import stanl_2.weshareyou.domain.alarm.aggregate.entity.AlarmType;
 import stanl_2.weshareyou.domain.alarm.repository.AlarmRepository;
@@ -25,7 +27,10 @@ import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -42,14 +47,16 @@ public class AlarmServiceImpl implements AlarmService {
 
     private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository, BoardRepository boardRepository, BoardCommentRepository boardCommentRepository) {
+    public AlarmServiceImpl(EmitterRepository emitterRepository, AlarmRepository alarmRepository, MemberRepository memberRepository, BoardRepository boardRepository, BoardCommentRepository boardCommentRepository, ModelMapper modelMapper) {
         this.emitterRepository = emitterRepository;
         this.alarmRepository = alarmRepository;
         this.memberRepository = memberRepository;
         this.boardRepository = boardRepository;
         this.boardCommentRepository = boardCommentRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -185,6 +192,48 @@ public class AlarmServiceImpl implements AlarmService {
         String createdAt = LocalDateTime.now().format(FORMATTER);
 
         send(member, AlarmType.RECOMMENT, message, url, createdAt, sender.getNickname());
+    }
+
+    // 알림 조회
+    @Override
+    public List<AlarmDTO> readMemberAlarms(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        List<Alarm> alarms = alarmRepository.findByMemberIdOrderByCreatedAtDesc(member);
+
+        List<AlarmDTO> alarmDTOList = alarms.stream()
+                .map(alarmdto -> {
+                    AlarmDTO alarmDTO = new AlarmDTO();
+                    alarmDTO.setId(alarmdto.getId());
+                    alarmDTO.setMemberId(alarmdto.getMemberId().getId());
+                    alarmDTO.setReadStatus(alarmdto.getReadStatus());
+                    alarmDTO.setMessage(alarmdto.getMessage());
+                    alarmDTO.setCreatedAt(alarmdto.getCreatedAt());
+                    alarmDTO.setSender(alarmdto.getSender());
+                    alarmDTO.setUrl(alarmdto.getUrl());
+                    return alarmDTO;
+                }).collect(Collectors.toList());
+        return alarmDTOList;
+    }
+
+    // 알림 읽음
+    @Override
+    public AlarmDTO readStatusAlarm(Long alarmId) {
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new CommonException(ErrorCode.ALARM_NOT_FOUND));
+        alarm.setReadStatus(true);
+        Alarm alarm1 = alarmRepository.save(alarm);
+
+        AlarmDTO alarmResponseDTO = new AlarmDTO();
+        alarmResponseDTO.setId(alarm1.getId());
+        alarmResponseDTO.setMessage(alarm1.getMessage());
+        alarmResponseDTO.setUrl(alarm1.getUrl());
+        alarmResponseDTO.setReadStatus(alarm1.getReadStatus());
+        alarmResponseDTO.setCreatedAt(alarm1.getCreatedAt());
+        alarmResponseDTO.setSender(alarm1.getSender());
+        alarmResponseDTO.setMemberId(alarm1.getMemberId().getId());
+
+        return alarmResponseDTO;
     }
 
 }

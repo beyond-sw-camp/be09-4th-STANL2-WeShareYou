@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
 
@@ -91,4 +92,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Board> board;
+
+    @OneToMany(mappedBy = "member")
+    private List<BoardLike> boardlike;
 }

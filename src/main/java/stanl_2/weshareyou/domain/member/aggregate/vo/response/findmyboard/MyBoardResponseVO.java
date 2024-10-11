@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.domain.member.aggregate.vo;
+package stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class BoardResponseVO {
+public class MyBoardResponseVO {
 
     private String title;
     private String content;

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.FindLikeListResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.FindMypageListResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -364,8 +366,32 @@ public class MemberController {
     /**
      * 내용 : 내가 쓴 글
      * [GET] localhost:8080/api/v1/member/myboard
-     * JWT 토큰의 pk 값을 활용한 포인트 조회
-     *
+     * JWT 토큰의 pk 값을 활용한 내가 쓴 글 조회
+     * Request
+     * Response
+     * {
+     *      "nickname": "가지남",
+     *      "board": [
+     *                      {
+     *                              "title": "Guide to Paris",
+     *                              "content": "A detailed guide to traveling in Paris.",
+     *                              "commentCount": 0,
+     *                              "likesCount": 0
+     *                      },
+     *                      {
+     *                              "title": "Selling Camping Gear",
+     *                              "content": "Selling my used camping gear at a good price.",
+     *                              "commentCount": 0,
+     *                              "likesCount": 0
+     *                      },
+     *                      {
+     *                              "title": "Looking for Travel Companion",
+     *                              "content": "Looking for a companion for a trip to Spain.",
+     *                              "commentCount": 0,
+     *                              "likesCount": 0
+     *                      }
+     *              ]
+     *     }
      */
     @GetMapping("myboard")
     public ApiResponse<?> findMyBoard(@RequestAttribute("id") Long id) {
@@ -378,5 +404,17 @@ public class MemberController {
         FindMypageListResponseVO findMypageListResponseVO = modelMapper.map(responseMemberDTO, FindMypageListResponseVO.class);
 
         return ApiResponse.ok(findMypageListResponseVO);
+    }
+
+    @GetMapping("likeboard")
+    public ApiResponse<?> findLikeBoard(@RequestAttribute("id") Long id) {
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findLikeBoard(requestMemberDTO);
+
+        FindLikeListResponseVO findLikeListResponseVO = modelMapper.map(responseMemberDTO, FindLikeListResponseVO.class);
+
+        return ApiResponse.ok(findLikeListResponseVO);
     }
 }

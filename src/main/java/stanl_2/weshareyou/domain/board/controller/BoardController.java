@@ -104,7 +104,7 @@ public class BoardController {
     }
 
     /**
-     * 내용: 게시글 수정
+     * 내용: 게시글 삭제
      * req:
      * {
      *     "id": 4,

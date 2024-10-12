@@ -27,4 +27,10 @@ public interface MemberService {
     MemberDTO findMypage(MemberDTO requestMemberDTO);
 
     MemberDTO findPoint(MemberDTO requestMemberDTO);
+
+    MemberDTO findMyBoard(MemberDTO requestMemberDTO);
+
+    MemberDTO findLikeBoard(MemberDTO requestMemberDTO);
+
+    MemberDTO findMyComment(MemberDTO requestMemberDTO);
 }

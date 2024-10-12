@@ -10,6 +10,8 @@ import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class BoardCommentServiceImpl implements BoardCommentService{
     private final BoardCommentRepository boardCommentRepository;
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -32,9 +35,10 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     }
 
     @Autowired
-    public BoardCommentServiceImpl(BoardCommentRepository boardCommentRepository, BoardRepository boardRepository, ModelMapper modelMapper) {
+    public BoardCommentServiceImpl(BoardCommentRepository boardCommentRepository, BoardRepository boardRepository,MemberRepository memberRepository, ModelMapper modelMapper) {
         this.boardCommentRepository = boardCommentRepository;
         this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -42,17 +46,19 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     @Override
     public BoardCommentDto createBoardComment(BoardCommentDto boardCommentDto) {
         Timestamp currentTimestamp = getCurrentTimestamp();
-        Long boardId = boardCommentDto.getBoardCommentId();
-
+        Long boardId = boardCommentDto.getBoardId();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-
+        //board_comment에 memberId 저장 예정
+        Long memberId =boardCommentDto.getMemberId();
+        Member member= memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         BoardComment boardComment = new BoardComment();
         boardComment.setContent(boardCommentDto.getContent());
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
         boardComment.setBoard(board);
-        System.out.println("board : "+board);
+        boardComment.setMember(member);
         boardCommentRepository.save(boardComment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardComment, BoardCommentDto.class);
@@ -87,24 +93,24 @@ public class BoardCommentServiceImpl implements BoardCommentService{
 
     @Transactional
     @Override
-    public List<BoardCommentDto> readCommentsByBoardId(Long boardId) {
-        log.info("==============================");
+    public List<BoardCommentDto> readCommentsByBoardId(Long boardId){
         List<BoardComment> boardComments = boardCommentRepository.findByBoardId(boardId);
         return boardComments.stream().map(boardComment  -> {
-            BoardCommentDto dto = new BoardCommentDto();
-            dto.setBoardCommentId(boardComment.getId());
-            dto.setContent(boardComment.getContent());
+            BoardCommentDto boardCommentDto = new BoardCommentDto();
+            boardCommentDto.setBoardCommentId(boardComment.getId());
+            boardCommentDto.setContent(boardComment.getContent());
 
             if (boardComment.getMember() != null) {
-                dto.setNickname(boardComment.getMember().getNickname()); // Member의 닉네임 추가
+                boardCommentDto.setNickname(boardComment.getMember().getNickname()); // Member의 닉네임 추가
             } else {
-                dto.setNickname("Unknown"); // 닉네임이 없을 경우 기본값
+                boardCommentDto.setNickname("Unknown");
             }
 
-            dto.setCreatedAt(boardComment.getCreatedAt());
-            dto.setUpdatedAt(boardComment.getUpdatedAt());
-            return dto;
-        })
+            boardCommentDto.setCreatedAt(boardComment.getCreatedAt());
+            boardCommentDto.setUpdatedAt(boardComment.getUpdatedAt());
+            return boardCommentDto;
+            }
+        )
         .collect(Collectors.toList());
     }
 
@@ -114,7 +120,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
 //        BoardComment boardComment = boardCommentRepository.findById(boardCommentId)
 //                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 //        BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
-////        boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+//        boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
 //        boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
 //        return boardCommentDto;
 //    }
@@ -124,14 +130,12 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     public List<BoardCommentDto> readComments() {
         List<BoardComment> boardComments = boardCommentRepository.findAll(); // 모든 댓글 조회
         return boardComments.stream()
-                .map(boardComment -> {
-                    BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+            .map(boardComment -> {
+                BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
 //                    boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
-                    boardCommentDto.setBoardCommentId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
-                    return boardCommentDto;
-                })
-                .collect(Collectors.toList());
+                boardCommentDto.setBoardCommentId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+                return boardCommentDto;
+            })
+            .collect(Collectors.toList());
     }
-
-
 }

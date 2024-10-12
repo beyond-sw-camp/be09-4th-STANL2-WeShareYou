@@ -122,7 +122,6 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BoardDTO readDetailBoard(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 
+import java.sql.Timestamp;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,11 +27,8 @@ public class ProductCreateRequestVO {
     private ProductCategory category;
 
     @NotNull(message = "대여 시작 날짜를 선택해 주세요.")
-    private String startAt;
+    private Timestamp startAt;
 
     @NotNull(message = "대여 종료 날짜를 선택해 주세요.")
-    private String endAt;
-//
-//    @NotNull
-//    private Long adminId;
+    private Timestamp endAt;
 }

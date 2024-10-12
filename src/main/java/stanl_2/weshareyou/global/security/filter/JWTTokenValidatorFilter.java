@@ -34,39 +34,38 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = request.getHeader(applicationConstants.getJWT_HEADER());
-        if(null != jwt) {
+        if (null != jwt) {
             try {
-                Environment env = getEnvironment();
-                if (null != env) {
-                    String secret = env.getProperty(applicationConstants.getJWT_SECRET_KEY(),
-                            applicationConstants.getJWT_SECRET_DEFAULT_VALUE());
-                    SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-                    if(null !=secretKey) {
-                        // JWT 토큰 검증
-                        Claims claims = Jwts.parserBuilder()
-                                .setSigningKey(secretKey)
-                                .build()
-                                .parseClaimsJws(jwt)        // 권한 정보
-                                .getBody();                 // 사용자 관련 정보
+                // 비밀키 가져오기
+                String secret = applicationConstants.getJWT_SECRET_DEFAULT_VALUE();
+                SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+                String jwtToken = jwt.substring(7);
+                // JWT 토큰 검증
+                Claims claims = Jwts.parserBuilder()
+                        .setSigningKey(secretKey)
+                        .build()
+                        .parseClaimsJws(jwtToken)
+                        .getBody();
 
-                        String username = String.valueOf(claims.get("username"));
-                        String authorities = String.valueOf(claims.get("authorities"));
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
-                                AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
-                        // SecurityContextHolder에 저장
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                }
+                String username = String.valueOf(claims.get("username"));
+                String authorities = String.valueOf(claims.get("authorities"));
+                Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
+                        AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
+
+                // SecurityContextHolder에 저장
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception exception) {
                 throw new CommonException(ErrorCode.INVALID_TOKEN_ERROR);
             }
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/api/v1/member/userDetail");
+        String path = request.getServletPath();
+        return path.equals("/api/v1/member/login") || path.equals("/swagger-ui/**");
+//        return request.getServletPath().equals("/api/v1/member/login");
     }
 }

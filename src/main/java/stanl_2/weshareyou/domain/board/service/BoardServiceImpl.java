@@ -143,16 +143,8 @@ public class BoardServiceImpl implements BoardService{
         return boardResponseDTO;
     }
 
-    /**
-     * 게시글 전체 조회에 들어가야할 내용 (TAG 기반 조회)
-     * 1. 작성자 프로필 사진 ( board.member - profileUrl)
-     * 2. 작성자 프로필 닉네임 ( board.member - nickname)
-     * 3. 게시글 이미지 ( board - imageUrl)
-     * 4. 게시글 내용 ( board - content)
-     * 5. 게시글 좋아요 갯수 ( borad - likesCount)
-     * 6. 게시글 댓글 갯수 ( board - commentCount)
-     */
     @Override
+    @Transactional(readOnly = true)
     public CursorDTO readBoard(CursorDTO cursorDTO) {
 
         Pageable pageable = PageRequest.of(0, cursorDTO.getSize());

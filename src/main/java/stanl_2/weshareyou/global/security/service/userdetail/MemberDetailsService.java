@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.global.security.service;
+package stanl_2.weshareyou.global.security.service.userdetail;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

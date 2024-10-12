@@ -5,6 +5,8 @@ import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
+import java.util.List;
+
 @Entity
 @Table(name="BoardLike")
 @RequiredArgsConstructor

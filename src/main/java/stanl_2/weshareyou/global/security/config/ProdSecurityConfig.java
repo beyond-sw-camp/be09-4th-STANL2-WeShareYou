@@ -77,6 +77,7 @@ public class ProdSecurityConfig {
                 .authorizeHttpRequests((requests -> requests
                         // 모두 접근 가능
                 .requestMatchers("/api/v1/member/register", "/api/v1/member/login").permitAll()
+//                        .requestMatchers("/api/v1/member/board").hasRole("ROLE_ADMIN").
                 .anyRequest().authenticated()));
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());

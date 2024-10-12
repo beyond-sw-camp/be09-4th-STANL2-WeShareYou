@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
@@ -22,11 +23,13 @@ public class ProductController {
 
     private final ModelMapper modelMapper;
     private final ProductService productService;
+    private final AlarmService alarmService;
 
     @Autowired
-    public ProductController(ModelMapper modelMapper, ProductService productService) {
+    public ProductController(ModelMapper modelMapper, ProductService productService, AlarmService alarmService) {
         this.modelMapper = modelMapper;
         this.productService = productService;
+        this.alarmService = alarmService;
     }
 
     /**
@@ -57,10 +60,11 @@ public class ProductController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO) {
+    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = new ProductDTO();
-        productRequestDTO.setAdminId(productCreateRequestVO.getAdminId());
+        productRequestDTO.setAdminId(id);
         productRequestDTO.setTitle(productCreateRequestVO.getTitle());
         productRequestDTO.setContent(productCreateRequestVO.getContent());
         productRequestDTO.setCategory(productCreateRequestVO.getCategory());
@@ -289,6 +293,8 @@ public class ProductController {
                                               @RequestParam Long memberId) {
 
         ProductDTO productResponseDTO = productService.updateRentalProduct(productId,memberId);
+
+        alarmService.sendRentalAlarm(productResponseDTO, memberId);
 
         ProductRentalResponseVO productRentalResponseVO = modelMapper.map(productResponseDTO, ProductRentalResponseVO.class);
 

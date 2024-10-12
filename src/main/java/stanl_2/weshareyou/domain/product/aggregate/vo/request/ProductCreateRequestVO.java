@@ -29,7 +29,7 @@ public class ProductCreateRequestVO {
 
     @NotNull(message = "대여 종료 날짜를 선택해 주세요.")
     private String endAt;
-
-    @NotNull
-    private Long adminId;
+//
+//    @NotNull
+//    private Long adminId;
 }

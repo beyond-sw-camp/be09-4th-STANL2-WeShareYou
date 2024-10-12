@@ -21,7 +21,7 @@ public interface AlarmService {
 
     void sendToClient(SseEmitter emitter, String emitterId, Object data);
 
-    void sendRentalAlarm(ProductDTO productDto, Long memberId);
+    void sendRentalAlarm(ProductDTO productDto);
 
     void sendLikeAlarm(BoardLikeDto boardLikeDto);
 

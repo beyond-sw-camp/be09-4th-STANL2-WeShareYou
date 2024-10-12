@@ -3,8 +3,10 @@ package stanl_2.weshareyou.domain.product.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
@@ -301,7 +303,7 @@ public class ProductController {
         productRequestDTO.setMemberId(id);
         ProductDTO productResponseDTO = productService.updateRentalProduct(productRequestDTO);
 
-        alarmService.sendRentalAlarm(productResponseDTO, id);
+        alarmService.sendRentalAlarm(productResponseDTO);
 
         alarmService.sendRentalAlarm(productResponseDTO, memberId);
 

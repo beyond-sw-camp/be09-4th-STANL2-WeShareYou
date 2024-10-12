@@ -123,12 +123,12 @@ public class AlarmServiceImpl implements AlarmService {
 
     // 대여신청 알림
     @Override
-    public void sendRentalAlarm(ProductDTO productDto, Long memberId) {
+    public void sendRentalAlarm(ProductDTO productDto) {
 
         Member member = memberRepository.findById(productDto.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Member sender = memberRepository.findById(memberId)
+        Member sender = memberRepository.findById(productDto.getMemberId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         String message = sender.getNickname() + "님이 " + productDto.getTitle() + "을 대여 신청하셨습니다.";

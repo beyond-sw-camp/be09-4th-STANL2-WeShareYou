@@ -7,6 +7,7 @@ import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
 import javax.xml.stream.events.Comment;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +50,11 @@ public class Board {
 
     @Column(name = "BOARD_CREATED_AT")
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "BOARD_UPDATED_AT")
     @NotNull
-    private String updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name = "BOARD_ACTIVE")
     @NotNull

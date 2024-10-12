@@ -11,4 +11,20 @@ public interface MemberService {
     Optional<MemberDTO> findMemberDetail(String username);
 
     String loginMember(Authentication authenticationResponse);
+
+    void deleteMember(Long id);
+
+    void updatePwd(MemberDTO memberRequestDTO);
+
+    MemberDTO updateProfile(MemberDTO requestMemberDTO);
+
+    MemberDTO updateMypage(MemberDTO requestMemberDTO);
+
+    MemberDTO earnPoint(MemberDTO requestMemberDTO);
+
+    MemberDTO findId(MemberDTO requestMemberDTO);
+
+    MemberDTO findMypage(MemberDTO requestMemberDTO);
+
+    MemberDTO findPoint(MemberDTO requestMemberDTO);
 }

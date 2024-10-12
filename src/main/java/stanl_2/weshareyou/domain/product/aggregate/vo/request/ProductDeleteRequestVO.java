@@ -14,7 +14,4 @@ public class ProductDeleteRequestVO {
 
     @NotNull
     private Long id;
-
-    @NotNull
-    private Long adminId;
 }

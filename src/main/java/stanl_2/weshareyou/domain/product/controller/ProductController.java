@@ -3,15 +3,16 @@ package stanl_2.weshareyou.domain.product.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import stanl_2.weshareyou.domain.alarm.service.AlarmService;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
-import stanl_2.weshareyou.global.common.exception.CommonException;
-import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
@@ -24,11 +25,13 @@ public class ProductController {
 
     private final ModelMapper modelMapper;
     private final ProductService productService;
+    private final AlarmService alarmService;
 
     @Autowired
-    public ProductController(ModelMapper modelMapper, ProductService productService) {
+    public ProductController(ModelMapper modelMapper, ProductService productService, AlarmService alarmService) {
         this.modelMapper = modelMapper;
         this.productService = productService;
+        this.alarmService = alarmService;
     }
 
     /**
@@ -59,10 +62,11 @@ public class ProductController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO) {
+    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = new ProductDTO();
-        productRequestDTO.setAdminId(productCreateRequestVO.getAdminId());
+        productRequestDTO.setAdminId(id);
         productRequestDTO.setTitle(productCreateRequestVO.getTitle());
         productRequestDTO.setContent(productCreateRequestVO.getContent());
         productRequestDTO.setCategory(productCreateRequestVO.getCategory());
@@ -107,9 +111,11 @@ public class ProductController {
      * }
      */
     @PutMapping("")
-    public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO) {
+    public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = modelMapper.map(productUpdateRequestVO, ProductDTO.class);
+        productRequestDTO.setAdminId(id);
         ProductDTO productResponseDTO = productService.updateProduct(productRequestDTO);
 
         ProductUpdateResponseVO productUpdateResponseVO = modelMapper.map(productResponseDTO, ProductUpdateResponseVO.class);
@@ -135,9 +141,11 @@ public class ProductController {
      * }
      */
     @DeleteMapping("")
-    public ApiResponse<?> deleteProduct(@RequestBody ProductDeleteRequestVO productDeleteRequestVO) {
+    public ApiResponse<?> deleteProduct(@RequestBody ProductDeleteRequestVO productDeleteRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = modelMapper.map(productDeleteRequestVO, ProductDTO.class);
+        productRequestDTO.setAdminId(id);
         ProductDTO productResponseDTO = productService.deleteProduct(productRequestDTO);
 
         ProductDeleteResponseVO productDeleteResponse = modelMapper.map(productResponseDTO, ProductDeleteResponseVO.class);
@@ -262,5 +270,99 @@ public class ProductController {
                 .collect(Collectors.toList());
 
         return ApiResponse.ok(productReadCategoryResponseVOList);
+    }
+
+    /**
+     * 내용: 공유물품 대여신청
+     * req: localhost:8080/api/v1/product/share/1?memberId=2
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "memberId": 2,
+     *         "rental": false
+     *     },
+     *     "error": null
+     * }
+     * {
+     *     "success": false,
+     *     "result": null,
+     *     "error": {
+     *         "code": 40010,
+     *         "message": "이미 대여된 물품입니다."
+     *     }
+     * }
+     */
+    @PutMapping("/share/{productId}")
+    public ApiResponse<?> updateRentalProduct(@PathVariable Long productId,
+                                              @RequestAttribute("id") Long id) {
+
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setId(productId);
+        productRequestDTO.setMemberId(id);
+        ProductDTO productResponseDTO = productService.updateRentalProduct(productRequestDTO);
+
+        alarmService.sendRentalAlarm(productResponseDTO);
+
+        ProductRentalResponseVO productRentalResponseVO = modelMapper.map(productResponseDTO, ProductRentalResponseVO.class);
+
+        return ApiResponse.ok(productRentalResponseVO);
+    }
+
+    /**
+     * 내용: 공유물품 대여승인
+     * req: localhost:8080/api/v1/product/share/approve/1?adminId=1
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "rental": true,
+     *         "memberId": 2
+     *     },
+     *     "error": null
+     * }
+     */
+    @PutMapping("/share/approve/{productId}")
+    public ApiResponse<?> updateRentalApproveProduct(@PathVariable Long productId,
+                                                     @RequestAttribute("id") Long adminId) {
+
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setId(productId);
+        productRequestDTO.setAdminId(adminId);
+        ProductDTO productResponseDTO = productService.updateRentalApproveProduct(productRequestDTO);
+
+        ProductRentalApproveResponseVO productRentalApproveResponseVO = modelMapper.map(productResponseDTO, ProductRentalApproveResponseVO.class);
+
+        return ApiResponse.ok(productRentalApproveResponseVO);
+    }
+
+    /**
+     * 내용: 공유물품 대여반납
+     * req: localhost:8080/api/v1/product/share/return/1?adminId=1
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 1,
+     *         "rental": false,
+     *         "memberId": null
+     *     },
+     *     "error": null
+     * }
+     */
+    @PutMapping("/share/return/{productId}")
+    public ApiResponse<?> updateRentalReturnProduct(@PathVariable Long productId,
+                                                    @RequestAttribute("id") Long adminId) {
+
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setId(productId);
+        productRequestDTO.setAdminId(adminId);
+        ProductDTO productResponseDTO = productService.updateRentalReturnProduct(productRequestDTO);
+
+        ProductRentalReturnResponseVO productRentalReturnResponseVO = modelMapper.map(productResponseDTO, ProductRentalReturnResponseVO.class);
+
+        return ApiResponse.ok(productRentalReturnResponseVO);
     }
 }

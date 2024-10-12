@@ -35,8 +35,6 @@ public class NoticeController {
      *   id
      *   title
      *   created_at
-     *   admin_id
-     *  -> active check & pagination
      * */
     @GetMapping("")
     private ApiResponse<?> readAllNotices(){
@@ -78,18 +76,17 @@ public class NoticeController {
      *  req:
      *   notice_title
      *   notice_content
-     *   admin_id(추후 토큰에서 추출)
      *  res:
      *   id
      *   title
     * */
     @PostMapping("")
     private ApiResponse<?> createNotice(@RequestBody NoticeCreateRequestVO noticeCreateRequestVO
-//                                                            ,@RequestAttribute("memberId") Long memberId,
-//                                                            @RequestAttribute("authorities") List<String> roles
-    ) throws IllegalAccessException {
+                                        ,@RequestAttribute("id") Long id
+    ){
 
         NoticeDTO noticeCreateRequestDTO = modelMapper.map(noticeCreateRequestVO, NoticeDTO.class);
+        noticeCreateRequestDTO.setAdminId(id);
         NoticeCreateResponseVO noticeCreateResponseVO = modelMapper.map(noticeService.createNotice(noticeCreateRequestDTO), NoticeCreateResponseVO.class);
         return ApiResponse.ok(noticeCreateResponseVO);
     }
@@ -99,14 +96,15 @@ public class NoticeController {
      *   notice_id
      *   notice_title
      *   notice_content
-     *   admin_id(추후 토큰에서 추출)
      *  res:
      *   성공 메시지
     * */
     @PutMapping("")
     private ApiResponse<?> updateNotice(@RequestBody NoticeUpdateRequestVO noticeUpdateRequestVO
-    ) throws IllegalAccessException {
+                                        ,@RequestAttribute("id") Long id
+    ){
         NoticeDTO noticeUpdateRequestDTO = modelMapper.map(noticeUpdateRequestVO, NoticeDTO.class);
+        noticeUpdateRequestDTO.setAdminId(id);
         if(noticeService.updateNotice(noticeUpdateRequestDTO))
             return ApiResponse.ok("update success");
 
@@ -116,14 +114,15 @@ public class NoticeController {
     /* 설명.
      *  req:
      *   notice_id
-     *   admin_id(추후 토큰에서 추출)
      *  res:
      *   성공 메시지
      * */
     @DeleteMapping("")
     private ApiResponse<?> deleteNotice(@RequestBody NoticeDeleteRequestVO noticeDeleteRequestVO
-    ) throws IllegalAccessException {
+            ,@RequestAttribute("id") Long id
+    ){
         NoticeDTO noticeDeleteRequestDTO = modelMapper.map(noticeDeleteRequestVO, NoticeDTO.class);
+        noticeDeleteRequestDTO.setAdminId(id);
         if(noticeService.deleteNotice(noticeDeleteRequestDTO)){
             return ApiResponse.ok("delete success");
         }

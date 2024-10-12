@@ -3,12 +3,13 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class ProductUpdateResponseVO {
 
     @NotNull
@@ -27,10 +28,10 @@ public class ProductUpdateResponseVO {
     private String category;
 
     @NotNull
-    private String startAt;
+    private Timestamp startAt;
 
     @NotNull
-    private String endAt;
+    private Timestamp endAt;
 
     @NotNull
     private Long adminId;

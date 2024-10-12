@@ -15,8 +15,10 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
+import stanl_2.weshareyou.global.security.filter.CsrfCookieFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenGeneratorFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenValidatorFilter;
+import stanl_2.weshareyou.global.security.filter.TokenFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -36,9 +38,14 @@ public class SecurityConfig {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
         http.csrf(csrfConfig -> csrfConfig.disable());
         http
-//                .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
-//                .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
-//                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
+                // 로그인 시 사용(jwt 생성)2
+                .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
+                // 다른 api 접근시 사용(인증)1
+                .addFilterBefore(new JWTTokenValidatorFilter(applicationConstants), BasicAuthenticationFilter.class)
+                // 데이터 파싱 필터(파싱해서 request로 )4
+                .addFilterAfter(new TokenFilter(applicationConstants), JWTTokenGeneratorFilter.class)
+
+                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure())
                 .authorizeHttpRequests((requests -> requests
                         .anyRequest().permitAll()));
         http.formLogin(withDefaults());

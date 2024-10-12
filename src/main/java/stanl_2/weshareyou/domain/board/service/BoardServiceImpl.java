@@ -1,11 +1,15 @@
 package stanl_2.weshareyou.domain.board.service;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board.aggregate.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
@@ -16,11 +20,10 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
+import java.awt.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,6 +120,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BoardDTO readDetailBoard(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())
@@ -137,5 +141,52 @@ public class BoardServiceImpl implements BoardService{
         boardResponseDTO.setComment(boardCommentDTOs);
 
         return boardResponseDTO;
+    }
+
+    /**
+     * 게시글 전체 조회에 들어가야할 내용 (TAG 기반 조회)
+     * 1. 작성자 프로필 사진 ( board.member - profileUrl)
+     * 2. 작성자 프로필 닉네임 ( board.member - nickname)
+     * 3. 게시글 이미지 ( board - imageUrl)
+     * 4. 게시글 내용 ( board - content)
+     * 5. 게시글 좋아요 갯수 ( borad - likesCount)
+     * 6. 게시글 댓글 갯수 ( board - commentCount)
+     */
+    @Override
+    public CursorDTO readBoard(CursorDTO cursorDTO) {
+
+        Pageable pageable = PageRequest.of(0, cursorDTO.getSize());
+        Slice<Board> boardList;
+
+        if(cursorDTO.getCursorId() == null){
+            boardList = boardRepository.findByTagOrderByCreatedAtDesc(cursorDTO.getTag(), pageable);
+        } else {
+            boardList = boardRepository.findByTagAndIdLessThanOrderByCreatedAtDesc
+                    (cursorDTO.getTag(), cursorDTO.getCursorId(), pageable);
+        }
+
+        Long lastBoardId = boardList.getContent().isEmpty() ? null :
+                boardList.getContent().get(boardList.getNumberOfElements() - 1).getId();
+
+        List<BoardDTO> boardDTOList = boardList.getContent().stream()
+                .map(board -> {
+                    BoardDTO boardDTO = new BoardDTO();
+                    boardDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
+                    boardDTO.setMemberNickname(board.getMember().getNickname());
+                    boardDTO.setImageUrl(board.getImageUrl());
+                    boardDTO.setTitle(board.getTitle());
+                    boardDTO.setLikesCount(board.getLikesCount());
+                    boardDTO.setCommentCount(board.getCommentCount());
+                    return boardDTO;
+                })
+                .collect(Collectors.toList());
+
+        CursorDTO cursorResponseDTO = new CursorDTO();
+        cursorResponseDTO.setCursorId(lastBoardId);
+        cursorResponseDTO.setHasNext(boardList.hasNext());
+        cursorResponseDTO.setTag(cursorDTO.getTag());
+        cursorResponseDTO.setComment(boardDTOList);
+
+        return cursorResponseDTO;
     }
 }

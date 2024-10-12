@@ -14,10 +14,10 @@ import stanl_2.weshareyou.domain.notice.repository.NoticeRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -25,8 +25,10 @@ public class NoticeServiceImpl implements NoticeService{
     private final MemberRepository memberRepository;
     private final NoticeRepository noticeRepository;
     private final ModelMapper modelMapper;
-    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
+    private Timestamp getCurrentTimestamp() {
+        ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        return Timestamp.from(nowKst.toInstant());
+    }
 
     @Autowired
     public NoticeServiceImpl(NoticeRepository noticeRepository, ModelMapper modelMapper, MemberRepository memberRepository) {
@@ -41,15 +43,18 @@ public class NoticeServiceImpl implements NoticeService{
     public List<NoticeDTO> readAllNotices() {
         List<Notice> noticeList = noticeRepository.findAll();
 
+        if(noticeList.isEmpty()) {
+            throw new CommonException(ErrorCode.NOTICE_NOT_FOUND);
+        }
 
         List<NoticeDTO> noticeDTOList = noticeList.stream()
                 .map(notice -> {
-                    NoticeDTO dto = new NoticeDTO();
-                    dto.setId(notice.getId());
-                    dto.setTitle(notice.getTitle());
-                    dto.setCreatedAt(notice.getCreatedAt());
-                    dto.setAdminId(notice.getAdminId().getId());
-                    return dto;
+                    NoticeDTO noticeDTO = new NoticeDTO();
+                    noticeDTO.setId(notice.getId());
+                    noticeDTO.setTitle(notice.getTitle());
+                    noticeDTO.setCreatedAt(notice.getCreatedAt());
+                    noticeDTO.setAdminId(notice.getMember().getId());
+                    return noticeDTO;
                 })
                 .toList();
 
@@ -72,7 +77,7 @@ public class NoticeServiceImpl implements NoticeService{
         noticeReadByIdResponseDTO.setCreatedAt(notice.getCreatedAt());
         noticeReadByIdResponseDTO.setUpdatedAt(notice.getUpdatedAt());
         noticeReadByIdResponseDTO.setActive(notice.getActive());
-        noticeReadByIdResponseDTO.setAdminId(notice.getAdminId().getId());
+        noticeReadByIdResponseDTO.setAdminId(notice.getMember().getId());
 
         return noticeReadByIdResponseDTO;
     }
@@ -80,15 +85,16 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     @Transactional
     public NoticeDTO createNotice(NoticeDTO noticeCreateRequestDTO){
+        Timestamp currentTimestamp = getCurrentTimestamp();
         Member admin = memberRepository.findById(noticeCreateRequestDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         Notice notice = modelMapper.map(noticeCreateRequestDTO, Notice.class);
 
-        notice.setAdminId(admin);
+        notice.setMember(admin);
 
-        notice.setCreatedAt(LocalDateTime.now().format(FORMATTER));
-        notice.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
+        notice.setCreatedAt(currentTimestamp);
+        notice.setUpdatedAt(currentTimestamp);
         notice.setActive(true);
 
         Notice savedNotice = noticeRepository.save(notice);
@@ -107,15 +113,16 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     @Transactional
-    public Boolean updateNotice(NoticeDTO noticeUpdateRequestDTO)
-    {
+    public Boolean updateNotice(NoticeDTO noticeUpdateRequestDTO){
+
+        Timestamp currentTimestamp = getCurrentTimestamp();
 
         Notice notice = noticeRepository.findById(noticeUpdateRequestDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.NOTICE_NOT_FOUND));
 
         notice.setTitle(noticeUpdateRequestDTO.getTitle());
         notice.setContent(noticeUpdateRequestDTO.getContent());
-        notice.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
+        notice.setUpdatedAt(currentTimestamp);
 
         Notice updatedNotice = noticeRepository.save(notice);
 
@@ -130,11 +137,12 @@ public class NoticeServiceImpl implements NoticeService{
     @Transactional
     public Boolean deleteNotice(NoticeDTO noticeDeleteRequestDTO) {
 
+        Timestamp currentTimestamp = getCurrentTimestamp();
         Notice notice = noticeRepository.findById(noticeDeleteRequestDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.NOTICE_NOT_FOUND));
 
         notice.setActive(false);
-        notice.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
+        notice.setUpdatedAt(currentTimestamp);
 
         Notice deleteNotice = noticeRepository.save(notice);
 

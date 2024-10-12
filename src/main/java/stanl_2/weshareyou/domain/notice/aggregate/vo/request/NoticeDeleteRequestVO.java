@@ -10,6 +10,4 @@ import lombok.*;
 public class NoticeDeleteRequestVO {
     @NotNull
     private Long id;
-    @NotNull
-    private Long adminId;
 }

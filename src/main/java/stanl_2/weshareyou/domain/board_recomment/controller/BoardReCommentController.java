@@ -3,7 +3,6 @@ package stanl_2.weshareyou.domain.board_recomment.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
-import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentUpdateRequestVO;
@@ -27,12 +26,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardReCommentController {
     private final BoardReCommentService boardReCommentService;
-    private final AlarmService alarmService;
     private final ModelMapper modelMappper;
 
-    public BoardReCommentController(BoardReCommentService boardReCommentService, AlarmService alarmService, ModelMapper modelMappper) {
+    public BoardReCommentController(BoardReCommentService boardReCommentService, ModelMapper modelMappper) {
         this.boardReCommentService = boardReCommentService;
-        this.alarmService = alarmService;
         this.modelMappper = modelMappper;
     }
     @PostMapping("")
@@ -41,7 +38,6 @@ public class BoardReCommentController {
         BoardReCommentDto boardReCommentDto = modelMappper.map(boardReCommentCreateRequestVO, BoardReCommentDto.class);
 
         boardReCommentService.createBoardReComment(boardReCommentDto);
-        alarmService.sendRecommentAlarm(boardReCommentDto);
 
         BoardReCommentCreateResponseVO boardReCommentCreateResponseVO =modelMappper.map(boardReCommentDto,BoardReCommentCreateResponseVO.class);
         System.out.println(boardReCommentCreateResponseVO);

@@ -49,7 +49,6 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         Long boardId = boardCommentDto.getBoardId();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-        //board_comment에 memberId 저장 예정
         Long memberId =boardCommentDto.getMemberId();
         Member member= memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -57,6 +56,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardComment.setContent(boardCommentDto.getContent());
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
+        System.out.println("=====================여기까지 성공=================");
         boardComment.setBoard(board);
         boardComment.setMember(member);
         boardCommentRepository.save(boardComment);

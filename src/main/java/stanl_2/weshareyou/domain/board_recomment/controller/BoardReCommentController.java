@@ -3,6 +3,7 @@ package stanl_2.weshareyou.domain.board_recomment.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
+import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.request.BoardReCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.request.BoardReCommentUpdateRequestVO;
@@ -21,21 +22,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardReCommentController {
     private final BoardReCommentService boardReCommentService;
+    private final AlarmService alarmService;
     private final ModelMapper modelMappper;
 
-    public BoardReCommentController(BoardReCommentService boardReCommentService, ModelMapper modelMappper) {
+    public BoardReCommentController(BoardReCommentService boardReCommentService, AlarmService alarmService, ModelMapper modelMappper) {
         this.boardReCommentService = boardReCommentService;
+        this.alarmService = alarmService;
         this.modelMappper = modelMappper;
     }
     @PostMapping("")
     public ApiResponse<?> createBoardReComment(@RequestAttribute("nickname") String nickname,
                                                @RequestAttribute("id") Long id,
                                                @RequestBody BoardReCommentCreateRequestVO boardReCommentCreateRequestVO){
-
+        System.out.println(boardReCommentCreateRequestVO.getBoardCommentId());
         BoardReCommentDto boardReCommentDto = modelMappper.map(boardReCommentCreateRequestVO, BoardReCommentDto.class);
         boardReCommentDto.setMemberId(id);
         boardReCommentDto.setNickname(nickname);
         boardReCommentService.createBoardReComment(boardReCommentDto);
+        System.out.println("1.====에러===");
+//        alarmService.sendRecommentAlarm(boardReCommentDto);
+        System.out.println("2.====에러===");
         BoardReCommentCreateResponseVO boardReCommentCreateResponseVO =modelMappper.map(boardReCommentDto,BoardReCommentCreateResponseVO.class);
         System.out.println(boardReCommentCreateResponseVO);
         return ApiResponse.ok(boardReCommentCreateResponseVO);

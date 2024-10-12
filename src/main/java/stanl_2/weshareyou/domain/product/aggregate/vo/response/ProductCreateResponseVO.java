@@ -11,6 +11,9 @@ import lombok.*;
 public class ProductCreateResponseVO {
 
     @NotNull
+    private Long id;
+
+    @NotNull
     private String title;
 
     @NotNull

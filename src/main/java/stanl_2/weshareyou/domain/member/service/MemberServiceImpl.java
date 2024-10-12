@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
@@ -19,6 +20,7 @@ import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.BoardLikesResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.LikeNoResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -71,11 +73,13 @@ public class MemberServiceImpl implements MemberService {
         return modelMapper.map(newMember, MemberDTO.class);
     }
 
+
     @Override
     @Transactional
     public Optional<MemberDTO> findMemberDetail(String username) {
         return memberRepository.findByLoginId(username);
     }
+
 
     @Override
     @Transactional
@@ -114,6 +118,7 @@ public class MemberServiceImpl implements MemberService {
         return jwt;
     }
 
+
     @Override
     @Transactional
     public void deleteMember(Long id) {
@@ -127,6 +132,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
     }
+
 
     @Override
     @Transactional
@@ -142,6 +148,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
     }
+
 
     @Override
     @Transactional
@@ -191,6 +198,7 @@ public class MemberServiceImpl implements MemberService {
 
         return responseMemberDTO;
     }
+
 
     @Override
     @Transactional
@@ -246,10 +254,28 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberDTO findMyBoard(MemberDTO requestMemberDTO) {
-        MemberDTO responseMemberDTO = getMemberDTO(requestMemberDTO);
+
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+        List<MyBoardResponseVO> boardResponseList = new ArrayList<>();
+        for (Board board : member.getBoard()) {
+            MyBoardResponseVO boardResponse = modelMapper.map(board, MyBoardResponseVO.class);
+            boardResponseList.add(boardResponse);
+        }
+
+        responseMemberDTO.setBoard(boardResponseList);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
 
         return responseMemberDTO;
     }
+
 
     @Override
     @Transactional
@@ -291,21 +317,47 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+    @Override
+    @Transactional
+    public MemberDTO findMyComment(MemberDTO requestMemberDTO) {
+        Member member = memberRepository.findById(requestMemberDTO.getId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+        log.info("-1-1-1-1-1-1댓글 조회{}", responseMemberDTO);
+        List<MyCommentResponseVO> commentResponseList = new ArrayList<>();
+        for (BoardComment boardComment : member.getBoardComment()) {
+            log.info("0000{}", boardComment);
+            MyCommentResponseVO boardCommentResponse = modelMapper.map(boardComment, MyCommentResponseVO.class);
+            commentResponseList.add(boardCommentResponse);
+        }
+
+        log.info("1111댓글 조회{}", commentResponseList);
+
+        responseMemberDTO.setBoardComment(commentResponseList);
+        log.info("2222댓글 조회{}", responseMemberDTO);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
     private MemberDTO getMemberDTO(MemberDTO requestMemberDTO) {
         Member member = memberRepository.findById(requestMemberDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
-        log.info("111: {}", responseMemberDTO);
-        Type listType = new TypeToken<List<MyBoardResponseVO>>() {}.getType();
-        List<MyBoardResponseVO> boardResponseList = modelMapper.map(member.getBoard(), listType);
-        log.info("222: {}", boardResponseList);
-        responseMemberDTO.setBoard(boardResponseList);
-        log.info("333: {}", responseMemberDTO);
+
         // 보안상 null
         responseMemberDTO.setId(null);
         responseMemberDTO.setPassword(null);
         responseMemberDTO.setActive(null);
         return responseMemberDTO;
     }
+
+
 }

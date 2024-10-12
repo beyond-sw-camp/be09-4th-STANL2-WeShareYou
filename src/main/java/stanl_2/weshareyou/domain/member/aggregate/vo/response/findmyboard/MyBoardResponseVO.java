@@ -13,4 +13,6 @@ public class MyBoardResponseVO {
     private String content;
     private Integer commentCount;
     private Integer likesCount;
+    private String createdAt;
+    private String updatedAt;
 }

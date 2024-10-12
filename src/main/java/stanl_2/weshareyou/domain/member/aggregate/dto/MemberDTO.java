@@ -7,6 +7,7 @@ import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.LikeNoResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,4 +39,6 @@ public class MemberDTO {
     private List<MyBoardResponseVO> board;
 
     private List<LikeNoResponseVO> boardLike;
+
+    private List<MyCommentResponseVO> boardComment;
 }

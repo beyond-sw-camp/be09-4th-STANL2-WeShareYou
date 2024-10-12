@@ -15,6 +15,7 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.FindLikeListResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.FindMypageListResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.FindMyCommentListResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -193,7 +194,7 @@ public class MemberController {
      * request
      * {
      *     "nickname": "나자나",
-     *     "profile_url": "www.gaodls.com",
+     *     "profile_url": "http://www.gaodls.com",
      *     "introduction": "안뇽!",
      *     "language": "Deutsch"
      * }
@@ -341,7 +342,7 @@ public class MemberController {
     }
 
     /**
-     * 내용 : 마이페이지 조회
+     * 내용 : 포인트 조회
      * [GET] localhost:8080/api/v1/member/mypage
      * JWT 토큰의 pk 값을 활용한 포인트 조회
      * Request
@@ -406,6 +407,48 @@ public class MemberController {
         return ApiResponse.ok(findMypageListResponseVO);
     }
 
+    /**
+     * 내용 : 좋아요한 게시판 조회
+     * [GET] localhost:8080/api/v1/member/likeboard
+     * JWT 토큰의 pk 값을 활용한 좋아요한 게시판 조회
+     * Request
+     * Response
+     * {
+     *      "nickname": "가지남",
+     *      "boardLike": [
+     *                   {
+     *                          "boardLikes": [
+     *                                        {
+     *                                              "title": "Guide to Paris",
+     *                                              "content": "A detailed guide to traveling in Paris.",
+     *                                              "commentCount": 0,
+     *                                              "likesCount": 0
+     *                                        }
+     *                   ]
+     *                   },
+     *                   {
+     *                          "boardLikes": [
+     *                                        {
+     *                                              "title": "Selling Camping Gear",
+     *                                              "content": "Selling my used camping gear at a good price.",
+     *                                              "commentCount": 0,
+     *                                              "likesCount": 0
+     *                                        }
+     *                   ]
+     *                   },
+     *                   {
+     *                          "boardLikes": [
+     *                                        {
+     *                                              "title": "Looking for Travel Companion",
+     *                                              "content": "Looking for a companion for a trip to Spain.",
+     *                                              "commentCount": 0,
+     *                                              "likesCount": 1
+     *                                        }
+     *                   ]
+     *                   }
+     *                   ]
+     *     }
+     */
     @GetMapping("likeboard")
     public ApiResponse<?> findLikeBoard(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -417,4 +460,23 @@ public class MemberController {
 
         return ApiResponse.ok(findLikeListResponseVO);
     }
+
+    /**
+     * 내용 : 내 댓글 조회
+     * [GET] localhost:8080/api/v1/member/mycomment
+     * JWT 토큰의 pk 값을 활용한 내 댓글 조회
+     */
+    @GetMapping("mycomment")
+    public ApiResponse<?> findMyComment(@RequestAttribute("id") Long id) {
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findMyComment(requestMemberDTO);
+
+        FindMyCommentListResponseVO findMyCommentResponseVO = modelMapper.map(responseMemberDTO, FindMyCommentListResponseVO.class);
+
+        return ApiResponse.ok(findMyCommentResponseVO);
+    }
+
+
 }

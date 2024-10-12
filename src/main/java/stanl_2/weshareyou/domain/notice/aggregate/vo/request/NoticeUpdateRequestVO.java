@@ -14,6 +14,4 @@ public class NoticeUpdateRequestVO {
     private String title;
     @NotNull
     private String content;
-    @NotNull
-    private Long adminId;
 }

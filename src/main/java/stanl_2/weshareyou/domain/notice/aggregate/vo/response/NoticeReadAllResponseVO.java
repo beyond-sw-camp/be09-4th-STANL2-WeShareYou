@@ -3,6 +3,8 @@ package stanl_2.weshareyou.domain.notice.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class NoticeReadAllResponseVO {
     private String title;
 
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @NotNull
     private Long adminId;

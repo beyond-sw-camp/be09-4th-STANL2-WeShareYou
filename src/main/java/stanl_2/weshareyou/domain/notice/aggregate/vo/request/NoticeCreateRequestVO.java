@@ -12,6 +12,4 @@ public class NoticeCreateRequestVO {
     private String title;
     @NotNull
     private String content;
-    @NotNull
-    private Long adminId;
 }

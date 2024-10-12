@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name="NOTICE")
 @RequiredArgsConstructor
@@ -27,11 +29,11 @@ public class Notice {
 
     @Column(name="NOTICE_CREATED_AT")
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @Column(name="NOTICE_UPDATED_AT")
     @NotNull
-    private String updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name="NOTICE_ACTIVE")
     @NotNull

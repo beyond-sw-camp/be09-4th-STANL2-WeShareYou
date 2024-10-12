@@ -52,6 +52,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
         boardComment.setBoard(board);
+        System.out.println("board : "+board);
         boardCommentRepository.save(boardComment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardComment, BoardCommentDto.class);

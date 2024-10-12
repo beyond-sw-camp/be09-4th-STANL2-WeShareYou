@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.board.service;
 
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board.aggregate.dto.CursorDTO;
 
 public interface BoardService {
 
@@ -11,4 +12,6 @@ public interface BoardService {
     BoardDTO deleteBoard(BoardDTO boardDTO);
 
     BoardDTO readDetailBoard(BoardDTO boardDTO);
+
+    CursorDTO readBoard(CursorDTO cursorDTO);
 }

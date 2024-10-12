@@ -59,7 +59,17 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
 
-        ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
+        ProductDTO productResponseDTO = new ProductDTO();
+        productResponseDTO.setId(product.getId());
+        productResponseDTO.setTitle(product.getTitle());
+        productResponseDTO.setContent(product.getContent());
+        productResponseDTO.setCategory(product.getCategory());
+        productResponseDTO.setStartAt(product.getStartAt());
+        productResponseDTO.setEndAt(product.getEndAt());
+        productResponseDTO.setImageUrl(product.getImageUrl());
+        productResponseDTO.setCreatedAt(product.getCreatedAt());
+        productResponseDTO.setUpdatedAt(product.getUpdatedAt());
+        productResponseDTO.setAdminId(product.getAdminId().getId());
 
         return productResponseDTO;
     }
@@ -162,12 +172,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateRentalProduct(Long proudctId, Long memberId) {
+    public ProductDTO updateRentalProduct(ProductDTO productDTO) {
 
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findById(productDTO.getMemberId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Product product = productRepository.findById(proudctId)
+        Product product = productRepository.findById(productDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (product.isRental()) {
@@ -190,12 +200,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateRentalApproveProduct(Long productId, Long adminId) {
+    public ProductDTO updateRentalApproveProduct(ProductDTO productDTO) {
 
-        Member member = memberRepository.findById(adminId)
+        Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findById(productDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (!product.isRental() && product.getMemberId() != null) {
@@ -216,12 +226,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateRentalReturnProduct(Long productId, Long adminId) {
+    public ProductDTO updateRentalReturnProduct(ProductDTO productDTO) {
 
-        Member member = memberRepository.findById(adminId)
+        Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findById(productDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (product.isRental() && product.getMemberId() != null) {

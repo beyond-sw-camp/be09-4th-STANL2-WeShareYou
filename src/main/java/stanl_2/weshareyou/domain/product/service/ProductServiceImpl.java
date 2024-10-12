@@ -15,7 +15,10 @@ import stanl_2.weshareyou.domain.product.repository.ProductRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +31,10 @@ public class ProductServiceImpl implements ProductService {
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
-
-    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
+    private Timestamp getCurrentTimestamp() {
+        ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        return Timestamp.from(nowKst.toInstant());
+    }
 
     @Autowired
     public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, MemberRepository memberRepository) {
@@ -59,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) {
-
+        Timestamp currentTimestamp = getCurrentTimestamp();
         Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -71,8 +75,8 @@ public class ProductServiceImpl implements ProductService {
         product.setEndAt(productDTO.getEndAt());
         product.setImageUrl(productDTO.getImageUrl());
         product.setAdminId(member);
-        product.setCreatedAt(LocalDateTime.now().format(FORMATTER));
-        product.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
+        product.setCreatedAt(currentTimestamp);
+        product.setUpdatedAt(currentTimestamp);
 
         productRepository.save(product);
 
@@ -84,6 +88,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDTO updateProduct(ProductDTO productDTO) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
 
         Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -91,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByIdAndAdminId(productDTO.getId(), member)
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
 
-        product.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
+        product.setUpdatedAt(currentTimestamp);
         product.setAdminId(member);
         productRepository.save(product);
 

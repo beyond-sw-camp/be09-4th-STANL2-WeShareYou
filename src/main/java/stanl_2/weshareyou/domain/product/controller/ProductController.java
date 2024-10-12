@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
@@ -22,11 +23,13 @@ public class ProductController {
 
     private final ModelMapper modelMapper;
     private final ProductService productService;
+    private final AlarmService alarmService;
 
     @Autowired
-    public ProductController(ModelMapper modelMapper, ProductService productService) {
+    public ProductController(ModelMapper modelMapper, ProductService productService, AlarmService alarmService) {
         this.modelMapper = modelMapper;
         this.productService = productService;
+        this.alarmService = alarmService;
     }
 
     /**
@@ -57,10 +60,11 @@ public class ProductController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO) {
+    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = new ProductDTO();
-        productRequestDTO.setAdminId(productCreateRequestVO.getAdminId());
+        productRequestDTO.setAdminId(id);
         productRequestDTO.setTitle(productCreateRequestVO.getTitle());
         productRequestDTO.setContent(productCreateRequestVO.getContent());
         productRequestDTO.setCategory(productCreateRequestVO.getCategory());
@@ -105,9 +109,11 @@ public class ProductController {
      * }
      */
     @PutMapping("")
-    public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO) {
+    public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = modelMapper.map(productUpdateRequestVO, ProductDTO.class);
+        productRequestDTO.setAdminId(id);
         ProductDTO productResponseDTO = productService.updateProduct(productRequestDTO);
 
         ProductUpdateResponseVO productUpdateResponseVO = modelMapper.map(productResponseDTO, ProductUpdateResponseVO.class);
@@ -133,9 +139,11 @@ public class ProductController {
      * }
      */
     @DeleteMapping("")
-    public ApiResponse<?> deleteProduct(@RequestBody ProductDeleteRequestVO productDeleteRequestVO) {
+    public ApiResponse<?> deleteProduct(@RequestBody ProductDeleteRequestVO productDeleteRequestVO,
+                                        @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = modelMapper.map(productDeleteRequestVO, ProductDTO.class);
+        productRequestDTO.setAdminId(id);
         ProductDTO productResponseDTO = productService.deleteProduct(productRequestDTO);
 
         ProductDeleteResponseVO productDeleteResponse = modelMapper.map(productResponseDTO, ProductDeleteResponseVO.class);
@@ -286,9 +294,14 @@ public class ProductController {
      */
     @PutMapping("/share/{productId}")
     public ApiResponse<?> updateRentalProduct(@PathVariable Long productId,
-                                              @RequestParam Long memberId) {
+                                              @RequestAttribute("id") Long id) {
 
-        ProductDTO productResponseDTO = productService.updateRentalProduct(productId,memberId);
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setId(productId);
+        productRequestDTO.setMemberId(id);
+        ProductDTO productResponseDTO = productService.updateRentalProduct(productRequestDTO);
+
+        alarmService.sendRentalAlarm(productResponseDTO, id);
 
         ProductRentalResponseVO productRentalResponseVO = modelMapper.map(productResponseDTO, ProductRentalResponseVO.class);
 
@@ -311,9 +324,12 @@ public class ProductController {
      */
     @PutMapping("/share/approve/{productId}")
     public ApiResponse<?> updateRentalApproveProduct(@PathVariable Long productId,
-                                                     @RequestParam Long adminId) {
+                                                     @RequestAttribute("id") Long adminId) {
 
-        ProductDTO productResponseDTO = productService.updateRentalApproveProduct(productId, adminId);
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setId(productId);
+        productRequestDTO.setAdminId(adminId);
+        ProductDTO productResponseDTO = productService.updateRentalApproveProduct(productRequestDTO);
 
         ProductRentalApproveResponseVO productRentalApproveResponseVO = modelMapper.map(productResponseDTO, ProductRentalApproveResponseVO.class);
 
@@ -336,9 +352,12 @@ public class ProductController {
      */
     @PutMapping("/share/return/{productId}")
     public ApiResponse<?> updateRentalReturnProduct(@PathVariable Long productId,
-                                                    @RequestParam Long adminId) {
+                                                    @RequestAttribute("id") Long adminId) {
 
-        ProductDTO productResponseDTO = productService.updateRentalReturnProduct(productId, adminId);
+        ProductDTO productRequestDTO = new ProductDTO();
+        productRequestDTO.setId(productId);
+        productRequestDTO.setAdminId(adminId);
+        ProductDTO productResponseDTO = productService.updateRentalReturnProduct(productRequestDTO);
 
         ProductRentalReturnResponseVO productRentalReturnResponseVO = modelMapper.map(productResponseDTO, ProductRentalReturnResponseVO.class);
 

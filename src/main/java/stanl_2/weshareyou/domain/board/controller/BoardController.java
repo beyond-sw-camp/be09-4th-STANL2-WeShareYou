@@ -214,7 +214,7 @@ public class BoardController {
     public ApiResponse<?> readBoard(@PathVariable Long id,
                                     @PathVariable TAG tag,
                                     @RequestParam(value = "cursor", required = false) Long cursorId,
-                                    @RequestParam(value ="size", defaultValue = "2") Integer size){
+                                    @RequestParam(value ="size", defaultValue = "4") Integer size){
 
         CursorDTO cursorDTO = new CursorDTO();
         cursorDTO.setId(id);
@@ -228,4 +228,5 @@ public class BoardController {
 
         return ApiResponse.ok(boardReadResponseVO);
     }
+
 }

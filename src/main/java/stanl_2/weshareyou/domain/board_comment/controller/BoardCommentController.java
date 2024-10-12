@@ -9,11 +9,13 @@ import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardComment
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
 
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentReadResponseVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentUpdateResponseVO;
 import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController(value = "boardCommentController")
 @RequestMapping("/api/v1/board-comment")
@@ -29,13 +31,14 @@ public class BoardCommentController {
     }
 
     @PostMapping("")
-    public ApiResponse<?> createBoardComment(@RequestAttribute("nickname") String nickname,@RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
-        System.out.println("1.============================================"+nickname);
+    public ApiResponse<?> createBoardComment(@RequestAttribute("nickname") String nickname,
+                                             @RequestAttribute("id") Long id,
+                                             @RequestBody BoardCommentCreateRequestVO boardCommentCreateRequestVO){
         BoardCommentDto boardCommentDto = modelMappper.map(boardCommentCreateRequestVO, BoardCommentDto.class);
+        boardCommentDto.setMemberId(id);
         boardCommentDto.setNickname(nickname);
         boardCommentService.createBoardComment(boardCommentDto);
         BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
-        log.info("nickname : "+ nickname);
         return ApiResponse.ok(boardCommentCreateResponseVO);
     }
 //    @PostMapping("")
@@ -69,8 +72,12 @@ public class BoardCommentController {
     @GetMapping("/{boardId}")
     public ApiResponse<?> readCommentsByBoardId(@PathVariable("boardId") Long boardId) {
         List<BoardCommentDto> comments = boardCommentService.readCommentsByBoardId(boardId);
-        return ApiResponse.ok(comments);
+        List<BoardCommentReadResponseVO> boardCommentReadResponseVOs = comments.stream()
+                .map(comment -> modelMappper.map(comment, BoardCommentReadResponseVO.class))
+                .collect(Collectors.toList());
+        return ApiResponse.ok(boardCommentReadResponseVOs);
     }
+
 
     @GetMapping
     public ApiResponse<?> getAllBoardComments() {

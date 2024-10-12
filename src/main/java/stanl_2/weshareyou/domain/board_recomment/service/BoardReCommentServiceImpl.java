@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.repository.BoardReCommentRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
@@ -48,12 +47,10 @@ public class BoardReCommentServiceImpl implements BoardReCommentService{
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardReCommentDto.getMemberId();
         Long boardId = boardReCommentDto.getBoardCommentId();
-
         Member member =memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         BoardComment boardComment = boardCommentRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-
         BoardReComment boardReComment = new BoardReComment();
         boardReComment.setContent(boardReCommentDto.getContent());
         boardReComment.setCreatedAt(currentTimestamp);
@@ -95,29 +92,28 @@ public class BoardReCommentServiceImpl implements BoardReCommentService{
 
     @Transactional
     @Override
-    public BoardReCommentDto readReCommentsByBoardId(Long boardReCommentId) {
-        BoardReComment boardReComment = boardReCommentRepository.findById(boardReCommentId)
-                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-        BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);
-        boardReCommentDto.setMemberId(boardReComment.getMember() != null ? boardReComment.getMember().getId() : null);
-        boardReCommentDto.setBoardCommentId(boardReComment.getBoardComment() != null ? boardReComment.getBoardComment().getId() : null);
-        return boardReCommentDto;
+    public List<BoardReCommentDto> readReCommentsByBoardId(Long boardCommentId) {
+        List<BoardReComment> boardReComments = boardReCommentRepository.findByBoardCommentId(boardCommentId);
+        return boardReComments.stream().map(boardReComment -> {
+            BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);
+            boardReCommentDto.setNickname(boardReComment.getMember().getNickname());
+            boardReCommentDto.setBoardCommentId(boardReComment.getBoardComment() != null ? boardReComment.getBoardComment().getId() : null);
+            return boardReCommentDto;
+        })
+        .collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public List<BoardReCommentDto> readReComments() {
-        List<BoardReComment> boardReComments = boardReCommentRepository.findAll(); // 모든 댓글 조회
+        List<BoardReComment> boardReComments = boardReCommentRepository.findAll();
         return boardReComments.stream()
-                .map(boardReComment -> {
-                    BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);
-                    boardReCommentDto.setMemberId(boardReComment.getMember() != null ? boardReComment.getMember().getId() : null);
-                    boardReCommentDto.setBoardCommentId(boardReComment.getBoardComment() != null ? boardReComment.getBoardComment().getId() : null);
-                    return boardReCommentDto;
-                })
-                .collect(Collectors.toList());
+            .map(boardReComment -> {
+                BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);
+                boardReCommentDto.setMemberId(boardReComment.getMember() != null ? boardReComment.getMember().getId() : null);
+                boardReCommentDto.setBoardCommentId(boardReComment.getBoardComment() != null ? boardReComment.getBoardComment().getId() : null);
+                return boardReCommentDto;
+            })
+            .collect(Collectors.toList());
     }
-
-
-
 }

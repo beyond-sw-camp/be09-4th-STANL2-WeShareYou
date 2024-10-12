@@ -8,8 +8,7 @@ public interface BoardReCommentService {
     BoardReCommentDto createBoardReComment(BoardReCommentDto boardReCommentDto);
     BoardReCommentDto updateBoardReComment(Long boardId, BoardReCommentDto boardReCommentDto);
     void deleteBoardReComment(Long boardCommentId);
-    BoardReCommentDto readReCommentsByBoardId(Long boardId);
-
+    List<BoardReCommentDto> readReCommentsByBoardId(Long boardCommentId);
     List<BoardReCommentDto> readReComments();
 
 }

@@ -30,7 +30,7 @@ public class BoardComment {
     @Column(name = "BOARD_COMMENT_UPDATED_AT")
     private Timestamp updatedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 

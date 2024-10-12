@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardCommentServiceImpl implements BoardCommentService{
     private final BoardCommentRepository boardCommentRepository;
-    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -35,10 +35,10 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     }
 
     @Autowired
-    public BoardCommentServiceImpl(BoardCommentRepository boardCommentRepository,MemberRepository memberRepository, BoardRepository boardRepository, ModelMapper modelMapper) {
+    public BoardCommentServiceImpl(BoardCommentRepository boardCommentRepository, BoardRepository boardRepository,MemberRepository memberRepository, ModelMapper modelMapper) {
         this.boardCommentRepository = boardCommentRepository;
-        this.memberRepository = memberRepository;
         this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -46,24 +46,23 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     @Override
     public BoardCommentDto createBoardComment(BoardCommentDto boardCommentDto) {
         Timestamp currentTimestamp = getCurrentTimestamp();
-        Long memberId = boardCommentDto.getMemberId();
         Long boardId = boardCommentDto.getBoardId();
-
-        Member member =memberRepository.findById(memberId)
-                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-
+        Long memberId =boardCommentDto.getMemberId();
+        Member member= memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         BoardComment boardComment = new BoardComment();
         boardComment.setContent(boardCommentDto.getContent());
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
+        System.out.println("=====================여기까지 성공=================");
         boardComment.setBoard(board);
         boardComment.setMember(member);
         boardCommentRepository.save(boardComment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardComment, BoardCommentDto.class);
-        boardCommentDto1.setBoardId(board.getId());
+        boardCommentDto1.setBoardCommentId(board.getId());
 
         return boardCommentDto1;
     }
@@ -81,7 +80,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardCommentRepository.save(boardcomment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardcomment, BoardCommentDto.class);
-        boardCommentDto1.setBoardId(boardcomment.getId());
+        boardCommentDto1.setBoardCommentId(boardcomment.getId());
         return boardCommentDto1;
     }
     @Transactional
@@ -94,28 +93,49 @@ public class BoardCommentServiceImpl implements BoardCommentService{
 
     @Transactional
     @Override
-    public BoardCommentDto readCommentsByBoardId(Long boardCommentId) {
-        BoardComment boardComment = boardCommentRepository.findById(boardCommentId)
-                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-        BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
-        boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
-        boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
-        return boardCommentDto;
+    public List<BoardCommentDto> readCommentsByBoardId(Long boardId){
+        List<BoardComment> boardComments = boardCommentRepository.findByBoardId(boardId);
+        return boardComments.stream().map(boardComment  -> {
+            BoardCommentDto boardCommentDto = new BoardCommentDto();
+            boardCommentDto.setBoardCommentId(boardComment.getId());
+            boardCommentDto.setContent(boardComment.getContent());
+
+            if (boardComment.getMember() != null) {
+                boardCommentDto.setNickname(boardComment.getMember().getNickname()); // Member의 닉네임 추가
+            } else {
+                boardCommentDto.setNickname("Unknown");
+            }
+
+            boardCommentDto.setCreatedAt(boardComment.getCreatedAt());
+            boardCommentDto.setUpdatedAt(boardComment.getUpdatedAt());
+            return boardCommentDto;
+            }
+        )
+        .collect(Collectors.toList());
     }
+
+//    @Transactional
+//    @Override
+//    public BoardCommentDto readCommentsByBoardId(Long boardCommentId) {
+//        BoardComment boardComment = boardCommentRepository.findById(boardCommentId)
+//                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+//        BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+//        boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+//        boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+//        return boardCommentDto;
+//    }
 
     @Transactional
     @Override
     public List<BoardCommentDto> readComments() {
         List<BoardComment> boardComments = boardCommentRepository.findAll(); // 모든 댓글 조회
         return boardComments.stream()
-                .map(boardComment -> {
-                    BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
-                    boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
-                    boardCommentDto.setBoardId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
-                    return boardCommentDto;
-                })
-                .collect(Collectors.toList());
+            .map(boardComment -> {
+                BoardCommentDto boardCommentDto = modelMapper.map(boardComment, BoardCommentDto.class);
+//                    boardCommentDto.setMemberId(boardComment.getMember() != null ? boardComment.getMember().getId() : null);
+                boardCommentDto.setBoardCommentId(boardComment.getBoard() != null ? boardComment.getBoard().getId() : null);
+                return boardCommentDto;
+            })
+            .collect(Collectors.toList());
     }
-
-
 }

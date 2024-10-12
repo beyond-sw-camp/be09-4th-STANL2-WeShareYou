@@ -15,6 +15,7 @@ public class BoardReCommentDto {
     private String content;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private String nickname;
     private Long memberId;
     private Long boardCommentId;
 }

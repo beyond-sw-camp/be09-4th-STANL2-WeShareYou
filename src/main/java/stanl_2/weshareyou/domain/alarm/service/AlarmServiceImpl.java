@@ -160,7 +160,7 @@ public class AlarmServiceImpl implements AlarmService {
     // 댓글 알림
     @Override
     public void sendCommentAlarm(BoardCommentDto boardCommentDto) {
-        String sender = boardCommentDto.getMemberNickname();
+        String sender = boardCommentDto.getNickname();
         Board board = boardRepository.findById(boardCommentDto.getBoardId())
                 .orElseThrow(()-> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 

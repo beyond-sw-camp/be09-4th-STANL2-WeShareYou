@@ -4,20 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
-import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
-import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentCreateRequestVO;
-import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentUpdateRequestVO;
-import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
-import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.request.BoardReCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.request.BoardReCommentUpdateRequestVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentCreateResponseVO;
+import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentReadAllResponseVO;
+import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentReadResponseVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentUpdateResponseVO;
 import stanl_2.weshareyou.domain.board_recomment.service.BoardReCommentService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController(value = "boardCommentReController")
 @RequestMapping("/api/v1/board-recomment")
@@ -33,15 +31,19 @@ public class BoardReCommentController {
         this.modelMappper = modelMappper;
     }
     @PostMapping("")
-    public ApiResponse<?> createBoardReComment(@RequestBody BoardReCommentCreateRequestVO boardReCommentCreateRequestVO){
-
+    public ApiResponse<?> createBoardReComment(@RequestAttribute("nickname") String nickname,
+                                               @RequestAttribute("id") Long id,
+                                               @RequestBody BoardReCommentCreateRequestVO boardReCommentCreateRequestVO){
+        System.out.println(boardReCommentCreateRequestVO.getBoardCommentId());
         BoardReCommentDto boardReCommentDto = modelMappper.map(boardReCommentCreateRequestVO, BoardReCommentDto.class);
-
+        boardReCommentDto.setMemberId(id);
+        boardReCommentDto.setNickname(nickname);
         boardReCommentService.createBoardReComment(boardReCommentDto);
-        alarmService.sendRecommentAlarm(boardReCommentDto);
-
+        System.out.println("1.====에러===");
+//        alarmService.sendRecommentAlarm(boardReCommentDto);
+        System.out.println("2.====에러===");
         BoardReCommentCreateResponseVO boardReCommentCreateResponseVO =modelMappper.map(boardReCommentDto,BoardReCommentCreateResponseVO.class);
-
+        System.out.println(boardReCommentCreateResponseVO);
         return ApiResponse.ok(boardReCommentCreateResponseVO);
     }
 
@@ -63,12 +65,18 @@ public class BoardReCommentController {
     @GetMapping("/{boardCommentId}")
     public ApiResponse<?> readReCommentsByBoardId(@PathVariable("boardCommentId") Long boardCommentId) {
         List<BoardReCommentDto> comments = boardReCommentService.readReCommentsByBoardId(boardCommentId);
-        return ApiResponse.ok(comments);
+        List<BoardReCommentReadResponseVO> boardReCommentReadResponseVOs = comments.stream()
+                .map(comment -> modelMappper.map(comment, BoardReCommentReadResponseVO.class))
+                .collect(Collectors.toList());
+        return ApiResponse.ok(boardReCommentReadResponseVOs);
     }
 
     @GetMapping
     public ApiResponse<?> getAllBoardReComments() {
         List<BoardReCommentDto> boardReCommentDtos = boardReCommentService.readReComments();
-        return ApiResponse.ok(boardReCommentDtos);
+        List<BoardReCommentReadAllResponseVO> boardReCommentReadAllResponseVOs  =boardReCommentDtos.stream()
+                .map(boardReCommentDto ->modelMappper.map(boardReCommentDto,BoardReCommentReadAllResponseVO.class))
+                .collect(Collectors.toList());
+        return ApiResponse.ok(boardReCommentReadAllResponseVOs);
     }
 }

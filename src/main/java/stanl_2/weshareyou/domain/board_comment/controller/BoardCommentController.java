@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentUpdateRequestVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
@@ -22,11 +23,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardCommentController {
     private final BoardCommentService boardCommentService;
+    private final AlarmService alarmService;
     private final ModelMapper modelMappper;
 
     @Autowired
-    public BoardCommentController(BoardCommentService boardCommentService, ModelMapper modelMappper) {
+    public BoardCommentController(BoardCommentService boardCommentService, AlarmService alarmService, ModelMapper modelMappper) {
         this.boardCommentService = boardCommentService;
+        this.alarmService = alarmService;
         this.modelMappper = modelMappper;
     }
 
@@ -38,6 +41,8 @@ public class BoardCommentController {
         boardCommentDto.setMemberId(id);
         boardCommentDto.setNickname(nickname);
         boardCommentService.createBoardComment(boardCommentDto);
+
+        alarmService.sendCommentAlarm(boardCommentDto);
         BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
         return ApiResponse.ok(boardCommentCreateResponseVO);
     }

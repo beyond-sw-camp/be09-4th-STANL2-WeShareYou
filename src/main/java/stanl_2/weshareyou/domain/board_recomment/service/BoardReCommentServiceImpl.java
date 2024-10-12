@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.repository.BoardReCommentRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
@@ -48,12 +47,10 @@ public class BoardReCommentServiceImpl implements BoardReCommentService{
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardReCommentDto.getMemberId();
         Long boardId = boardReCommentDto.getBoardCommentId();
-
         Member member =memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         BoardComment boardComment = boardCommentRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
-
         BoardReComment boardReComment = new BoardReComment();
         boardReComment.setContent(boardReCommentDto.getContent());
         boardReComment.setCreatedAt(currentTimestamp);
@@ -109,7 +106,7 @@ public class BoardReCommentServiceImpl implements BoardReCommentService{
     @Transactional
     @Override
     public List<BoardReCommentDto> readReComments() {
-        List<BoardReComment> boardReComments = boardReCommentRepository.findAll(); // 모든 댓글 조회
+        List<BoardReComment> boardReComments = boardReCommentRepository.findAll();
         return boardReComments.stream()
             .map(boardReComment -> {
                 BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);

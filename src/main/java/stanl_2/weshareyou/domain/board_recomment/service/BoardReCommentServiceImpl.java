@@ -109,7 +109,7 @@ public class BoardReCommentServiceImpl implements BoardReCommentService{
     @Transactional
     @Override
     public List<BoardReCommentDto> readReComments() {
-        List<BoardReComment> boardReComments = boardReCommentRepository.findAll(); // 모든 댓글 조회
+        List<BoardReComment> boardReComments = boardReCommentRepository.findAll();
         return boardReComments.stream()
             .map(boardReComment -> {
                 BoardReCommentDto boardReCommentDto = modelMapper.map(boardReComment, BoardReCommentDto.class);

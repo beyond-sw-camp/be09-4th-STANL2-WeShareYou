@@ -39,6 +39,23 @@ public class ProductServiceImpl implements ProductService {
         this.memberRepository = memberRepository;
     }
 
+    public ProductDTO toProductDTO(Product product) {
+        ProductDTO productResponseDTO = new ProductDTO();
+        productResponseDTO.setId(product.getId());
+        productResponseDTO.setTitle(product.getTitle());
+        productResponseDTO.setContent(product.getContent());
+        productResponseDTO.setCategory(product.getCategory());
+        productResponseDTO.setStartAt(product.getStartAt());
+        productResponseDTO.setEndAt(product.getEndAt());
+        productResponseDTO.setImageUrl(product.getImageUrl());
+        productResponseDTO.setCreatedAt(product.getCreatedAt());
+        productResponseDTO.setUpdatedAt(product.getUpdatedAt());
+        productResponseDTO.setAdminId(product.getAdminId().getId());
+        productResponseDTO.setRental(product.isRental());
+
+        return productResponseDTO;
+    }
+
     @Override
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) {
@@ -59,17 +76,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
 
-        ProductDTO productResponseDTO = new ProductDTO();
-        productResponseDTO.setId(product.getId());
-        productResponseDTO.setTitle(product.getTitle());
-        productResponseDTO.setContent(product.getContent());
-        productResponseDTO.setCategory(product.getCategory());
-        productResponseDTO.setStartAt(product.getStartAt());
-        productResponseDTO.setEndAt(product.getEndAt());
-        productResponseDTO.setImageUrl(product.getImageUrl());
-        productResponseDTO.setCreatedAt(product.getCreatedAt());
-        productResponseDTO.setUpdatedAt(product.getUpdatedAt());
-        productResponseDTO.setAdminId(product.getAdminId().getId());
+        ProductDTO productResponseDTO = toProductDTO(product);
 
         return productResponseDTO;
     }
@@ -81,17 +88,14 @@ public class ProductServiceImpl implements ProductService {
         Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Product productId = productRepository.findByIdAndAdminId(productDTO.getId(), member)
+        Product product = productRepository.findByIdAndAdminId(productDTO.getId(), member)
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
 
-
-        Product product = modelMapper.map(productDTO, Product.class);
         product.setUpdatedAt(LocalDateTime.now().format(FORMATTER));
         product.setAdminId(member);
-
         productRepository.save(product);
 
-        ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
+        ProductDTO productResponseDTO = toProductDTO(product);
 
         return productResponseDTO;
     }
@@ -103,16 +107,15 @@ public class ProductServiceImpl implements ProductService {
         Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Product productId = productRepository.findByIdAndAdminId(productDTO.getId(), member)
+        Product product = productRepository.findByIdAndAdminId(productDTO.getId(), member)
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
 
-        Product product = new Product();
         product.setId(productDTO.getId());
         product.setAdminId(member);
 
         productRepository.delete(product);
 
-        ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
+        ProductDTO productResponseDTO = toProductDTO(product);
 
         return productResponseDTO;
     }
@@ -127,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
             throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
         } else {
             List<ProductDTO> productDTOList = productList.stream()
-                    .map(productdto -> modelMapper.map(productdto, ProductDTO.class))
+                    .map(this::toProductDTO)
                     .collect(Collectors.toList());
 
             return productDTOList;
@@ -141,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        ProductDTO productResponseDTO = modelMapper.map(product, ProductDTO.class);
+        ProductDTO productResponseDTO = toProductDTO(product);
 
         return productResponseDTO;
     }

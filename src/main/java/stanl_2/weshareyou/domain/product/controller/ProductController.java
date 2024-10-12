@@ -303,6 +303,8 @@ public class ProductController {
 
         alarmService.sendRentalAlarm(productResponseDTO, id);
 
+        alarmService.sendRentalAlarm(productResponseDTO, memberId);
+
         ProductRentalResponseVO productRentalResponseVO = modelMapper.map(productResponseDTO, ProductRentalResponseVO.class);
 
         return ApiResponse.ok(productRentalResponseVO);

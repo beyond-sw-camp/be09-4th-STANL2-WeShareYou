@@ -22,22 +22,22 @@ public class RegisterResponseVO {
     private String name;
 
     @NotNull
-    private int age;
+    private Integer age;
 
     @NotNull
     private String nationality;
 
     @NotNull
-    private Sex sex;
+    private String sex;
 
     @NotNull
     private String phone;
 
     @NotNull
-    private int point;
+    private Integer point;
 
     @NotNull
-    private Role role;
+    private String role;
 
     @NotNull
     private String nickname;

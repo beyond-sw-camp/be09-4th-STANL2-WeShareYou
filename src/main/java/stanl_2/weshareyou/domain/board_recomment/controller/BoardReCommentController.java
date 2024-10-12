@@ -40,7 +40,7 @@ public class BoardReCommentController {
         boardReCommentDto.setNickname(nickname);
         boardReCommentService.createBoardReComment(boardReCommentDto);
         System.out.println("1.====에러===");
-//        alarmService.sendRecommentAlarm(boardReCommentDto);
+        alarmService.sendRecommentAlarm(boardReCommentDto);
         System.out.println("2.====에러===");
         BoardReCommentCreateResponseVO boardReCommentCreateResponseVO =modelMappper.map(boardReCommentDto,BoardReCommentCreateResponseVO.class);
         System.out.println(boardReCommentCreateResponseVO);

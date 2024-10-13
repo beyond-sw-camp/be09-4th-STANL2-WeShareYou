@@ -9,7 +9,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
-import stanl_2.weshareyou.global.common.dto.CursorDTO;
+import stanl_2.weshareyou.domain.board.aggregate.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
@@ -20,10 +20,10 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
+import java.awt.*;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,9 +33,6 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
     private final ModelMapper modelMapper;
-
-    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
     private final MemberRepository memberRepository;
     private final BoardCommentRepository boardCommentRepository;
     private Timestamp getCurrentTimestamp() {
@@ -123,6 +120,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BoardDTO readDetailBoard(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())

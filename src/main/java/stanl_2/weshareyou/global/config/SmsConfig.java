@@ -78,7 +78,12 @@ public class SmsConfig {
         );
 
         // redis에 인증번호, 이메일 저장
+        log.info("sms phone: {}", requestSendSms.getPhone());
+        log.info("authCode: {}", authCode);
         redisService.setDataExpire(requestSendSms.getPhone(), authCode, 60 * 5L);
+
+        System.out.println("값 있어? "+ redisService.isExistData(requestSendSms.getPhone()));
+        System.out.println("보여줘봐 : " + redisService.getData(requestSendSms.getPhone()));
 
         // redis에 해당 번호의 인증번호가 있으면 삭제
         if(redisService.isExistData(requestSendSms.getPhone())) {

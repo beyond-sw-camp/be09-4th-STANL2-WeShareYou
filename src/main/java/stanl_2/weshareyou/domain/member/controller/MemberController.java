@@ -176,10 +176,8 @@ public class MemberController {
      * }
      */
     @PutMapping("/password")
-    public ApiResponse<?> updatePwd(@RequestAttribute("id") Long id,
-                                    @RequestBody UpdatePwdRequestVO updatePwdRequestVO){
+    public ApiResponse<?> updatePwd(@RequestBody UpdatePwdRequestVO updatePwdRequestVO){
         MemberDTO memberRequestDTO = modelMapper.map(updatePwdRequestVO, MemberDTO.class);
-        memberRequestDTO.setId(id);
 
         memberService.updatePwd(memberRequestDTO);
 

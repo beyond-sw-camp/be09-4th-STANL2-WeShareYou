@@ -136,8 +136,10 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updatePwd(MemberDTO memberRequestDTO) {
 
-        Member member = memberRepository.findById(memberRequestDTO.getId())
-                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        // 찾기 수정해야함!
+        Optional<Member> member2 = memberRepository.findByloginId(memberRequestDTO.getLoginId());
+        Member member = member2.orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
 
         member.setPassword(hashPwd);

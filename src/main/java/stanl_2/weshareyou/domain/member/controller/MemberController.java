@@ -132,8 +132,8 @@ public class MemberController {
      * JWT 토큰만 있으면 된다.
      */
     @PostMapping("/mail")
-    public ApiResponse<?> sendEmailCheck(@RequestAttribute("loginId") String loginId) throws MessagingException {
-        mailService.sendEmail(loginId);
+    public ApiResponse<?> sendEmailCheck(@RequestBody SendEmailRequestVO sendEmailRequestVO) throws MessagingException {
+        mailService.sendEmail(sendEmailRequestVO.getEmail());
         return ApiResponse.ok("이메일 전송 성공!");
     }
 
@@ -144,9 +144,8 @@ public class MemberController {
      * JWT Token, 인증번호(Request Body)
      */
     @GetMapping("/check")
-    public ApiResponse<?> checkCode(@RequestAttribute("loginId") String loginId,
-                                    @RequestBody CheckCodeRequestVO checkCodeRequestVO){
-        if(!mailService.verifyEmailCode(loginId, checkCodeRequestVO.getCode())) {
+    public ApiResponse<?> checkCode(@RequestBody CheckCodeRequestVO checkCodeRequestVO){
+        if(!mailService.verifyEmailCode(checkCodeRequestVO.getEmail(), checkCodeRequestVO.getCode())) {
             throw new CommonException(ErrorCode.EMAIL_VERIFY_FAIL);
         }
         return ApiResponse.ok("이메일 인증 성공!");

@@ -1,26 +1,20 @@
 package stanl_2.weshareyou.domain.board.controller;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board.aggregate.vo.response.*;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
-import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponseVO;
-import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardDeleteResponseVO;
-import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardReadDetailResponseVO;
-import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardUpdateResponseVO;
-import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board.service.BoardService;
-import stanl_2.weshareyou.global.common.exception.CommonException;
-import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.io.IOException;
@@ -37,24 +31,6 @@ public class BoardController {
     public BoardController(BoardService boardService, ModelMapper modelMapper) {
         this.boardService = boardService;
         this.modelMapper = modelMapper;
-    }
-
-    @PostMapping("/img")
-    public ApiResponse<?> uploadImg(@RequestParam("file") MultipartFile file){
-
-        log.info("값 확인: {}", file);
-
-        try {
-            String fileName=file.getOriginalFilename();
-            String fileUrl= "https://" + bucket + "/" +fileName;
-            ObjectMetadata metadata= new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
-            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
-            return ApiResponse.ok(fileUrl);
-        } catch (IOException e) {
-            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
     }
 
     /**
@@ -81,9 +57,11 @@ public class BoardController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createBoard(@RequestBody @Valid BoardCreateRequestVO boardCreateRequestVO){
+    public ApiResponse<?> createBoard(@RequestPart("json") BoardCreateRequestVO boardCreateRequestVO,
+                                      @RequestPart("file") MultipartFile file){
 
         BoardDTO boardDTO = modelMapper.map(boardCreateRequestVO, BoardDTO.class);
+        boardDTO.setFile(file);
 
         BoardDTO boardResponseDTO = boardService.createBoard(boardDTO);
 

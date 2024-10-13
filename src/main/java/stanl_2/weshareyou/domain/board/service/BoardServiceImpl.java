@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
@@ -36,7 +36,7 @@ public class BoardServiceImpl implements BoardService{
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final BoardCommentRepository boardCommentRepository;
-    private final AmazonS3Client amazonS3Client;
+    private final S3uploader s3uploader;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
@@ -45,16 +45,13 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper,
                             MemberRepository memberRepository, BoardCommentRepository boardCommentRepository,
-                            AmazonS3Client amazonS3Client) {
+                            S3uploader s3uploader) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
         this.boardCommentRepository = boardCommentRepository;
-        this.amazonS3Client = amazonS3Client;
+        this.s3uploader = s3uploader;
     }
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     @Override
     @Transactional
@@ -68,7 +65,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = new Board();
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
-        board.setImageUrl(boardDTO.getImageUrl());
+        board.setImageUrl(s3uploader.uploadImg(boardDTO.getFile()));
         board.setTag(boardDTO.getTag());
         board.setCommentCount(0);
         board.setLikesCount(0);

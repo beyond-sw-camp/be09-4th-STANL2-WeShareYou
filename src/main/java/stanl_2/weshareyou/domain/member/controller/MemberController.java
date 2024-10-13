@@ -301,7 +301,6 @@ public class MemberController {
 
         SmsDTO requestSms = modelMapper.map(responseMemberDTO, SmsDTO.class);
 
-        log.info("===여기까지 성공!");
         smsConfig.sendSms(requestSms);
 
         return ApiResponse.ok("인증번호 전송 성공!");

@@ -9,6 +9,5 @@ public interface BoardCommentService {
     BoardCommentDto updateBoardComment(Long boardId, BoardCommentDto boardCommentDto);
     void deleteBoardComment(Long boardCommentId);
     List<BoardCommentDto> readCommentsByBoardId(Long boardId);
-
     List<BoardCommentDto> readComments();
 }

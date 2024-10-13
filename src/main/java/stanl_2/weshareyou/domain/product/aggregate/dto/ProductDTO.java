@@ -3,6 +3,8 @@ package stanl_2.weshareyou.domain.product.aggregate.dto;
 import lombok.*;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 
+import java.sql.Timestamp;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -14,11 +16,11 @@ public class ProductDTO {
     private String content;
     private String imageUrl;
     private ProductCategory category;
-    private String startAt;
-    private String endAt;
+    private Timestamp startAt;
+    private Timestamp endAt;
     private Boolean rental;
-    private String createdAt;
-    private String updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
     private Long adminId;
     private Long memberId;
 }

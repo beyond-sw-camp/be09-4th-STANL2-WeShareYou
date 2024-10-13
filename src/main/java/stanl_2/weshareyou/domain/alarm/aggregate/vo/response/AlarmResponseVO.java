@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.alarm.aggregate.entity.Alarm;
 
+import java.sql.Timestamp;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -24,7 +26,7 @@ public class AlarmResponseVO {
     private Boolean readStatus;
 
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @NotNull
     private String sender;

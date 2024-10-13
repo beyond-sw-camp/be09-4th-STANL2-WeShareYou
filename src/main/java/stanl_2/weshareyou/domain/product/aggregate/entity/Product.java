@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name="PRODUCT")
 @RequiredArgsConstructor
@@ -36,11 +38,11 @@ public class Product {
 
     @NotNull
     @Column(name = "PRODUCT_START_AT")
-    private String startAt;
+    private Timestamp startAt;
 
     @NotNull
     @Column(name = "PRODUCT_END_AT")
-    private String endAt;
+    private Timestamp endAt;
 
     @NotNull
     @Column(name = "PRODUCT_RENTAL")
@@ -48,11 +50,11 @@ public class Product {
 
     @NotNull
     @Column(name = "PRODUCT_CREATED_AT")
-    private String createdAt;
+    private Timestamp createdAt;
 
     @NotNull
     @Column(name = "PRODUCT_UPDATED_AT")
-    private String updatedAt;
+    private Timestamp updatedAt;
 
     @NotNull
     @ManyToOne

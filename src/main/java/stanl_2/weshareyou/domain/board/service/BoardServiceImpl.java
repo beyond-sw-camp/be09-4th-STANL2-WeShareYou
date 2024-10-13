@@ -4,10 +4,14 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
@@ -19,10 +23,8 @@ import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -145,5 +147,44 @@ public class BoardServiceImpl implements BoardService{
         boardResponseDTO.setComment(boardCommentDTOs);
 
         return boardResponseDTO;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CursorDTO readBoard(CursorDTO cursorDTO) {
+
+        Pageable pageable = PageRequest.of(0, cursorDTO.getSize());
+        Slice<Board> boardList;
+
+        if(cursorDTO.getCursorId() == null){
+            boardList = boardRepository.findByTagOrderByCreatedAtDesc(cursorDTO.getTag(), pageable);
+        } else {
+            boardList = boardRepository.findByTagAndIdLessThanOrderByCreatedAtDesc
+                    (cursorDTO.getTag(), cursorDTO.getCursorId(), pageable);
+        }
+
+        Long lastBoardId = boardList.getContent().isEmpty() ? null :
+                boardList.getContent().get(boardList.getNumberOfElements() - 1).getId();
+
+        List<BoardDTO> boardDTOList = boardList.getContent().stream()
+                .map(board -> {
+                    BoardDTO boardDTO = new BoardDTO();
+                    boardDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
+                    boardDTO.setMemberNickname(board.getMember().getNickname());
+                    boardDTO.setImageUrl(board.getImageUrl());
+                    boardDTO.setTitle(board.getTitle());
+                    boardDTO.setLikesCount(board.getLikesCount());
+                    boardDTO.setCommentCount(board.getCommentCount());
+                    return boardDTO;
+                })
+                .collect(Collectors.toList());
+
+        CursorDTO cursorResponseDTO = new CursorDTO();
+        cursorResponseDTO.setCursorId(lastBoardId);
+        cursorResponseDTO.setHasNext(boardList.hasNext());
+        cursorResponseDTO.setTag(cursorDTO.getTag());
+        cursorResponseDTO.setComment(boardDTOList);
+
+        return cursorResponseDTO;
     }
 }

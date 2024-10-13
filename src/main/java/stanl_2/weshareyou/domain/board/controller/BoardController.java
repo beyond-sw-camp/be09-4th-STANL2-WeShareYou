@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
+import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
@@ -15,6 +17,7 @@ import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardCreateResponse
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardDeleteResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardReadDetailResponseVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.response.BoardUpdateResponseVO;
+import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board.service.BoardService;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -124,7 +127,7 @@ public class BoardController {
     }
 
     /**
-     * 내용: 게시글 수정
+     * 내용: 게시글 삭제
      * req:
      * {
      *     "id": 4,
@@ -190,4 +193,64 @@ public class BoardController {
 
         return ApiResponse.ok(boardReadDetailResponseVO);
     }
+
+    /**
+     * 내용: 게시글 조회(태그)
+     * req: http://localhost:8080/api/v1/board/GUIDE/1?cursor=3&size=3
+     * res:
+     *  {
+     *     "success": true,
+     *     "result": {
+     *         "tag": "GUIDE",
+     *         "cursorId": 9,
+     *         "comment": [
+     *             {
+     *                 "memberProfileUrl": null,
+     *                 "memberNickname": "usertwo",
+     *                 "title": "우도여행도 가능합니다",
+     *                 "imageUrl": "제주도 이미지",
+     *                 "commentCount": 0,
+     *                 "likesCount": 0
+     *             },
+     *             {
+     *                 "memberProfileUrl": null,
+     *                 "memberNickname": "userthree",
+     *                 "title": "혼자 처음 제주도 여행왔네요",
+     *                 "imageUrl": "제주도 이미지",
+     *                 "commentCount": 0,
+     *                 "likesCount": 0
+     *             },
+     *             {
+     *                 "memberProfileUrl": null,
+     *                 "memberNickname": "userthree",
+     *                 "title": "혼자 처음 제주도 여행왔네요",
+     *                 "imageUrl": "제주도 이미지",
+     *                 "commentCount": 0,
+     *                 "likesCount": 0
+     *             }
+     *         ],
+     *         "hasNext": true
+     *     },
+     *     "error": null
+     * }
+     */
+    @GetMapping("/{tag}/{id}")
+    public ApiResponse<?> readBoard(@PathVariable Long id,
+                                    @PathVariable TAG tag,
+                                    @RequestParam(value = "cursor", required = false) Long cursorId,
+                                    @RequestParam(value ="size", defaultValue = "4") Integer size){
+
+        CursorDTO cursorDTO = new CursorDTO();
+        cursorDTO.setId(id);
+        cursorDTO.setTag(tag);
+        cursorDTO.setCursorId(cursorId);
+        cursorDTO.setSize(size);
+
+        CursorDTO responseCursorDTO = boardService.readBoard(cursorDTO);
+
+        BoardReadResponseVO boardReadResponseVO = modelMapper.map(responseCursorDTO, BoardReadResponseVO.class);
+
+        return ApiResponse.ok(boardReadResponseVO);
+    }
+
 }

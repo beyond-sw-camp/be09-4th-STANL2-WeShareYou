@@ -33,4 +33,6 @@ public interface MemberService {
     MemberDTO findLikeBoard(MemberDTO requestMemberDTO);
 
     MemberDTO findMyComment(MemberDTO requestMemberDTO);
+
+    MemberDTO checkMember(MemberDTO requestMemberDTO);
 }

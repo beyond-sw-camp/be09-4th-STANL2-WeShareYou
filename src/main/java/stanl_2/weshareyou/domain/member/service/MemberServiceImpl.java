@@ -324,18 +324,34 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
-        log.info("-1-1-1-1-1-1댓글 조회{}", responseMemberDTO);
+
         List<MyCommentResponseVO> commentResponseList = new ArrayList<>();
         for (BoardComment boardComment : member.getBoardComment()) {
-            log.info("0000{}", boardComment);
             MyCommentResponseVO boardCommentResponse = modelMapper.map(boardComment, MyCommentResponseVO.class);
             commentResponseList.add(boardCommentResponse);
         }
 
-        log.info("1111댓글 조회{}", commentResponseList);
-
         responseMemberDTO.setBoardComment(commentResponseList);
-        log.info("2222댓글 조회{}", responseMemberDTO);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO checkMember(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findByPhone(requestMemberDTO.getPhone());
+
+        if(member == null || !requestMemberDTO.getName().equals(member.getName())) {
+            throw new CommonException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
 
         // 보안상 null
         responseMemberDTO.setId(null);

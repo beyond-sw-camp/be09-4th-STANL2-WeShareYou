@@ -1,10 +1,12 @@
 package stanl_2.weshareyou.domain.board.service;
 
-import jakarta.transaction.Transactional;
+import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
@@ -32,6 +34,7 @@ public class BoardServiceImpl implements BoardService{
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final BoardCommentRepository boardCommentRepository;
+    private final AmazonS3Client amazonS3Client;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
@@ -39,13 +42,17 @@ public class BoardServiceImpl implements BoardService{
 
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper,
-                            MemberRepository memberRepository, BoardCommentRepository boardCommentRepository) {
+                            MemberRepository memberRepository, BoardCommentRepository boardCommentRepository,
+                            AmazonS3Client amazonS3Client) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
         this.boardCommentRepository = boardCommentRepository;
+        this.amazonS3Client = amazonS3Client;
     }
 
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Override
     @Transactional
@@ -98,7 +105,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public BoardDTO deleteBoard(BoardDTO boardDTO) {
 
         Timestamp currentTimestamp = getCurrentTimestamp();
@@ -117,6 +124,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BoardDTO readDetailBoard(BoardDTO boardDTO) {
 
         Board board = boardRepository.findById(boardDTO.getId())

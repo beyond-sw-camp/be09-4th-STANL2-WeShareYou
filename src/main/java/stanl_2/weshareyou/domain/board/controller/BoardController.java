@@ -1,12 +1,10 @@
 package stanl_2.weshareyou.domain.board.controller;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
@@ -31,17 +29,12 @@ public class BoardController {
 
     private final BoardService boardService;
     private final ModelMapper modelMapper;
-    private final AmazonS3Client amazonS3Client;
 
     @Autowired
-    public BoardController(BoardService boardService, ModelMapper modelMapper, AmazonS3Client amazonS3Client) {
+    public BoardController(BoardService boardService, ModelMapper modelMapper) {
         this.boardService = boardService;
         this.modelMapper = modelMapper;
-        this.amazonS3Client = amazonS3Client;
     }
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     @PostMapping("/img")
     public ApiResponse<?> uploadImg(@RequestParam("file") MultipartFile file){

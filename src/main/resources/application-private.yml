@@ -2,12 +2,12 @@
 cloud:
   aws:
     credentials:
-      accessKey: AKIATQPD7ILCYFAE5PRB
-      secretKey: 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
+      accessKey:
+      secretKey:
     s3:
-      bucket: weshareubk
+      bucket:
     region:
-      static: ap-northeast-2
+      static:
     stack:
       auto: false
 

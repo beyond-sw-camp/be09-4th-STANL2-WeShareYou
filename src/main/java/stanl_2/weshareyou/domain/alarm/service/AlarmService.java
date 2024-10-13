@@ -1,5 +1,7 @@
 package stanl_2.weshareyou.domain.alarm.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import stanl_2.weshareyou.domain.alarm.aggregate.dto.AlarmDTO;
 import stanl_2.weshareyou.domain.alarm.aggregate.entity.Alarm;
@@ -10,18 +12,19 @@ import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface AlarmService {
     SseEmitter subscribe(Long id, String lastEventId);
 
-    void send(Member receiver, AlarmType alarmType, String message, String url, String createdAt, String sender);
+    void send(Member receiver, AlarmType alarmType, String message, String url, Timestamp createdAt, String sender);
 
-    Alarm createAlarm(Member receiver, AlarmType alarmType, String url, String message, String createdAt, String sender);
+    Alarm createAlarm(Member receiver, AlarmType alarmType, String url, String message, Timestamp createdAt, String sender);
 
     void sendToClient(SseEmitter emitter, String emitterId, Object data);
 
-    void sendRentalAlarm(ProductDTO productDto, Long memberId);
+    void sendRentalAlarm(ProductDTO productDto);
 
     void sendLikeAlarm(BoardLikeDto boardLikeDto);
 
@@ -31,7 +34,8 @@ public interface AlarmService {
     // 대댓글 알림
     void sendRecommentAlarm(BoardReCommentDto boardReCommentDto);
 
-    List<AlarmDTO> readMemberAlarms(Long memberId);
+    // 알림 조회
+    Page<AlarmDTO> readMemberAlarms(Long memberId, Pageable pageable);
 
     AlarmDTO readStatusAlarm(AlarmDTO alarmDTO);
 }

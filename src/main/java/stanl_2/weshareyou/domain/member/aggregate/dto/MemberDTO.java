@@ -1,8 +1,16 @@
 package stanl_2.weshareyou.domain.member.aggregate.dto;
 
 import lombok.*;
+import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.LikeNoResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
+import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,4 +35,10 @@ public class MemberDTO {
     private String createdAt;
     private String updatedAt;
     private Boolean active;
+
+    private List<MyBoardResponseVO> board;
+
+    private List<LikeNoResponseVO> boardLike;
+
+    private List<MyCommentResponseVO> boardComment;
 }

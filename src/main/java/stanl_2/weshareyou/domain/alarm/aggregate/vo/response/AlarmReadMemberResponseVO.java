@@ -3,6 +3,8 @@ package stanl_2.weshareyou.domain.alarm.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -23,7 +25,7 @@ public class AlarmReadMemberResponseVO {
     private Boolean readStatus;
 
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @NotNull
     private Long memberId;

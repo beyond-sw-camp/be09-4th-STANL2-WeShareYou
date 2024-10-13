@@ -60,11 +60,11 @@ public class Board {
     @NotNull
     private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     @NotNull
     private Member member;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BoardLike> boardLikes = new ArrayList<>();
+    @OneToMany(mappedBy = "board"/*, cascade = CascadeType.ALL, fetch = FetchType.LAZY*/)
+    private List<BoardLike> boardLikes/* = new ArrayList<>()*/;
 }

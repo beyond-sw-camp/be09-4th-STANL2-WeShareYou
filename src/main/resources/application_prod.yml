@@ -46,6 +46,10 @@ spring:
           mail.smtp.ssl.trust: smtp.naver.com
           mail.smtp.ssl.protocols: TLSv1.2
           mail.debug: true
+
+server:
+  forward-headers-strategy: native
+
 test:
   project:
     topic: dev-topic

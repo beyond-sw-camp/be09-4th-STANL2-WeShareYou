@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
+import java.sql.Timestamp;
+
 @Entity
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -39,7 +41,7 @@ public class Alarm {
 
     @Column(name = "ALARM_CREATED_AT")
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "ALARM_SENDER")
     @NotNull

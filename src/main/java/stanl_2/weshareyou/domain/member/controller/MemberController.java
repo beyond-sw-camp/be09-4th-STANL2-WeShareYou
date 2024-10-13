@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
-import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.FindLikeListResponseVO;
@@ -23,6 +22,7 @@ import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 import stanl_2.weshareyou.global.config.SmsConfig;
+import stanl_2.weshareyou.global.security.service.sms.SmsService;
 import stanl_2.weshareyou.global.security.service.smtp.MailService;
 
 import java.util.HashMap;
@@ -40,6 +40,7 @@ public class MemberController {
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
     private final SmsConfig smsConfig;
+    private final SmsService smsService;
 
     /* 설명. jwt토큰 활용 샘플 예시 코드 */
     @GetMapping("/health")
@@ -147,9 +148,9 @@ public class MemberController {
      *
      * JWT Token, 인증번호(Request Body)
      */
-    @GetMapping("/check")
-    public ApiResponse<?> checkCode(@RequestBody CheckCodeRequestVO checkCodeRequestVO){
-        if(!mailService.verifyEmailCode(checkCodeRequestVO.getEmail(), checkCodeRequestVO.getCode())) {
+    @GetMapping("/mail/check")
+    public ApiResponse<?> checkEmailCode(@RequestBody CheckEmailCodeRequestVO checkEmailCodeRequestVO){
+        if(!mailService.verifyEmailCode(checkEmailCodeRequestVO.getEmail(), checkEmailCodeRequestVO.getCode())) {
             throw new CommonException(ErrorCode.EMAIL_VERIFY_FAIL);
         }
         return ApiResponse.ok("이메일 인증 성공!");
@@ -304,6 +305,18 @@ public class MemberController {
         smsConfig.sendSms(requestSms);
 
         return ApiResponse.ok("인증번호 전송 성공!");
+    }
+
+    /**
+     * 내용: sms인증에 성공하셨습니다!
+     *
+     */
+    @GetMapping("/sms/check")
+    public ApiResponse<?> checkSmsCode(@RequestBody CheckSmsCodeRequestVO checkSmsCodeRequestVO){
+        if(!smsService.verifySmsCode(checkSmsCodeRequestVO.getPhone(), checkSmsCodeRequestVO.getCode())) {
+            throw new CommonException(ErrorCode.SMS_VERIFY_FAIL);
+        }
+        return ApiResponse.ok("SMS 인증 성공!");
     }
 
     /**

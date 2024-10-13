@@ -30,7 +30,8 @@ public class ChatRoomService {
     }
 
     public ChatRoom findRoomById(String roomId) {
-        return chatRoomRepository.findByRoomId(roomId).orElse(null); // ID로 채팅방 조회
+//        return chatRoomRepository.findByRoomId(roomId).orElse(null); // ID로 채팅방 조회
+        return chatRoomRepository.findByRoomId(roomId); // ID로 채팅방 조회
     }
 
     public ChatRoom createChatRoom(String sender, String receiver) {

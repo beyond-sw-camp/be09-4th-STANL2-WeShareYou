@@ -13,47 +13,53 @@ import stanl_2.weshareyou.domain.chat.service.ChatMessageService;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Controller
+//@Controller
+@RestController
 @Slf4j
-//@RequestMapping("")
+@RequestMapping("api/v1/chat")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final ChatRoomMessageService chatRoomMessageService;
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/chat/rooms")
     @Operation(summary="채팅방 조회하기")
-    public String showRooms(Model model) {
-        /* 설명. 로그인 한 유저 추가 예정
-         *  public String showRooms(Model model, @RequestAttribute()
-         *  member.nickname으로 찾을 예정
-         * */
-        //        String loggedInUser = member.getNickname();
-        String loggedInUser = "mins";
+//    public String showRooms(Model model, @RequestAttribute("nickname") String nickname) {
+//
+//        List<ChatRoom> rooms = chatRoomService.findRoomsByUser(nickname);
+//        model.addAttribute("rooms", rooms);
+//        model.addAttribute("user", nickname);
+//
+//        return "/chat/room_list";
+//    }
+    public Map<String, Object> showRooms(@RequestAttribute("nickname") String nickname) {
+        List<ChatRoom> rooms = chatRoomService.findRoomsByUser(nickname);
 
-        List<ChatRoom> rooms = chatRoomService.findRoomsByUser(loggedInUser);
-        model.addAttribute("rooms", rooms);
-        model.addAttribute("user", loggedInUser);
+        Map<String, Object> response = new HashMap<>();
+        response.put("rooms", rooms);
+        response.put("user", nickname);
 
-        return "/chat/room_list";
+        return response; // JSON 데이터 반환
     }
     @GetMapping("/chat/room/{roomId}")
-    public String roomDetail(@PathVariable String roomId, Model model) {
-        String loggedInUser = "mins5";
+    public String roomDetail(@PathVariable String roomId
+                            ,Model model
+                            ,@RequestAttribute("nickname") String nickname) {
         ChatRoom room = chatRoomService.findRoomById(roomId);
         ChatRoomMessage messages = chatRoomMessageService.getMessagesByRoomId(roomId);
-        chatRoomMessageService.markMessagesAsRead(roomId, "mins");
+        chatRoomMessageService.markMessagesAsRead(roomId, nickname);
 
-        model.addAttribute("user", loggedInUser);
+        model.addAttribute("user", nickname);
         model.addAttribute("room", room);
         model.addAttribute("messages", messages.getMessages());
-
 
         return "chat/room_detail";
     }

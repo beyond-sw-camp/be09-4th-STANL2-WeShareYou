@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,6 @@ public class ChatRoomMessage {
         /* 설명. 읽음여부 */
         private Boolean readYn;
         /* 설명. 보낸시각 */
-        private String createdAt;
+        private Timestamp createdAt;
     }
 }

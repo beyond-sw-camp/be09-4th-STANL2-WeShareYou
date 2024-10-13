@@ -17,7 +17,10 @@ import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoomMessage;
 import stanl_2.weshareyou.domain.chat.repository.ChatRoomMessageRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -30,13 +33,13 @@ public class ChatRoomMessageService {
 
     private final ChatRoomMessageRepository chatRoomMessageRepository;
     private final MongoTemplate mongoTemplate;
-    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
+    private Timestamp getCurrentTimestamp() {
+        ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        return Timestamp.from(nowKst.toInstant());
+    }
 
     // 특정 채팅방의 메시지 조회
     public ChatRoomMessage getMessagesByRoomId(String roomId) {
-
-        log.info("messages: " + chatRoomMessageRepository.findByRoomId(roomId));
 
         return chatRoomMessageRepository.findByRoomId(roomId);
     }
@@ -44,11 +47,13 @@ public class ChatRoomMessageService {
     // 특정 채팅방에 메시지 추가 (업데이트 방식으로)
     public void addMessageToRoom(String roomId, String sender, String message) {
         ChatRoomMessage.Message newMessage = new ChatRoomMessage.Message();
+        Timestamp currentTimestamp = getCurrentTimestamp();
+
         newMessage.setSender(sender);
         newMessage.setMessage(message);
         /* 설명. default: 안읽음, 생성시각 추가*/
         newMessage.setReadYn(false);
-        newMessage.setCreatedAt(LocalDateTime.now().format(FORMATTER));
+        newMessage.setCreatedAt(currentTimestamp);
 
 
         // MongoDB 쿼리로 부분 업데이트 수행
@@ -59,10 +64,9 @@ public class ChatRoomMessageService {
         mongoTemplate.upsert(query, update, ChatRoomMessage.class);
     }
 
-    public void markMessagesAsRead(String roomId, String user) {
+    public void markMessagesAsRead(String roomId, String nickname) {
 
         MongoCollection<Document> collection = mongoTemplate.getCollection("roomMessages");
-
 
 // MongoDB 쿼리: roomId에 해당하는 문서 찾기
         Document query = new Document("roomId", roomId);
@@ -71,7 +75,7 @@ public class ChatRoomMessageService {
         Document update = new Document("$set", new Document("messages.$[elem].readYn", true));
 // 배열 필터 정의
         List<Document> arrayFilters = Collections.singletonList(
-                new Document("elem.sender", new Document("$ne", user))
+                new Document("elem.sender", new Document("$ne", nickname))
                         .append("elem.readYn", false)
         );
 

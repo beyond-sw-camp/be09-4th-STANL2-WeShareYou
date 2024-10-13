@@ -63,6 +63,9 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// sms
+	implementation group: 'net.nurigo', name: 'sdk', version: '4.3.0'
+
 }
 
 tasks.named('test') {

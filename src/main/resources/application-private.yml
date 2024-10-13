@@ -1,0 +1,12 @@
+# S3
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIATQPD7ILCYFAE5PRB
+      secretKey: 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
+    s3:
+      bucket: weshareubk
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

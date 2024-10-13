@@ -10,7 +10,6 @@ import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardComment
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
 
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
-import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentReadAllResponseVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentReadResponseVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentUpdateResponseVO;
 import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
@@ -88,9 +87,6 @@ public class BoardCommentController {
     @GetMapping
     public ApiResponse<?> getAllBoardComments() {
         List<BoardCommentDto> boardCommentDtos = boardCommentService.readComments();
-        List<BoardCommentReadAllResponseVO> boardCommentReadResponseVOs = boardCommentDtos.stream()
-                .map(boardCommentDto -> modelMappper.map(boardCommentDto, BoardCommentReadAllResponseVO.class))
-                .collect(Collectors.toList());
-        return ApiResponse.ok(boardCommentReadResponseVOs);
+        return ApiResponse.ok(boardCommentDtos);
     }
 }

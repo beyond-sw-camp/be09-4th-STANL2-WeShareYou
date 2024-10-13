@@ -3,22 +3,22 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.List;
-
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ProductReadCategoryResponseVO {
+public class ProductSummaryVO {
 
     @NotNull
-    private Long cursorId;
+    private Long id;
 
     @NotNull
-    private List<ProductSummaryVO> contents;
+    private String title;
 
     @NotNull
-    private boolean hasNext;
+    private String imageUrl;
 
+    @NotNull
+    private Boolean rental;
 }

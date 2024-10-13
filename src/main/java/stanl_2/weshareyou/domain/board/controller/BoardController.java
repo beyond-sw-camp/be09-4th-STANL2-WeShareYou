@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
-import stanl_2.weshareyou.domain.board.aggregate.dto.CursorDTO;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
@@ -15,8 +15,6 @@ import stanl_2.weshareyou.domain.board.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board.service.BoardService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
-
-import java.awt.*;
 
 @RestController(value = "boardController")
 @RequestMapping("/api/v1/board")

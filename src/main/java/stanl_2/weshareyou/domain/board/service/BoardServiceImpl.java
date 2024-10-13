@@ -9,7 +9,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
-import stanl_2.weshareyou.domain.board.aggregate.dto.CursorDTO;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
@@ -20,7 +20,6 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
-import java.awt.*;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

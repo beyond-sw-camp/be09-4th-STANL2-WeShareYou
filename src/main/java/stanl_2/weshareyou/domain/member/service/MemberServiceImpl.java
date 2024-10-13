@@ -5,7 +5,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,10 +24,9 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
-import stanl_2.weshareyou.global.security.service.MemberDetails;
+import stanl_2.weshareyou.global.security.service.userdetail.MemberDetails;
 
 import javax.crypto.SecretKey;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -138,8 +136,10 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updatePwd(MemberDTO memberRequestDTO) {
 
-        Member member = memberRepository.findById(memberRequestDTO.getId())
-                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        // 찾기 수정해야함!
+        Optional<Member> member2 = memberRepository.findByloginId(memberRequestDTO.getLoginId());
+        Member member = member2.orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
 
         member.setPassword(hashPwd);
@@ -324,18 +324,34 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
-        log.info("-1-1-1-1-1-1댓글 조회{}", responseMemberDTO);
+
         List<MyCommentResponseVO> commentResponseList = new ArrayList<>();
         for (BoardComment boardComment : member.getBoardComment()) {
-            log.info("0000{}", boardComment);
             MyCommentResponseVO boardCommentResponse = modelMapper.map(boardComment, MyCommentResponseVO.class);
             commentResponseList.add(boardCommentResponse);
         }
 
-        log.info("1111댓글 조회{}", commentResponseList);
-
         responseMemberDTO.setBoardComment(commentResponseList);
-        log.info("2222댓글 조회{}", responseMemberDTO);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO checkMember(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findByPhone(requestMemberDTO.getPhone());
+
+        if(member == null || !requestMemberDTO.getName().equals(member.getName())) {
+            throw new CommonException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
 
         // 보안상 null
         responseMemberDTO.setId(null);

@@ -3,12 +3,16 @@ package stanl_2.weshareyou.domain.board_recomment.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
-import stanl_2.weshareyou.domain.alarm.service.AlarmService;
+import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentCreateRequestVO;
+import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardCommentUpdateRequestVO;
+import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
+import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentReadResponseVO;
+import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.dto.BoardReCommentDto;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.request.BoardReCommentCreateRequestVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.request.BoardReCommentUpdateRequestVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentCreateResponseVO;
-import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentReadAllResponseVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentReadResponseVO;
 import stanl_2.weshareyou.domain.board_recomment.aggregate.vo.response.BoardReCommentUpdateResponseVO;
 import stanl_2.weshareyou.domain.board_recomment.service.BoardReCommentService;
@@ -22,26 +26,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BoardReCommentController {
     private final BoardReCommentService boardReCommentService;
-    private final AlarmService alarmService;
     private final ModelMapper modelMappper;
 
-    public BoardReCommentController(BoardReCommentService boardReCommentService, AlarmService alarmService, ModelMapper modelMappper) {
+    public BoardReCommentController(BoardReCommentService boardReCommentService, ModelMapper modelMappper) {
         this.boardReCommentService = boardReCommentService;
-        this.alarmService = alarmService;
         this.modelMappper = modelMappper;
     }
     @PostMapping("")
-    public ApiResponse<?> createBoardReComment(@RequestAttribute("nickname") String nickname,
-                                               @RequestAttribute("id") Long id,
-                                               @RequestBody BoardReCommentCreateRequestVO boardReCommentCreateRequestVO){
-        System.out.println(boardReCommentCreateRequestVO.getBoardCommentId());
+    public ApiResponse<?> createBoardReComment(@RequestBody BoardReCommentCreateRequestVO boardReCommentCreateRequestVO){
+
         BoardReCommentDto boardReCommentDto = modelMappper.map(boardReCommentCreateRequestVO, BoardReCommentDto.class);
-        boardReCommentDto.setMemberId(id);
-        boardReCommentDto.setNickname(nickname);
+
         boardReCommentService.createBoardReComment(boardReCommentDto);
-//        System.out.println("1.====에러===");
-        alarmService.sendRecommentAlarm(boardReCommentDto);
-//        System.out.println("2.====에러===");
+
         BoardReCommentCreateResponseVO boardReCommentCreateResponseVO =modelMappper.map(boardReCommentDto,BoardReCommentCreateResponseVO.class);
         System.out.println(boardReCommentCreateResponseVO);
         return ApiResponse.ok(boardReCommentCreateResponseVO);
@@ -74,9 +71,6 @@ public class BoardReCommentController {
     @GetMapping
     public ApiResponse<?> getAllBoardReComments() {
         List<BoardReCommentDto> boardReCommentDtos = boardReCommentService.readReComments();
-        List<BoardReCommentReadAllResponseVO> boardReCommentReadAllResponseVOs  =boardReCommentDtos.stream()
-                .map(boardReCommentDto ->modelMappper.map(boardReCommentDto,BoardReCommentReadAllResponseVO.class))
-                .collect(Collectors.toList());
-        return ApiResponse.ok(boardReCommentReadAllResponseVOs);
+        return ApiResponse.ok(boardReCommentDtos);
     }
 }

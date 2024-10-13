@@ -11,15 +11,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
+import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.FindLikeListResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.FindMypageListResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.FindMyCommentListResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
+import stanl_2.weshareyou.global.common.dto.SmsDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
+import stanl_2.weshareyou.global.config.SmsConfig;
 import stanl_2.weshareyou.global.security.service.smtp.MailService;
 
 import java.util.HashMap;
@@ -36,6 +39,7 @@ public class MemberController {
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
+    private final SmsConfig smsConfig;
 
     /* 설명. jwt토큰 활용 샘플 예시 코드 */
     @GetMapping("/health")
@@ -279,6 +283,27 @@ public class MemberController {
         EarnPointResponseVO earnPointResponseVO = modelMapper.map(responseMemberDTO, EarnPointResponseVO.class);
 
         return ApiResponse.ok(earnPointResponseVO);
+    }
+
+    /**
+     * 내용: 아이디 찾기를 위한 휴대전화 전송
+     *
+     */
+    @PostMapping("/sms")
+    public ApiResponse<?> sendSmsCheck(@RequestBody SendSmsRequestVO sendSmsRequestVO){
+
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setName(sendSmsRequestVO.getName());
+        requestMemberDTO.setPhone(sendSmsRequestVO.getPhone());
+
+        MemberDTO responseMemberDTO = memberService.checkMember(requestMemberDTO);
+
+        SmsDTO requestSms = modelMapper.map(responseMemberDTO, SmsDTO.class);
+
+        log.info("===여기까지 성공!");
+        smsConfig.sendSms(requestSms);
+
+        return ApiResponse.ok("인증번호 전송 성공!");
     }
 
     /**

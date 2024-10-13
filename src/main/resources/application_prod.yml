@@ -12,6 +12,12 @@ spring:
       port: ${REDIS_PORT}
       timeout: 30000
 
+  sms:
+    api-key: ${API_KEY}
+    api-secret: ${API_SECRET}
+    provider: ${PROVIDER}
+    sender: ${SENDER}
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://${DATABASE_HOST}:${MARIA_DATABASE_PORT}/${MARIA_DATABASE_NAME}

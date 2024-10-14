@@ -20,5 +20,5 @@ public class NoticeReadResponseVO {
     private List<NoticeSummaryVO> comment;
 
     @NotNull
-    private boolean hasNext;
+    private Boolean hasNext;
 }

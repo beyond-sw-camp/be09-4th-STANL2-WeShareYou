@@ -53,9 +53,6 @@ public class MemberController {
 //                                      @RequestAttribute("profile") String profile,
 //                                      @RequestAttribute("introduction") String introduction,
                                       @RequestAttribute("language") String language) {
-        if (id == null || loginId == null) {
-            throw new RuntimeException("aa");
-        }
         Map<String, Object> result = new HashMap<>();
         result.put("id", id);
         result.put("loginId", loginId);

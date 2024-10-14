@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class NoticeUpdateRequestVO {
+
     @NotNull
     private Long id;
     @NotNull

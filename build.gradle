@@ -39,6 +39,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	// nurigo
+	implementation 'net.nurigo:sdk:4.3.0'
+
 	// .env file
 	implementation 'me.paulschwarz:spring-dotenv:3.0.0'
 

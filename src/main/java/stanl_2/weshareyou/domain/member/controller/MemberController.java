@@ -53,6 +53,9 @@ public class MemberController {
 //                                      @RequestAttribute("profile") String profile,
 //                                      @RequestAttribute("introduction") String introduction,
                                       @RequestAttribute("language") String language) {
+        if (id == null || loginId == null) {
+            throw new RuntimeException("aa");
+        }
         Map<String, Object> result = new HashMap<>();
         result.put("id", id);
         result.put("loginId", loginId);
@@ -107,14 +110,14 @@ public class MemberController {
 
     /**
      * 내용 : 로그인
-     * URL: [GET] localhost:8080/api/v1/member/login
+     * URL: [Post] localhost:8080/api/v1/member/login
      * Request body
      * {
      *     "loginId": "test@gmail.com",
      *     "password": "test"
      * }
      */
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO){
 
         Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());

@@ -57,8 +57,16 @@ public class ChatRoomController {
 //                            ,Model model
                             ,@RequestAttribute("nickname") String nickname) {
         ChatRoom room = chatRoomService.findRoomById(roomId);
+
+        log.info("어디서?" + room);
+
         ChatRoomMessage messages = chatRoomMessageService.getMessagesByRoomId(roomId);
-        chatRoomMessageService.markMessagesAsRead(roomId, nickname);
+
+        log.info("에러?" + messages);
+
+//        chatRoomMessageService.markMessagesAsRead(roomId, nickname);
+
+        log.info("에러임?");
 
         Map<String, Object> response = new HashMap<>();
 //        response.put("user", nickname);
@@ -67,6 +75,8 @@ public class ChatRoomController {
 //        model.addAttribute("user", nickname);
 //        model.addAttribute("room", room);
 //        model.addAttribute("messages", messages.getMessages());
+
+        log.info("message가 뭐 들었나: " + messages.getMessages());
 
         return response;
 //        return "chat/room_detail";

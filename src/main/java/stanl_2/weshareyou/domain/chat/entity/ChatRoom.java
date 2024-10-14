@@ -24,6 +24,9 @@ public class ChatRoom implements Serializable {
     /* 설명. 참여자가 들어와있는지 여부 컬럼 */
     private Boolean senderActive = false;
     private Boolean receiverActive = false;
+    /* 설명. 삭제여부 */
+    private Boolean senderDelete = false;
+    private Boolean receiverDelete = false;
 
     public static ChatRoom create(String sender, String receiver) {
         ChatRoom chatRoom = new ChatRoom();

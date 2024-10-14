@@ -23,7 +23,8 @@ public class ChatController {
         chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
 
         // 구독자들에게 메시지 전송
-        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+//        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+        messagingTemplate.convertAndSend("/sub/" + message.getRoomId(), message);
     }
 }
 

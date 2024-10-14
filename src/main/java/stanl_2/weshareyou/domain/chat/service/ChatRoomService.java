@@ -2,19 +2,19 @@ package stanl_2.weshareyou.domain.chat.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoom;
 import stanl_2.weshareyou.domain.chat.repository.ChatRoomRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
-
 
     public List<ChatRoom> findAllRoom() {
 
@@ -24,13 +24,12 @@ public class ChatRoomService {
     public List<ChatRoom> findRoomsByUser(String user) {
 
         return chatRoomRepository.findAll().stream()
-                .filter(room -> (room.getSender() != null && room.getSender().equals(user)) ||
-                        (room.getReceiver() != null && room.getReceiver().equals(user)))
+                .filter(room -> (room.getSender() != null && room.getSender().equals(user) && !room.getSenderDelete()) ||
+                        (room.getReceiver() != null && room.getReceiver().equals(user) && !room.getReceiverDelete()))
                 .collect(Collectors.toList());
     }
 
     public ChatRoom findRoomById(String roomId) {
-//        return chatRoomRepository.findByRoomId(roomId).orElse(null); // ID로 채팅방 조회
         return chatRoomRepository.findByRoomId(roomId); // ID로 채팅방 조회
     }
 
@@ -38,5 +37,21 @@ public class ChatRoomService {
         ChatRoom chatRoom = ChatRoom.create(sender, receiver);
         chatRoomRepository.save(chatRoom); // DB에 저장
         return chatRoom;
+    }
+
+    @Transactional
+    public boolean deleteChatRoom(String roomId, String nickname) {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+
+        /* 설명. sender와 nickname이 같을 때 senderDelete = false */
+        if(chatRoom.getSender().equals(nickname)){
+            chatRoom.setSenderDelete(true);
+        }else{
+            chatRoom.setReceiverDelete(true);
+        }
+
+        chatRoomRepository.save(chatRoom);
+
+        return true;
     }
 }

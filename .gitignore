@@ -37,6 +37,3 @@ out/
 .vscode/
 
 *.env
-
-### S3 설정 키
-src/main/resources/application-private.yml

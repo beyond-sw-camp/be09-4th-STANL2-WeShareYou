@@ -2,6 +2,7 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.product.aggregate.entity.ProductStatus;
 
 import java.sql.Timestamp;
 
@@ -25,6 +26,9 @@ public class ProductReadResponseVO {
 
     @NotNull
     private String category;
+
+    @NotNull
+    private ProductStatus status;
 
     @NotNull
     private Timestamp startAt;

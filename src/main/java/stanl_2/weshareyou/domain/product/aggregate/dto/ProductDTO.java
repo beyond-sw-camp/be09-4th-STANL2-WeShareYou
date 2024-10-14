@@ -2,6 +2,7 @@ package stanl_2.weshareyou.domain.product.aggregate.dto;
 
 import lombok.*;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
+import stanl_2.weshareyou.domain.product.aggregate.entity.ProductStatus;
 
 import java.sql.Timestamp;
 
@@ -9,13 +10,13 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class ProductDTO {
     private Long id;
     private String title;
     private String content;
     private String imageUrl;
     private ProductCategory category;
+    private ProductStatus status;
     private Timestamp startAt;
     private Timestamp endAt;
     private Boolean rental;

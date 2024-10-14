@@ -1,20 +1,23 @@
-package stanl_2.weshareyou.domain.notice.aggregate.vo.response;
+package stanl_2.weshareyou.domain.notice.aggregate.vo;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+
+import java.sql.Timestamp;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class NoticeCreateResponseVO {
+public class NoticeSummaryVO {
 
     @NotNull
     private Long id;
 
     @NotNull
     private String title;
+
+    @NotNull
+    private Long adminId;
 }

@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class ProductDTO {
     private Long id;
     private String title;

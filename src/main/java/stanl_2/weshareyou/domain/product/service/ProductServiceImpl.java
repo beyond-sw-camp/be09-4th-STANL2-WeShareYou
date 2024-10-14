@@ -140,6 +140,7 @@ public class ProductServiceImpl implements ProductService {
         return productResponseDTO;
     }
 
+    // 나중에 삭제예정
 //    @Override
 //    @Transactional
 //    public CursorDTO readAllProductList(CursorDTO cursorDTO) {
@@ -208,8 +209,6 @@ public class ProductServiceImpl implements ProductService {
             List<ProductDTO> productDTOList = productList.stream()
                     .map(this::toProductDTO)
                     .collect(Collectors.toList());
-
-            log.info("productList: " + productDTOList);
 
             CursorDTO cursorResponseDTO = new CursorDTO();
             cursorResponseDTO.setCursorId(lastProductId);

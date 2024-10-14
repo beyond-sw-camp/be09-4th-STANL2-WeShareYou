@@ -2,6 +2,7 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.product.aggregate.entity.ProductStatus;
 
 @Setter
 @Getter
@@ -21,4 +22,7 @@ public class ProductSummaryVO {
 
     @NotNull
     private Boolean rental;
+
+    @NotNull
+    private ProductStatus status;
 }

@@ -4,5 +4,6 @@ public enum AlarmType {
     LIKE,
     COMMENT,
     RECOMMENT,
-    RENTAL
+    RENTAL,
+    CHAT
 }

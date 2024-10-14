@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
         productResponseDTO.setUpdatedAt(product.getUpdatedAt());
         productResponseDTO.setAdminId(product.getAdminId().getId());
         productResponseDTO.setRental(product.isRental());
+        productResponseDTO.setStatus(product.getStatus());
 
         return productResponseDTO;
     }
@@ -78,9 +79,11 @@ public class ProductServiceImpl implements ProductService {
         product.setStartAt(productDTO.getStartAt());
         product.setEndAt(productDTO.getEndAt());
         product.setImageUrl(productDTO.getImageUrl());
+        product.setStatus(productDTO.getStatus());
         product.setAdminId(member);
         product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
+        product.setStatus(productDTO.getStatus());
 
         productRepository.save(product);
 
@@ -100,6 +103,14 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByIdAndAdminId(productDTO.getId(), member)
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
 
+        product.setTitle(productDTO.getTitle());
+        product.setContent(productDTO.getContent());
+        product.setCategory(productDTO.getCategory());
+        product.setStartAt(productDTO.getStartAt());
+        product.setEndAt(productDTO.getEndAt());
+        product.setImageUrl(productDTO.getImageUrl());
+        product.setStatus(productDTO.getStatus());
+        product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
         product.setAdminId(member);
         productRepository.save(product);
@@ -183,7 +194,9 @@ public class ProductServiceImpl implements ProductService {
         if (cursorDTO.getCursorId() == null) {
             productList = productRepository.findByCategoryOrderByCreatedAtDesc(cursorDTO.getCategory(), pageable);
         } else {
-            productList = productRepository.findByCategoryLessThanOrderByCreatedAtDesc(cursorDTO.getCategory(), pageable);
+            productList = productRepository.findByCategoryAndIdLessThanOrderByCreatedAtDesc(
+                    cursorDTO.getCategory(), cursorDTO.getCursorId(), pageable
+            );
         }
 
         Long lastProductId = productList.getContent().isEmpty() ? null :
@@ -195,6 +208,8 @@ public class ProductServiceImpl implements ProductService {
             List<ProductDTO> productDTOList = productList.stream()
                     .map(this::toProductDTO)
                     .collect(Collectors.toList());
+
+            log.info("productList: " + productDTOList);
 
             CursorDTO cursorResponseDTO = new CursorDTO();
             cursorResponseDTO.setCursorId(lastProductId);

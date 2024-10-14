@@ -74,6 +74,7 @@ public class ProductController {
         productRequestDTO.setStartAt(productCreateRequestVO.getStartAt());
         productRequestDTO.setEndAt(productCreateRequestVO.getEndAt());
         productRequestDTO.setImageUrl(productCreateRequestVO.getImageUrl());
+        productRequestDTO.setStatus(productCreateRequestVO.getStatus());
 
         ProductDTO productResponseDTO = productService.createProduct(productRequestDTO);
 
@@ -86,11 +87,12 @@ public class ProductController {
      * 내용: 공유물품 수정
      * req:
      * {
-     *     "id":5,
-     *     "title": "스탠리 텀블러1",
-     *     "content": "스탠리 상태 좋습니다1.",
+     *     "id":6,
+     *     "title": "스탠리 텀블러2",
+     *     "content": "스탠리 상태 좋습니다2.",
      *     "imageUrl": "tumbler_image_url",
      *     "category": "KITCHENWARES",
+     *     "status": "RENTAL",
      *     "startAt": "2024-10-08T00:00:00",
      *     "endAt": "2024-10-10T00:00:00"
      * }
@@ -98,14 +100,15 @@ public class ProductController {
      * {
      *     "success": true,
      *     "result": {
-     *         "id": 4,
-     *         "title": "스탠리 텀블러1",
-     *         "content": "스탠리 상태 좋습니다1.",
+     *         "id": 6,
+     *         "title": "스탠리 텀블러2",
+     *         "content": "스탠리 상태 좋습니다2.",
      *         "imageUrl": "tumbler_image_url",
      *         "category": "KITCHENWARES",
-     *         "startAt": "2024-10-08T00:00:00",
-     *         "endAt": "2024-10-10T00:00:00",
-     *         "adminId": 1
+     *         "status": "RENTAL",
+     *         "startAt": "2024-10-08T00:00:00.000+00:00",
+     *         "endAt": "2024-10-10T00:00:00.000+00:00",
+     *         "adminId": 4
      *     },
      *     "error": null
      * }
@@ -217,22 +220,23 @@ public class ProductController {
 
     /**
      * 내용: 공유물품 상세 조회
-     * req: localhost:8080/api/v1/product/4
+     * req: localhost:8080/api/v1/product/6
      * res:
      * {
      *     "success": true,
      *     "result": {
-     *         "id": 4,
-     *         "title": "스탠리 텀블러1",
-     *         "content": "스탠리 상태 좋습니다1.",
-     *         "imageUrl": jacket_image_url,
+     *         "id": 6,
+     *         "title": "스탠리 텀블러2",
+     *         "content": "스탠리 상태 좋습니다2.",
+     *         "imageUrl": "tumbler_image_url",
      *         "category": "KITCHENWARES",
-     *         "startAt": "2024-10-08T00:00:00",
-     *         "endAt": "2024-10-10T00:00:00",
+     *         "status": "RENTAL",
+     *         "startAt": "2024-10-08T00:00:00.000+00:00",
+     *         "endAt": "2024-10-10T00:00:00.000+00:00",
      *         "rental": false,
-     *         "createdAt": null,
-     *         "updatedAt": "2024-10-09T17:21:47",
-     *         "adminId": 1,
+     *         "createdAt": "2024-10-14T11:28:42.420+00:00",
+     *         "updatedAt": "2024-10-14T11:28:42.420+00:00",
+     *         "adminId": 4,
      *         "memberId": null
      *     },
      *     "error": null

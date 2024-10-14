@@ -37,6 +37,11 @@ public class Product {
     private ProductCategory category;
 
     @NotNull
+    @Column(name = "PRODUCT_STATUS")
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
+
+    @NotNull
     @Column(name = "PRODUCT_START_AT")
     private Timestamp startAt;
 

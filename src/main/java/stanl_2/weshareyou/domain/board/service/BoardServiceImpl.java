@@ -104,7 +104,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public BoardDTO deleteBoard(BoardDTO boardDTO) {
 
         Timestamp currentTimestamp = getCurrentTimestamp();

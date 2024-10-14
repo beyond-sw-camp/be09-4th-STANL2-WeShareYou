@@ -18,14 +18,15 @@ public class BoardDTO {
     private Long id;
     private String title;
     private String content;
-    private String imageUrl;
     private TAG tag;
     private Integer commentCount;
     private Integer likesCount;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Boolean active;
-    private MultipartFile file;
+
+    private List<MultipartFile> file;
+    private List<String> imageUrl;
 
     private Long memberId;
     private String memberProfileUrl;

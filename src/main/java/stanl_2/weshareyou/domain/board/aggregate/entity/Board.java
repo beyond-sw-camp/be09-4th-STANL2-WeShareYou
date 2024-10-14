@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString
 @Table(name = "BOARD")
 public class Board {
 
@@ -32,8 +33,9 @@ public class Board {
     @NotNull
     private String content;
 
+    @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-    private String imageUrl;
+    private List<String> imageUrl = new ArrayList<>();
 
     @Column(name = "BOARD_TAG")
     @Enumerated(EnumType.STRING)

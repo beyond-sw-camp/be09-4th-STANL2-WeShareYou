@@ -12,6 +12,10 @@ import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @Service
@@ -30,25 +34,48 @@ public class S3uploader {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    public String uploadImg(MultipartFile file){
+    public List<String> uploadImg(List<MultipartFile> fileList){
 
-        String fileName = file.getOriginalFilename();
-//            String fileUrl= "https://" + bucket + "/" +fileName;
-        String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
+        List<String> imgUrl = fileList.stream()
+                .map(file -> {
+                    String fileName = createFileName(file.getOriginalFilename());
+                    ObjectMetadata metadata = new ObjectMetadata();
+                    metadata.setContentType(file.getContentType());
+                    metadata.setContentLength(file.getSize());
 
-        ObjectMetadata metadata= new ObjectMetadata();
-        metadata.setContentType(file.getContentType());
-        metadata.setContentLength(file.getSize());
+                    try {
+                        amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+                        String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
+                        return fileUrl;
+                    } catch (IOException e) {
+                        throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+                    }
+                }).collect(Collectors.toList());
 
-        try {
-            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
-        } catch (IOException e) {
-            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
-
-        return fileUrl;
+        return imgUrl;
     }
 
+    private String createFileName(String fileName) {
+        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
+    }
+
+    private String getFileExtension(String fileName) {
+        if (fileName.length() == 0) {
+            throw new CommonException(ErrorCode.BAD_REQUEST_IMAGE);
+        }
+        ArrayList<String> fileValidate = new ArrayList<>();
+        fileValidate.add(".jpg");
+        fileValidate.add(".jpeg");
+        fileValidate.add(".png");
+        fileValidate.add(".JPG");
+        fileValidate.add(".JPEG");
+        fileValidate.add(".PNG");
+        String idxFileName = fileName.substring(fileName.lastIndexOf("."));
+        if (!fileValidate.contains(idxFileName)) {
+            throw new CommonException(ErrorCode.BAD_REQUEST_IMAGE);
+        }
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
 
     public void deleteImg(String fileName){
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));

@@ -2,6 +2,8 @@ package stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard;
 
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,6 +15,6 @@ public class MyBoardResponseVO {
     private String content;
     private Integer commentCount;
     private Integer likesCount;
-    private String createdAt;
-    private String updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 }

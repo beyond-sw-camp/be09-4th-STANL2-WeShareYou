@@ -2,25 +2,23 @@ package stanl_2.weshareyou.domain.notice.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.notice.aggregate.vo.NoticeSummaryVO;
 
-import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class NoticeReadAllResponseVO {
+public class NoticeReadResponseVO {
 
     @NotNull
-    private Long id;
+    private Long cursorId;
 
     @NotNull
-    private String title;
+    private List<NoticeSummaryVO> comment;
 
     @NotNull
-    private Timestamp createdAt;
-
-    @NotNull
-    private Long adminId;
+    private Boolean hasNext;
 }

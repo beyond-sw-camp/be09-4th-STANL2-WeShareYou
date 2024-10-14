@@ -4,14 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import stanl_2.weshareyou.domain.notice.Service.NoticeService;
+import stanl_2.weshareyou.domain.notice.service.NoticeService;
 import stanl_2.weshareyou.domain.notice.aggregate.dto.NoticeDTO;
 import stanl_2.weshareyou.domain.notice.aggregate.vo.request.NoticeCreateRequestVO;
 import stanl_2.weshareyou.domain.notice.aggregate.vo.request.NoticeDeleteRequestVO;
 import stanl_2.weshareyou.domain.notice.aggregate.vo.request.NoticeUpdateRequestVO;
 import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeCreateResponseVO;
-import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeReadAllResponseVO;
+import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeReadResponseVO;
 import stanl_2.weshareyou.domain.notice.aggregate.vo.response.NoticeReadByIdResponseVO;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
@@ -37,17 +38,17 @@ public class NoticeController {
      *   created_at
      * */
     @GetMapping("")
-    private ApiResponse<?> readAllNotices(){
-        List<NoticeDTO> noticeListDTO = noticeService.readAllNotices();
+    private ApiResponse<?> readAllNotices(@RequestParam(value = "cursor", required = false) Long cursorId,
+                                          @RequestParam(value ="size", defaultValue = "4") Integer size){
+        CursorDTO cursorDTO = new CursorDTO();
+        cursorDTO.setCursorId(cursorId);
+        cursorDTO.setSize(size);
 
-        List<NoticeReadAllResponseVO> noticeReadAllResponseVO = noticeListDTO.stream()
-                                                            .map(notice -> modelMapper.map(notice, NoticeReadAllResponseVO.class))
-                                                            .toList();
+        CursorDTO responseCursorDTO = noticeService.readNotices(cursorDTO);
 
-        if(noticeReadAllResponseVO.isEmpty()){
-            return ApiResponse.ok("list is empty");
-        }
-        return ApiResponse.ok(noticeReadAllResponseVO);
+        NoticeReadResponseVO noticeResponseVO = modelMapper.map(responseCursorDTO, NoticeReadResponseVO.class);
+
+        return ApiResponse.ok(noticeResponseVO);
     }
 
     /* 설명.
@@ -62,7 +63,7 @@ public class NoticeController {
      *   active
      *   admin_id
      * */
-    @GetMapping("/{noticeId}")
+    @GetMapping("/detail/{noticeId}")
     private ApiResponse<?> readNoticeById(@PathVariable Long noticeId){
         NoticeDTO noticeReadByIdResponseDTO = noticeService.readNoticeById(noticeId);
 

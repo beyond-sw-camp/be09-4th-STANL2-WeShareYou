@@ -77,13 +77,13 @@ public class SmsConfig {
 
         );
 
-        // redis에 인증번호, 이메일 저장
-        redisService.setDataExpire(requestSendSms.getPhone(), authCode, 60 * 5L);
-
         // redis에 해당 번호의 인증번호가 있으면 삭제
         if(redisService.isExistData(requestSendSms.getPhone())) {
             redisService.deleteData(requestSendSms.getPhone());
         }
+
+        // redis에 인증번호, 이메일 저장
+        redisService.setDataExpire(requestSendSms.getPhone(), authCode, 60 * 5L);
 
         // 초대장 전송
         SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));

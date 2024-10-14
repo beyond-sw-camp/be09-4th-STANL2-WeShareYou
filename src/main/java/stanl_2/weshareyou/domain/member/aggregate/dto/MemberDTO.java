@@ -9,6 +9,7 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.Like
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class MemberDTO {
     private String profileUrl;
     private String introduction;
     private String language;
-    private String createdAt;
-    private String updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
     private Boolean active;
 
     private List<MyBoardResponseVO> board;

@@ -13,9 +13,11 @@ public class SmsServiceImpl implements SmsService{
 
     public Boolean verifySmsCode(String phone, String code) {
         String codeFoundBySms = redisService.getData(phone);
+
         if (codeFoundBySms == null) {
             return false;
         }
+
         return codeFoundBySms.equals(code);
     }
 }

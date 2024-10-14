@@ -86,14 +86,13 @@ public class ProductController {
      * 내용: 공유물품 수정
      * req:
      * {
-     *     "id": 4,
+     *     "id":5,
      *     "title": "스탠리 텀블러1",
      *     "content": "스탠리 상태 좋습니다1.",
      *     "imageUrl": "tumbler_image_url",
      *     "category": "KITCHENWARES",
      *     "startAt": "2024-10-08T00:00:00",
-     *     "endAt": "2024-10-10T00:00:00",
-     *     "adminId": 1
+     *     "endAt": "2024-10-10T00:00:00"
      * }
      * res:
      * {

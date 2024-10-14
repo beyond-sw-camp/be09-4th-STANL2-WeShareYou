@@ -19,6 +19,6 @@ public class ProductReadCategoryResponseVO {
     private List<ProductSummaryVO> contents;
 
     @NotNull
-    private boolean hasNext;
+    private Boolean hasNext;
 
 }

@@ -10,6 +10,7 @@ import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,11 +82,11 @@ public class Member {
 
     @Column(name="MEMBER_CREATED_AT")
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @Column(name="MEMBER_UPDATED_AT")
     @NotNull
-    private String updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name="MEMBER_ACTIVE")
     @NotNull

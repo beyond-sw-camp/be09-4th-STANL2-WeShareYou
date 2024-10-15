@@ -26,5 +26,5 @@ public class BoardReadResponseVO {
     private List<BoardSummaryVO> comment;
 
     @NotNull
-    private Boolean hasNext;
+    private boolean hasNext;
 }

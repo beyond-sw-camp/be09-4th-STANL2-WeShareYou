@@ -37,7 +37,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ModelMapper modelMapper;
-
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
     private final SmsConfig smsConfig;

@@ -30,7 +30,6 @@ spring:
     import: application_prod.yml
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
-    include: private
 
   devtools:
     livereload:

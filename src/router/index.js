@@ -10,6 +10,7 @@ import Login from "../views/body/member/Login.vue";
 import FindId from "../views/body/member/FindId.vue";
 import FindPwd from "../views/body/member/FindPwd.vue";
 
+
 // 아래 샘플!!
 import Sample from "../views/body/sample/Sample.vue";
 
@@ -20,7 +21,7 @@ const routes = [
         name: 'Sample',
         component: Sample
     },
-    { 
+    {
         path: '/login',
         name: 'Login', 
         component: Login 

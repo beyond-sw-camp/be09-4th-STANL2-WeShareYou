@@ -20,4 +20,8 @@ WSU @ 2024. All rights reserved.</p>
   		padding-right: 10px;
   		line-height: 1.6; /* Adjusts line spacing for better readability */
 	}
+	
+	p {
+		margin-bottom: 0 !important;
+	}
 </style>

@@ -58,9 +58,9 @@ public class BoardLikeServiceImpl implements BoardLikeService {
     @Override
     public BoardLikeDto BoardUnLike(BoardLikeDto boardUnLikeDto) {
         Long boardId = boardUnLikeDto.getBoardId();
-        Long memberId = boardUnLikeDto.getMemberId();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        Long memberId = boardUnLikeDto.getMemberId();
         BoardLike existingLike =
                 boardLikeRepository.findById(new BoardLikeId(memberId,boardId))
                         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_LIKE));

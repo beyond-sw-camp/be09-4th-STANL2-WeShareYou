@@ -61,14 +61,16 @@ public class BoardServiceImpl implements BoardService{
     @Override
     @Transactional
     public BoardDTO createBoard(BoardDTO boardDTO) {
+        Board board =new Board();
+        List<String> images =new ArrayList<>();
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardDTO.getMemberId();
         List<MultipartFile> files = boardDTO.getFile();
 
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Board board = new Board();
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         board.setTag(boardDTO.getTag());
@@ -78,28 +80,24 @@ public class BoardServiceImpl implements BoardService{
         board.setUpdatedAt(currentTimestamp);
         board.setActive(true);
         board.setMember(member);
-
-        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
-        System.out.println("imageList : "+ imageList);
-        board.setImageList(imageList);
-
-        if(files != null){
-//            List<String> ImageList = s3uploader.uploadImg(boardDTO.getFile());
-
-//            log.info("값 출력: {}", Arrays.toString(new List[]{imageList}));
-
-            List<String> images = new ArrayList<>();
-            for(String imgUrl: images){
-                BoardImage boardImage = new BoardImage(imgUrl, board);
-                boardImageRepository.save(boardImage);
-            }
-        }
-
         boardRepository.save(board);
 
+        System.out.println("3.=======================================");
+        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
+        System.out.println("4.=======================================");
+        BoardImage boardImage = new BoardImage();
+        if(files != null){
+            for (String imageUrl : imageList) {
+                images.add(imageUrl);
+                boardImage.setBoard(board);  // board와 관계 설정
+            }
+        }
+        boardImage.setImageUrl(images);
+        boardImageRepository.save(boardImage);  // DB에 저장
+        System.out.println("5.=============================================");
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
         boardResponseDTO.setMemberId(member.getId());
-
+        boardResponseDTO.setImageUrl(images);
         return boardResponseDTO;
     }
 

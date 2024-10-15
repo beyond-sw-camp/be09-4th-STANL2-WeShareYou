@@ -5,7 +5,8 @@ import Board from "../views/body/board/Board.vue";
 import Notice from "../views/body/notice/Notice.vue";
 import FAQ from "../views/body/faq/FAQ.vue";
 import Direction from "../views/body/direction/Direction.vue";
-
+import Post from "../components/cud/Post.vue"
+import Modify from "../components/cud/Modify.vue"
 // 아래 샘플!!
 import Sample from "../views/body/sample/Sample.vue";
 import Login from "../views/body/member/Login.vue";
@@ -51,7 +52,18 @@ const routes = [
         path: '/direction',
         name: 'Direction',
         component: Direction,
+    },
+    {
+        path: '/post',
+        name: 'Post',
+        component: Post
+    },
+    {
+        path: '/modify',
+        name: 'Modify',
+        component: Modify
     }
+
 ];
 
 const router = createRouter({

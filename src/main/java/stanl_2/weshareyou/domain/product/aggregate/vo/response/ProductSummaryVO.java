@@ -4,14 +4,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductStatus;
 
-import java.sql.Timestamp;
-
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ProductUpdateResponseVO {
+public class ProductSummaryVO {
 
     @NotNull
     private Long id;
@@ -20,23 +18,11 @@ public class ProductUpdateResponseVO {
     private String title;
 
     @NotNull
-    private String content;
-
-    @NotNull
     private String imageUrl;
 
     @NotNull
-    private String category;
+    private Boolean rental;
 
     @NotNull
     private ProductStatus status;
-
-    @NotNull
-    private Timestamp startAt;
-
-    @NotNull
-    private Timestamp endAt;
-
-    @NotNull
-    private Long adminId;
 }

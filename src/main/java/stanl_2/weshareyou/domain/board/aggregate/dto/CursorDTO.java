@@ -1,8 +1,7 @@
-package stanl_2.weshareyou.global.common.dto;
+package stanl_2.weshareyou.domain.board.aggregate.dto;
 
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
-import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 
 import java.util.List;
 
@@ -10,13 +9,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CursorDTO<T> {
+public class CursorDTO {
 
     private Long id;
     private TAG tag;
-    private ProductCategory category;
     private Long cursorId;
-    private List<T> comment;
+    private List<BoardDTO> comment;
     private boolean hasNext;
     private Integer size;
 }

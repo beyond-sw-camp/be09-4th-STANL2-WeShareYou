@@ -5,7 +5,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,12 +24,14 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
-import stanl_2.weshareyou.global.security.service.MemberDetails;
+import stanl_2.weshareyou.global.security.service.userdetail.MemberDetails;
 
 import javax.crypto.SecretKey;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,23 +48,25 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationConstants applicationConstants;
-    private static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMAT);
     private static final long JWT_EXPIRATION_TIME = 30000000L;
+
+    private Timestamp getCurrentTimestamp() {
+        ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        return Timestamp.from(nowKst.toInstant());
+    }
 
     @Override
     @Transactional
     public MemberDTO registMember(MemberDTO memberRequestDTO) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
 
         // 비밀번호 해싱
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
         memberRequestDTO.setPassword(hashPwd);
 
         Member registMember = modelMapper.map(memberRequestDTO, Member.class);
-        registMember.setUpdatedAt(LocalDateTime.now()
-                .format(FORMATTER));
-        registMember.setCreatedAt(LocalDateTime.now()
-                .format(FORMATTER));
+        registMember.setUpdatedAt(currentTimestamp);
+        registMember.setCreatedAt(currentTimestamp);
 
         registMember.setRole(Role.ROLE_MEMBER);
         registMember.setActive(true);
@@ -122,12 +125,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void deleteMember(Long id) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
+
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND)
                 );
 
-        member.setUpdatedAt(LocalDateTime.now()
-                .format(FORMATTER));
+        member.setUpdatedAt(currentTimestamp);
         member.setActive(false);
 
         memberRepository.save(member);
@@ -137,14 +141,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void updatePwd(MemberDTO memberRequestDTO) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
 
-        Member member = memberRepository.findById(memberRequestDTO.getId())
-                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        // 찾기 수정해야함!
+        Optional<Member> member2 = memberRepository.findByloginId(memberRequestDTO.getLoginId());
+        Member member = member2.orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
         String hashPwd = passwordEncoder.encode(memberRequestDTO.getPassword());
 
         member.setPassword(hashPwd);
-        member.setUpdatedAt(LocalDateTime.now()
-                .format(FORMATTER));
+        member.setUpdatedAt(currentTimestamp);
 
         memberRepository.save(member);
     }
@@ -153,6 +159,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberDTO updateProfile(MemberDTO requestMemberDTO) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
 
         Member member = memberRepository.findById(requestMemberDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -161,8 +168,7 @@ public class MemberServiceImpl implements MemberService {
         member.setProfileUrl(requestMemberDTO.getProfileUrl());
         member.setIntroduction(requestMemberDTO.getIntroduction());
         member.setLanguage(requestMemberDTO.getLanguage());
-        member.setUpdatedAt(LocalDateTime.now()
-                .format(FORMATTER));
+        member.setUpdatedAt(currentTimestamp);
 
         memberRepository.save(member);
 
@@ -180,12 +186,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberDTO updateMypage(MemberDTO requestMemberDTO) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
+
         Member member = memberRepository.findById(requestMemberDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.setPhone(requestMemberDTO.getPhone());
-        member.setUpdatedAt(LocalDateTime.now()
-                .format(FORMATTER));
+        member.setUpdatedAt(currentTimestamp);
 
         Member updataMember = memberRepository.save(member);
 
@@ -203,13 +210,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberDTO earnPoint(MemberDTO requestMemberDTO) {
+        Timestamp currentTimestamp = getCurrentTimestamp();
 
         Member member = memberRepository.findById(requestMemberDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.setPoint(member.getPoint() + requestMemberDTO.getPoint());
-        member.setUpdatedAt(LocalDateTime.now()
-                .format(FORMATTER));
+        member.setUpdatedAt(currentTimestamp);
 
         memberRepository.save(member);
 
@@ -324,18 +331,34 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
-        log.info("-1-1-1-1-1-1댓글 조회{}", responseMemberDTO);
+
         List<MyCommentResponseVO> commentResponseList = new ArrayList<>();
         for (BoardComment boardComment : member.getBoardComment()) {
-            log.info("0000{}", boardComment);
             MyCommentResponseVO boardCommentResponse = modelMapper.map(boardComment, MyCommentResponseVO.class);
             commentResponseList.add(boardCommentResponse);
         }
 
-        log.info("1111댓글 조회{}", commentResponseList);
-
         responseMemberDTO.setBoardComment(commentResponseList);
-        log.info("2222댓글 조회{}", responseMemberDTO);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
+    public MemberDTO checkMember(MemberDTO requestMemberDTO) {
+
+        Member member = memberRepository.findByPhone(requestMemberDTO.getPhone());
+
+        if(member == null || !requestMemberDTO.getName().equals(member.getName())) {
+            throw new CommonException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
 
         // 보안상 null
         responseMemberDTO.setId(null);

@@ -17,9 +17,12 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.Find
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.FindMypageListResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.FindMyCommentListResponseVO;
 import stanl_2.weshareyou.domain.member.service.MemberService;
+import stanl_2.weshareyou.global.common.dto.SmsDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
+import stanl_2.weshareyou.global.config.SmsConfig;
+import stanl_2.weshareyou.global.security.service.sms.SmsService;
 import stanl_2.weshareyou.global.security.service.smtp.MailService;
 
 import java.util.HashMap;
@@ -36,6 +39,8 @@ public class MemberController {
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
+    private final SmsConfig smsConfig;
+    private final SmsService smsService;
 
     /* 설명. jwt토큰 활용 샘플 예시 코드 */
     @GetMapping("/health")
@@ -102,14 +107,14 @@ public class MemberController {
 
     /**
      * 내용 : 로그인
-     * URL: [GET] localhost:8080/api/v1/member/login
+     * URL: [Post] localhost:8080/api/v1/member/login
      * Request body
      * {
      *     "loginId": "test@gmail.com",
      *     "password": "test"
      * }
      */
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO){
 
         Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
@@ -132,8 +137,8 @@ public class MemberController {
      * JWT 토큰만 있으면 된다.
      */
     @PostMapping("/mail")
-    public ApiResponse<?> sendEmailCheck(@RequestAttribute("loginId") String loginId) throws MessagingException {
-        mailService.sendEmail(loginId);
+    public ApiResponse<?> sendEmailCheck(@RequestBody SendEmailRequestVO sendEmailRequestVO) throws MessagingException {
+        mailService.sendEmail(sendEmailRequestVO.getEmail());
         return ApiResponse.ok("이메일 전송 성공!");
     }
 
@@ -143,10 +148,9 @@ public class MemberController {
      *
      * JWT Token, 인증번호(Request Body)
      */
-    @GetMapping("/check")
-    public ApiResponse<?> checkCode(@RequestAttribute("loginId") String loginId,
-                                    @RequestBody CheckCodeRequestVO checkCodeRequestVO){
-        if(!mailService.verifyEmailCode(loginId, checkCodeRequestVO.getCode())) {
+    @GetMapping("/mail/check")
+    public ApiResponse<?> checkEmailCode(@RequestBody CheckEmailCodeRequestVO checkEmailCodeRequestVO){
+        if(!mailService.verifyEmailCode(checkEmailCodeRequestVO.getEmail(), checkEmailCodeRequestVO.getCode())) {
             throw new CommonException(ErrorCode.EMAIL_VERIFY_FAIL);
         }
         return ApiResponse.ok("이메일 인증 성공!");
@@ -177,10 +181,8 @@ public class MemberController {
      * }
      */
     @PutMapping("/password")
-    public ApiResponse<?> updatePwd(@RequestAttribute("id") Long id,
-                                    @RequestBody UpdatePwdRequestVO updatePwdRequestVO){
+    public ApiResponse<?> updatePwd(@RequestBody UpdatePwdRequestVO updatePwdRequestVO){
         MemberDTO memberRequestDTO = modelMapper.map(updatePwdRequestVO, MemberDTO.class);
-        memberRequestDTO.setId(id);
 
         memberService.updatePwd(memberRequestDTO);
 
@@ -282,6 +284,38 @@ public class MemberController {
         EarnPointResponseVO earnPointResponseVO = modelMapper.map(responseMemberDTO, EarnPointResponseVO.class);
 
         return ApiResponse.ok(earnPointResponseVO);
+    }
+
+    /**
+     * 내용: 아이디 찾기를 위한 휴대전화 전송
+     *
+     */
+    @PostMapping("/sms")
+    public ApiResponse<?> sendSmsCheck(@RequestBody SendSmsRequestVO sendSmsRequestVO){
+
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setName(sendSmsRequestVO.getName());
+        requestMemberDTO.setPhone(sendSmsRequestVO.getPhone());
+
+        MemberDTO responseMemberDTO = memberService.checkMember(requestMemberDTO);
+
+        SmsDTO requestSms = modelMapper.map(responseMemberDTO, SmsDTO.class);
+
+        smsConfig.sendSms(requestSms);
+
+        return ApiResponse.ok("인증번호 전송 성공!");
+    }
+
+    /**
+     * 내용: sms인증에 성공하셨습니다!
+     *
+     */
+    @GetMapping("/sms/check")
+    public ApiResponse<?> checkSmsCode(@RequestBody CheckSmsCodeRequestVO checkSmsCodeRequestVO){
+        if(!smsService.verifySmsCode(checkSmsCodeRequestVO.getPhone(), checkSmsCodeRequestVO.getCode())) {
+            throw new CommonException(ErrorCode.SMS_VERIFY_FAIL);
+        }
+        return ApiResponse.ok("SMS 인증 성공!");
     }
 
     /**

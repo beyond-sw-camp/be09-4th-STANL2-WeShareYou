@@ -3,16 +3,17 @@ package stanl_2.weshareyou.domain.product.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
-import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
+import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.List;
@@ -73,6 +74,7 @@ public class ProductController {
         productRequestDTO.setStartAt(productCreateRequestVO.getStartAt());
         productRequestDTO.setEndAt(productCreateRequestVO.getEndAt());
         productRequestDTO.setImageUrl(productCreateRequestVO.getImageUrl());
+        productRequestDTO.setStatus(productCreateRequestVO.getStatus());
 
         ProductDTO productResponseDTO = productService.createProduct(productRequestDTO);
 
@@ -85,27 +87,28 @@ public class ProductController {
      * 내용: 공유물품 수정
      * req:
      * {
-     *     "id": 4,
-     *     "title": "스탠리 텀블러1",
-     *     "content": "스탠리 상태 좋습니다1.",
+     *     "id":6,
+     *     "title": "스탠리 텀블러2",
+     *     "content": "스탠리 상태 좋습니다2.",
      *     "imageUrl": "tumbler_image_url",
      *     "category": "KITCHENWARES",
+     *     "status": "RENTAL",
      *     "startAt": "2024-10-08T00:00:00",
-     *     "endAt": "2024-10-10T00:00:00",
-     *     "adminId": 1
+     *     "endAt": "2024-10-10T00:00:00"
      * }
      * res:
      * {
      *     "success": true,
      *     "result": {
-     *         "id": 4,
-     *         "title": "스탠리 텀블러1",
-     *         "content": "스탠리 상태 좋습니다1.",
+     *         "id": 6,
+     *         "title": "스탠리 텀블러2",
+     *         "content": "스탠리 상태 좋습니다2.",
      *         "imageUrl": "tumbler_image_url",
      *         "category": "KITCHENWARES",
-     *         "startAt": "2024-10-08T00:00:00",
-     *         "endAt": "2024-10-10T00:00:00",
-     *         "adminId": 1
+     *         "status": "RENTAL",
+     *         "startAt": "2024-10-08T00:00:00.000+00:00",
+     *         "endAt": "2024-10-10T00:00:00.000+00:00",
+     *         "adminId": 4
      *     },
      *     "error": null
      * }
@@ -155,71 +158,85 @@ public class ProductController {
 
     /**
      * 내용: 공유물품 전체 조회
-     * req:
-     * res:
-     * {
-     *     "success": true,
-     *     "result": [
-     *         {
-     *             "id": 1,
-     *             "title": "스탠리 텀블러1",
-     *             "content": "스탠리 상태 좋습니다1.",
-     *             "imageUrl": null,
-     *             "category": "KITCHENWARES",
-     *             "startAt": "2024-10-08T00:00:00",
-     *             "endAt": "2024-10-10T00:00:00",
-     *             "createdAt": null,
-     *             "updatedAt": "2024-10-09T16:43:47",
-     *             "adminId": 1,
-     *             "memberId": null
-     *         },
-     *         {
-     *             "id": 2,
-     *             "title": "Winter Jacket",
-     *             "content": "A warm winter jacket.",
-     *             "imageUrl": "jacket_image_url",
-     *             "category": "CLOTHES",
-     *             "startAt": "2024-10-01T00:00:00",
-     *             "endAt": "2024-11-01T00:00:00",
-     *             "createdAt": "2024-10-08T12:00:00",
-     *             "updatedAt": "2024-10-08T12:00:00",
-     *             "adminId": 1,
-     *             "memberId": 3
-     *         },
-     *     ],
-     *     "error": null
-     * }
-     */
-    @GetMapping("")
-    public ApiResponse<?> readAllProductList() {
-
-        List<ProductDTO> productDTOList = productService.readAllProductList();
-
-        List<ProductReadAllResponseVO> productReadResponseVOList = productDTOList.stream()
-                .map(productList -> modelMapper.map(productList, ProductReadAllResponseVO.class))
-                .collect(Collectors.toList());
-
-        return ApiResponse.ok(productReadResponseVOList);
-    }
-
-    /**
-     * 내용: 공유물품 상세 조회
-     * req: localhost:8080/api/v1/product/4
+     * req: localhost:8080/api/v1/product?cursor=3&size=3
      * res:
      * {
      *     "success": true,
      *     "result": {
-     *         "id": 4,
-     *         "title": "스탠리 텀블러1",
-     *         "content": "스탠리 상태 좋습니다1.",
-     *         "imageUrl": jacket_image_url,
+     *         "cursorId": 2,
+     *         "contents": [
+     *             {
+     *                 "id": 1,
+     *                 "title": "Tent",
+     *                 "content": "A two-person tent for camping.",
+     *                 "imageUrl": "tent_image_url",
+     *                 "category": {},
+     *                 "startAt": "2024-09-30T15:00:00.000+00:00",
+     *                 "endAt": "2024-10-31T15:00:00.000+00:00",
+     *                 "rental": false,
+     *                 "createdAt": "2024-10-08T03:00:00.000+00:00",
+     *                 "updatedAt": "2024-10-08T03:00:00.000+00:00",
+     *                 "adminId": 1,
+     *                 "memberId": null
+     *             },
+     *             {
+     *                 "id": 2,
+     *                 "title": "Winter Jacket",
+     *                 "content": "A warm winter jacket.",
+     *                 "imageUrl": "jacket_image_url",
+     *                 "category": {},
+     *                 "startAt": "2024-09-30T15:00:00.000+00:00",
+     *                 "endAt": "2024-10-31T15:00:00.000+00:00",
+     *                 "rental": false,
+     *                 "createdAt": "2024-10-08T03:00:00.000+00:00",
+     *                 "updatedAt": "2024-10-08T03:00:00.000+00:00",
+     *                 "adminId": 1,
+     *                 "memberId": null
+     *             }
+     *         ],
+     *         "hasNext": false
+     *     },
+     *     "error": null
+     * }
+     */
+    // 나중에 삭제예정
+//    @GetMapping("")
+//    public ApiResponse<?> readAllProductList(@RequestParam(value = "cursor", required = false) Long cursorId,
+//                                             @RequestParam(value ="size", defaultValue = "4") Integer size) {
+//
+//        CursorDTO cursorDTO = new CursorDTO();
+//        cursorDTO.setCursorId(cursorId);
+//        cursorDTO.setSize(size);
+//
+//        CursorDTO responsCursorDTO = productService.readAllProductList(cursorDTO);
+//
+//        ProductReadAllResponseVO productReadAllResponseVO = new ProductReadAllResponseVO();
+//        productReadAllResponseVO.setCursorId(responsCursorDTO.getCursorId());
+//        productReadAllResponseVO.setContents(responsCursorDTO.getComment());
+//        productReadAllResponseVO.setHasNext(responsCursorDTO.isHasNext());
+//
+//        return ApiResponse.ok(productReadAllResponseVO);
+//    }
+
+    /**
+     * 내용: 공유물품 상세 조회
+     * req: localhost:8080/api/v1/product/6
+     * res:
+     * {
+     *     "success": true,
+     *     "result": {
+     *         "id": 6,
+     *         "title": "스탠리 텀블러2",
+     *         "content": "스탠리 상태 좋습니다2.",
+     *         "imageUrl": "tumbler_image_url",
      *         "category": "KITCHENWARES",
-     *         "startAt": "2024-10-08T00:00:00",
-     *         "endAt": "2024-10-10T00:00:00",
+     *         "status": "RENTAL",
+     *         "startAt": "2024-10-08T00:00:00.000+00:00",
+     *         "endAt": "2024-10-10T00:00:00.000+00:00",
      *         "rental": false,
-     *         "createdAt": null,
-     *         "updatedAt": "2024-10-09T17:21:47",
-     *         "adminId": 1,
+     *         "createdAt": "2024-10-14T11:28:42.420+00:00",
+     *         "updatedAt": "2024-10-14T11:28:42.420+00:00",
+     *         "adminId": 4,
      *         "memberId": null
      *     },
      *     "error": null
@@ -237,39 +254,69 @@ public class ProductController {
 
     /**
      * 내용: 공유물품 카테고리별 검색
-     * req: localhost:8080/api/v1/product/category/TOY
+     * req: localhost:8080/api/v1/product/category/KITCHENWARES?cursor=&size=3
      * res:
      * {
      *     "success": true,
-     *     "result": [
-     *         {
-     *             "id": 6,
-     *             "title": "스탠리 텀블러",
-     *             "imageUrl": jacket_image_url,
-     *             "category": "TOY",
-     *             "rental": false
-     *         },
-     *         {
-     *             "id": 7,
-     *             "title": "스탠리 텀블러",
-     *             "imageUrl": jacket_image_url,
-     *             "category": "TOY",
-     *             "rental": false
-     *         }
-     *     ],
+     *     "result": {
+     *         "category": "KITCHENWARES",
+     *         "cursorId": 3,
+     *         "contents": [
+     *             {
+     *                 "id": 5,
+     *                 "title": "스탠리 텀블러1",
+     *                 "content": "스탠리 상태 좋습니다1.",
+     *                 "imageUrl": "tumbler_image_url",
+     *                 "category": "KITCHENWARES",
+     *                 "status": "RENTAL",
+     *                 "startAt": "2024-10-07T15:00:00.000+00:00",
+     *                 "endAt": "2024-10-09T15:00:00.000+00:00",
+     *                 "rental": false,
+     *                 "createdAt": "2024-10-12T10:33:51.000+00:00",
+     *                 "updatedAt": "2024-10-12T10:34:00.000+00:00",
+     *                 "adminId": 4,
+     *                 "memberId": null
+     *             },
+     *             {
+     *                 "id": 3,
+     *                 "title": "Cooking Pot",
+     *                 "content": "A durable cooking pot for camping.",
+     *                 "imageUrl": "pot_image_url",
+     *                 "category": "KITCHENWARES",
+     *                 "status": "RENTAL",
+     *                 "startAt": "2024-09-30T15:00:00.000+00:00",
+     *                 "endAt": "2024-10-31T15:00:00.000+00:00",
+     *                 "rental": false,
+     *                 "createdAt": "2024-10-08T03:00:00.000+00:00",
+     *                 "updatedAt": "2024-10-08T03:00:00.000+00:00",
+     *                 "adminId": 1,
+     *                 "memberId": null
+     *             }
+     *         ],
+     *         "hasNext": false
+     *     },
      *     "error": null
      * }
      */
     @GetMapping("/category/{category}")
-    public ApiResponse<?> readProductByCategory(@PathVariable String category) {
+    public ApiResponse<?> readProductByCategory(@PathVariable ProductCategory category,
+                                                @RequestParam(value = "cursor", required = false) Long cursorId,
+                                                @RequestParam(value ="size", defaultValue = "4") Integer size) {
 
-        List<ProductDTO> productDTOList = productService.readProductByCategory(category);
+        CursorDTO cursorDTO = new CursorDTO();
+        cursorDTO.setCursorId(cursorId);
+        cursorDTO.setSize(size);
+        cursorDTO.setCategory(category);
 
-        List<ProductReadCategoryResponseVO> productReadCategoryResponseVOList = productDTOList.stream()
-                .map(productList -> modelMapper.map(productList, ProductReadCategoryResponseVO.class))
-                .collect(Collectors.toList());
+        CursorDTO responseCursorDTO = productService.readProductByCategory(cursorDTO);
 
-        return ApiResponse.ok(productReadCategoryResponseVOList);
+        ProductReadAllResponseVO productReadAllResponseVO = new ProductReadAllResponseVO();
+        productReadAllResponseVO.setCursorId(responseCursorDTO.getCursorId());
+        productReadAllResponseVO.setContents(responseCursorDTO.getComment());
+        productReadAllResponseVO.setHasNext(responseCursorDTO.isHasNext());
+        productReadAllResponseVO.setCategory(responseCursorDTO.getCategory());
+
+        return ApiResponse.ok(productReadAllResponseVO);
     }
 
     /**

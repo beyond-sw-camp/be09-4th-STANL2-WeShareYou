@@ -39,6 +39,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	// nurigo
+	implementation 'net.nurigo:sdk:4.3.0'
+
 	// .env file
 	implementation 'me.paulschwarz:spring-dotenv:3.0.0'
 
@@ -62,6 +65,9 @@ dependencies {
 
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// sms
+	implementation group: 'net.nurigo', name: 'sdk', version: '4.3.0'
 
 	// AWS S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'

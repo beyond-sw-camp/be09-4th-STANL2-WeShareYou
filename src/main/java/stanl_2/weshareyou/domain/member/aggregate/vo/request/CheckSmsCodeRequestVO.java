@@ -9,12 +9,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class UpdatePwdRequestVO {
+public class CheckSmsCodeRequestVO {
+    @NotNull(message = "인증할 연락처를 입력해주세요.")
+    private String phone;
 
-    @NotNull(message = "수정할 아이디를 입력해주세요.")
-    @Email
-    private String loginId;
-
-    @NotNull(message = "수정할 비밀번호를 입력해주세요.")
-    private String password;
+    @NotNull(message = "인증번호를 입력해주세요.")
+    private String code;
 }

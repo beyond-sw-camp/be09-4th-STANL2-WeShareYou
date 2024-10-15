@@ -19,13 +19,13 @@
         </div>
         
         <div class="nav-right">
+            <span class="language">Language</span>
+            <!-- 아이콘들 (예시: 알림, 설정 등) -->
+            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm"/>
+            <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message"/>
             <!-- 사용자 아이디 및 프로필 이미지 -->
-            <span class="user-id">User1</span>
             <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
             
-            <!-- 아이콘들 (예시: 알림, 설정 등) -->
-            <img src="../../assets/icon/navigation/alarm.png" alt="alarm"/>
-            <img src="../../assets/icon/navigation/message.png" alt="message"/>
         </div>
     </nav>
 </template>
@@ -39,14 +39,15 @@ import { RouterLink } from 'vue-router';
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f9fa;
+    padding: 10px 80px;
+    background-color: #ffffff;
     border-bottom: 1px solid #e0e0e0;
 }
     
 .nav-left {
     display: flex;
     align-items: center;
+    text-align: center;
 }
     
 .project-logo {
@@ -58,8 +59,11 @@ import { RouterLink } from 'vue-router';
     list-style: none;
     display: flex;
     gap: 15px;
+    margin: 0;  /* 여백 제거 */
+    padding: 0; /* 여백 제거 */
+    align-items: center; /* 세로 가운데 정렬 */
 }
-    
+
 .menu-list li {
     display: inline;
 }
@@ -71,8 +75,7 @@ import { RouterLink } from 'vue-router';
 }
     
 .menu-list li a.router-link-exact-active {
-    font-weight: bold;
-    color: #007bff;
+    color: #6CB1FF;
 }
     
 .nav-right {
@@ -81,14 +84,23 @@ import { RouterLink } from 'vue-router';
     gap: 15px;
 }
     
-.user-id {
-    font-weight: bold;
+.language {
+    color: #627086;
+    font-weight: 200;
+    cursor: pointer;
 }
     
 .profile-image {
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    cursor: pointer;
+}
+
+.icon-img {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
 }
     
 .icon {

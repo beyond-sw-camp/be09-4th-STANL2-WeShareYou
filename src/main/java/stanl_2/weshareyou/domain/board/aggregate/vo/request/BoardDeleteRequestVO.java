@@ -14,4 +14,8 @@ public class BoardDeleteRequestVO {
 
     @NotNull
     private Long id;
+
+    @NotNull
+    private Long memberId;
+
 }

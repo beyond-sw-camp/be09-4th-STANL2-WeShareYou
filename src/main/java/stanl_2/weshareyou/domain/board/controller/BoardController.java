@@ -72,7 +72,6 @@ public class BoardController {
         BoardDTO boardResponseDTO = boardService.createBoard(boardDTO);
 
         BoardCreateResponseVO boardCreateResponseVO = modelMapper.map(boardResponseDTO, BoardCreateResponseVO.class);
-        boardCreateResponseVO.setImageUrl(boardResponseDTO.getImageList());
 
         return ApiResponse.ok(boardCreateResponseVO);
     }
@@ -101,12 +100,11 @@ public class BoardController {
      */
     @PutMapping("")
     public ApiResponse<?> updateBoard(@RequestAttribute("id") Long memberId,
-                                      @RequestBody @Valid BoardUpdateRequestVO boardUpdateRequestVO) {
+                                      @RequestPart("vo") @Valid BoardUpdateRequestVO boardUpdateRequestVO,
+                                      @RequestPart("newFiles") List<MultipartFile> files) {
 
         BoardDTO boardDTO = modelMapper.map(boardUpdateRequestVO, BoardDTO.class);
         boardDTO.setMemberId(memberId);
-
-        log.info("값 확인1: {}", boardDTO.toString());
 
         BoardDTO boardResponseDTO = boardService.updateBoard(boardDTO);
 

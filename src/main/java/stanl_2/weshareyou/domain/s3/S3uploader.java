@@ -57,6 +57,7 @@ public class S3uploader {
                 String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
 
                 BoardImage boardImage = new BoardImage();
+                boardImage.setName(fileName);
                 boardImage.setImageUrl(fileUrl);
 
                 imageList.add(boardImage);

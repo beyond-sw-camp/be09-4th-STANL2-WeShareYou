@@ -15,6 +15,7 @@ import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository;
+import stanl_2.weshareyou.domain.board_image.aggregate.dto.BoardImageDTO;
 import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
@@ -80,9 +81,9 @@ public class BoardServiceImpl implements BoardService{
         board.setActive(true);
         board.setMember(member);
 
-        List<BoardImage> images = s3uploader.uploadImg(boardDTO.getFile());
-
         boardRepository.save(board);
+
+        List<BoardImage> images = s3uploader.uploadImg(boardDTO.getFile());
 
         for(BoardImage image: images){
             image.setBoard(board);
@@ -91,13 +92,15 @@ public class BoardServiceImpl implements BoardService{
 
         List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
 
-        List<String> imageUrls = new ArrayList<>();
+        List<BoardImageDTO> imageObj = new ArrayList<>();
+
         for (BoardImage image : savedImages) {
-            imageUrls.add(image.getImageUrl());
+            BoardImageDTO imageDTO = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+            imageObj.add(imageDTO);
         }
 
         BoardDTO boardResponseDTO = new BoardDTO();
-        boardResponseDTO.setImageList(imageUrls);
+        boardResponseDTO.setImageObj(imageObj);
         boardResponseDTO.setTitle(board.getTitle());
         boardResponseDTO.setContent(board.getContent());
         boardResponseDTO.setTag(board.getTag());

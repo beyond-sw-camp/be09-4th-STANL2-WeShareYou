@@ -6,7 +6,6 @@ import lombok.*;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
-import javax.xml.stream.events.Comment;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString
 @Table(name = "BOARD")
 public class Board {
 
@@ -32,8 +32,13 @@ public class Board {
     @NotNull
     private String content;
 
+//    @OneToMany(mappedBy = "BOARD")
+//    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
+//    private List<BoardImage> imageList;
+
+    @ElementCollection
     @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-    private String imageUrl;
+    private List<String> imageList = new ArrayList<>();
 
     @Column(name = "BOARD_TAG")
     @Enumerated(EnumType.STRING)

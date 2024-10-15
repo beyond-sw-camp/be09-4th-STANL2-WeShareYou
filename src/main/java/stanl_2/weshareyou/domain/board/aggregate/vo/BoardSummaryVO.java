@@ -2,7 +2,6 @@ package stanl_2.weshareyou.domain.board.aggregate.vo;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 
 @Getter
 @Setter

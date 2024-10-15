@@ -1,9 +1,10 @@
 package stanl_2.weshareyou.domain.board.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class BoardCreateResponseVO {
     @NotNull
     private String content;
 
-    private String imageUrl;
+    private List<String> imageUrl;
 
     @NotNull
     private TAG tag;

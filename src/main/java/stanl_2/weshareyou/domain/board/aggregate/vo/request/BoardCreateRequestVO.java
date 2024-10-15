@@ -3,8 +3,10 @@ package stanl_2.weshareyou.domain.board.aggregate.vo.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import org.w3c.dom.Text;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 
 @Getter
@@ -25,9 +27,6 @@ public class BoardCreateRequestVO {
 
     @NotNull(message = "태그를 선택하여 주세요.")
     private TAG tag;
-
-    @NotNull
-    private Long memberId;
 
 }
 

@@ -82,9 +82,7 @@ public class BoardServiceImpl implements BoardService{
         board.setMember(member);
         boardRepository.save(board);
 
-        System.out.println("3.=======================================");
         List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
-        System.out.println("4.=======================================");
         BoardImage boardImage = new BoardImage();
         if(files != null){
             for (String imageUrl : imageList) {
@@ -94,7 +92,6 @@ public class BoardServiceImpl implements BoardService{
         }
         boardImage.setImageUrl(images);
         boardImageRepository.save(boardImage);  // DB에 저장
-        System.out.println("5.=============================================");
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
         boardResponseDTO.setMemberId(member.getId());
         boardResponseDTO.setImageUrl(images);

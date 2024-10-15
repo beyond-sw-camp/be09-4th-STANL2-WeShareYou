@@ -2,7 +2,6 @@ package stanl_2.weshareyou.domain.board.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board.aggregate.vo.BoardSummaryVO;
 
@@ -26,5 +25,5 @@ public class BoardReadResponseVO {
     private List<BoardSummaryVO> comment;
 
     @NotNull
-    private boolean hasNext;
+    private Boolean hasNext;
 }

@@ -9,7 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board.aggregate.dto.BoardDTO;
+import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
+import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
 import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
@@ -22,9 +25,12 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
+import java.awt.*;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +43,7 @@ public class BoardServiceImpl implements BoardService{
     private final MemberRepository memberRepository;
     private final BoardCommentRepository boardCommentRepository;
     private final S3uploader s3uploader;
+    private final BoardImageRepository boardImageRepository;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
@@ -45,12 +52,13 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper,
                             MemberRepository memberRepository, BoardCommentRepository boardCommentRepository,
-                            S3uploader s3uploader) {
+                            S3uploader s3uploader, BoardImageRepository boardImageRepository) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
         this.boardCommentRepository = boardCommentRepository;
         this.s3uploader = s3uploader;
+        this.boardImageRepository = boardImageRepository;
     }
 
     @Override
@@ -58,6 +66,7 @@ public class BoardServiceImpl implements BoardService{
     public BoardDTO createBoard(BoardDTO boardDTO) {
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardDTO.getMemberId();
+        List<MultipartFile> files = boardDTO.getFile();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -65,7 +74,6 @@ public class BoardServiceImpl implements BoardService{
         Board board = new Board();
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
-        board.setImageUrl(s3uploader.uploadImg(boardDTO.getFile()));
         board.setTag(boardDTO.getTag());
         board.setCommentCount(0);
         board.setLikesCount(0);
@@ -73,6 +81,22 @@ public class BoardServiceImpl implements BoardService{
         board.setUpdatedAt(currentTimestamp);
         board.setActive(true);
         board.setMember(member);
+
+        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
+
+        board.setImageList(imageList);
+
+        if(files != null){
+//            List<String> ImageList = s3uploader.uploadImg(boardDTO.getFile());
+
+//            log.info("값 출력: {}", Arrays.toString(new List[]{imageList}));
+
+            List<String> images = new ArrayList<>();
+            for(String imgUrl: images){
+                BoardImage boardImage = new BoardImage(imgUrl, board);
+                boardImageRepository.save(boardImage);
+            }
+        }
 
         boardRepository.save(board);
 
@@ -92,7 +116,7 @@ public class BoardServiceImpl implements BoardService{
 
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
-        board.setImageUrl(boardDTO.getImageUrl());
+//        board.setImageUrl(boardDTO.getImageUrl());
         board.setTag(boardDTO.getTag());
         board.setUpdatedAt(currentTimestamp);
 
@@ -136,7 +160,7 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
 
         BoardDTO boardResponseDTO = new BoardDTO();
-        boardResponseDTO.setImageUrl(board.getImageUrl());
+//        boardResponseDTO.setImageUrl(board.getImageUrl());
         boardResponseDTO.setContent(board.getContent());
         boardResponseDTO.setLikesCount(board.getLikesCount());
         boardResponseDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
@@ -168,7 +192,7 @@ public class BoardServiceImpl implements BoardService{
                     BoardDTO boardDTO = new BoardDTO();
                     boardDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
                     boardDTO.setMemberNickname(board.getMember().getNickname());
-                    boardDTO.setImageUrl(board.getImageUrl());
+//                    boardDTO.setImageUrl(board.getImageUrl());
                     boardDTO.setTitle(board.getTitle());
                     boardDTO.setLikesCount(board.getLikesCount());
                     boardDTO.setCommentCount(board.getCommentCount());

@@ -14,6 +14,8 @@ import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardCreateRequestVO
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardDeleteRequestVO;
 import stanl_2.weshareyou.domain.board.aggregate.vo.request.BoardUpdateRequestVO;
 import stanl_2.weshareyou.domain.board.service.BoardService;
+import stanl_2.weshareyou.global.common.exception.CommonException;
+import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.ArrayList;
@@ -63,8 +65,11 @@ public class BoardController {
 
         BoardDTO boardDTO = modelMapper.map(boardCreateRequestVO, BoardDTO.class);
         boardDTO.setMemberId(memberId);
-        List<MultipartFile> fileList = new ArrayList<>(files);
-        boardDTO.setFile(fileList);
+
+        if(files != null) {
+            List<MultipartFile> fileList = new ArrayList<>(files);
+            boardDTO.setFile(fileList);
+        }
 
         BoardDTO boardResponseDTO = boardService.createBoard(boardDTO);
 
@@ -102,6 +107,8 @@ public class BoardController {
         BoardDTO boardDTO = modelMapper.map(boardUpdateRequestVO, BoardDTO.class);
         boardDTO.setMemberId(memberId);
 
+        log.info("값 확인1: {}", boardDTO.toString());
+
         BoardDTO boardResponseDTO = boardService.updateBoard(boardDTO);
 
         BoardUpdateResponseVO boardUpdateResponseVO = modelMapper.map(boardResponseDTO, BoardUpdateResponseVO.class);
@@ -132,6 +139,8 @@ public class BoardController {
 
         BoardDTO boardDTO = modelMapper.map(boardDeleteRequestVO, BoardDTO.class);
         boardDTO.setMemberId(memberId);
+
+        log.info("값 확인2: {}", boardDTO.toString());
 
         BoardDTO boardResponseDTO = boardService.deleteBoard(boardDTO);
 

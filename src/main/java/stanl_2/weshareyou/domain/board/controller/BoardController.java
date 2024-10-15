@@ -72,6 +72,7 @@ public class BoardController {
         BoardDTO boardResponseDTO = boardService.createBoard(boardDTO);
 
         BoardCreateResponseVO boardCreateResponseVO = modelMapper.map(boardResponseDTO, BoardCreateResponseVO.class);
+        boardCreateResponseVO.setImageUrl(boardResponseDTO.getImageList());
 
         return ApiResponse.ok(boardCreateResponseVO);
     }

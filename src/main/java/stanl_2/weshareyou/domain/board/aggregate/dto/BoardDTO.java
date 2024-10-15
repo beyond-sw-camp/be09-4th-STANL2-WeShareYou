@@ -26,7 +26,7 @@ public class BoardDTO {
     private Boolean active;
 
     private List<MultipartFile> file;
-    private List<String> imageUrl;
+    private List<String> imageList;
 
     private Long memberId;
     private String memberProfileUrl;

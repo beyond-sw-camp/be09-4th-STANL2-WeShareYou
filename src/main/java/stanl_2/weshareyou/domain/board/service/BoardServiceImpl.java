@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,6 @@ public class BoardServiceImpl implements BoardService{
     public BoardDTO createBoard(BoardDTO boardDTO) {
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardDTO.getMemberId();
-//        List<MultipartFile> files = boardDTO.getFile();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -80,18 +80,27 @@ public class BoardServiceImpl implements BoardService{
         board.setActive(true);
         board.setMember(member);
 
-//        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
-        s3uploader.uploadImg(boardDTO.getFile());
-
-//        List<BoardImage> images = imageList.stream()
-//                        .map( url -> new BoardImage(null, url, board)
-//                        ).collect(Collectors.toList());
-
-//        board.setImageList(images);
+        List<BoardImage> images = s3uploader.uploadImg(boardDTO.getFile());
 
         boardRepository.save(board);
 
-        BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
+        for(BoardImage image: images){
+            image.setBoard(board);
+            boardImageRepository.save(image);
+        }
+
+        List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+
+        List<String> imageUrls = new ArrayList<>();
+        for (BoardImage image : savedImages) {
+            imageUrls.add(image.getImageUrl());
+        }
+
+        BoardDTO boardResponseDTO = new BoardDTO();
+        boardResponseDTO.setImageList(imageUrls);
+        boardResponseDTO.setTitle(board.getTitle());
+        boardResponseDTO.setContent(board.getContent());
+        boardResponseDTO.setTag(board.getTag());
 
         return boardResponseDTO;
     }

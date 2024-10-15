@@ -20,7 +20,7 @@ public class BoardCreateResponseVO {
     @NotNull
     private String content;
 
-    private List<BoardImage> imageUrl;
+    private List<String> imageUrl;
 
     @NotNull
     private TAG tag;

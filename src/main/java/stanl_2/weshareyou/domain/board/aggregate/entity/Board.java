@@ -66,6 +66,13 @@ public class Board {
     @OneToMany(mappedBy = "board"/*, cascade = CascadeType.ALL, fetch = FetchType.LAZY*/)
     private List<BoardLike> boardLikes/* = new ArrayList<>()*/;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<BoardImage> imageList;
+
+    public void addImage(BoardImage image) {
+        if (!this.imageList.contains(image)) {
+            this.imageList.add(image);
+            image.setBoard(this); // 양방향 연관관계 설정
+        }
+    }
 }

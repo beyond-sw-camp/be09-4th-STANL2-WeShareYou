@@ -50,7 +50,7 @@ const routes = [
         path: '/direction',
         name: 'Direction',
         component: Direction,
-    }
+    },
 ];
 
 const router = createRouter({

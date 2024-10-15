@@ -28,4 +28,7 @@ public class BoardUpdateRequestVO {
 
     @NotNull(message = "태그를 선택하여 주세요.")
     private TAG tag;
+
+    @NotNull
+    private Long memberId;
 }

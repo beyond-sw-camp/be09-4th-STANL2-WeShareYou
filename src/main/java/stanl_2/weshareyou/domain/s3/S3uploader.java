@@ -14,10 +14,7 @@ import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -53,7 +50,7 @@ public class S3uploader {
                         BoardImage boardImage = new BoardImage();
 //                        boardImage(fileName);
                         String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
-                        boardImage.setImageUrl(fileUrl);
+                        boardImage.setImageUrl(Collections.singletonList(fileUrl));
 
                         return fileUrl;
                     } catch (IOException e) {

@@ -50,6 +50,10 @@ spring:
           mail.smtp.ssl.protocols: TLSv1.2
           mail.debug: true
 
+server:
+  port:
+    8080
+
 test:
   project:
     topic: dev-topic

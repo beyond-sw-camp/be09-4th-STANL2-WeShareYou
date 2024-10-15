@@ -57,13 +57,18 @@ public class ChatRoomMessageService {
         newMessage.setReadYn(false);
         newMessage.setCreatedAt(currentTimestamp);
 
+        log.info("newMessage: " + newMessage);
 
         // MongoDB 쿼리로 부분 업데이트 수행
         Query query = new Query(Criteria.where("roomId").is(roomId));
         Update update = new Update().push("messages", newMessage);
 
+        log.info("what's in that query: " + query);
+
         // document가 있으면 업데이트, 없으면 생성
         mongoTemplate.upsert(query, update, ChatRoomMessage.class);
+
+        log.info("are you alive?: " + mongoTemplate.count(query, ChatRoomMessage.class));
     }
 
     public void markMessagesAsRead(String roomId, String nickname) {

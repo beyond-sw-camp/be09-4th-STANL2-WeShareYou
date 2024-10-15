@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class BoardCreateResponseVO {
     @NotNull
     private String content;
 
-    private String imageUrl;
+    private List<String> imageUrl;
 
     @NotNull
     private TAG tag;

@@ -28,6 +28,7 @@ public enum ErrorCode {
     PRODUCT_IS_NOT_RETURN(40012, HttpStatus.BAD_REQUEST, "물품 반납에 실패하였습니다."),
     VALIDATION_FAIL(40013, HttpStatus.BAD_REQUEST, "유효성 검사 실패"),
     SMS_SEND_FAILURE(40014, HttpStatus.BAD_REQUEST, "문자 전송 실패"),
+    BAD_REQUEST_IMAGE(40014, HttpStatus.BAD_REQUEST, "잘못된 JSON 형식입니다."),
 
 
 

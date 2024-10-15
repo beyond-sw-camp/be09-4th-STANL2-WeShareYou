@@ -13,11 +13,9 @@ import lombok.*;
 public class BoardCommentCreateRequestVO {
 
     @NotNull
-    @Size(min=2, max=1000, message = "1자 이상 1000자 이내로 입력하여 주세요.")
+    @Size(min = 2, max = 1000, message = "1자 이상 1000자 이내로 입력하여 주세요.")
     private String content;
 
-//    @NotNull
-//    private Long memberId;
 
     @NotNull
     private String nickname;

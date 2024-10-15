@@ -1,37 +1,37 @@
+<!-- vbase-3-setup -->
 <template>
   <div>
-    <h1>Health Check</h1>
-    <div v-if="healthData">
-      <p><strong>ID:</strong> {{ healthData.id }}</p>
-      <p><strong>Login ID:</strong> {{ healthData.loginId }}</p>
-      <p><strong>Nationality:</strong> {{ healthData.nationality }}</p>
-      <p><strong>Sex:</strong> {{ healthData.sex }}</p>
-      <p><strong>Nickname:</strong> {{ healthData.nickname }}</p>
-      <p><strong>Language:</strong> {{ healthData.language }}</p>
-      <p><strong>Point:</strong> {{ healthData.point }}</p>
+    <h1>Member Information</h1>
+    <div v-if="userInfo && jwtToken">
+      <p><strong>ID:</strong> {{ userInfo.id }}</p>
+      <p><strong>Login ID:</strong> {{ userInfo.loginId }}</p>
+      <p><strong>Nationality:</strong> {{ userInfo.nationality }}</p>
+      <p><strong>Sex:</strong> {{ userInfo.sex }}</p>
+      <p><strong>Nickname:</strong> {{ userInfo.nickname }}</p>
+      <p><strong>Language:</strong> {{ userInfo.language }}</p>
+      <p><strong>Point:</strong> {{ userInfo.point }}</p>
+      <p><strong>JWT Token:</strong> {{ jwtToken }}</p>
     </div>
-    <button @click="loadHealthData">Refresh Data</button>
+    <button @click="refreshInfo">Refresh Info</button>
   </div>
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue';
-import { useMemberStore } from '@/stores/sample/sample'; // Pinia 스토어 사용
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/member/login'; // Pinia 스토어 가져오기
 
-const memberStore = useMemberStore();
+// Pinia 스토어 사용
+const authStore = useAuthStore();
 
-// healthData를 computed로 감싸기 (반응성 문제 해결)
-const healthData = computed(() => memberStore.healthData);
+// Pinia 스토어에서 상태를 가져오는 반응형 computed 속성
+const userInfo = computed(() => authStore.userInfo);
+const jwtToken = computed(() => authStore.jwtToken);
 
-// 데이터 로딩 함수
-const loadHealthData = async () => {
-  await memberStore.fetchHealthData();
+// 새로고침 버튼 클릭 시 회원 정보와 토큰을 다시 로드 (실제 로딩이 필요 없을 경우 생략 가능)
+const refreshInfo = () => {
+  console.log('User Info:', userInfo.value);
+  console.log('JWT Token:', jwtToken.value);
 };
-
-// 페이지가 마운트될 때 데이터 로딩
-onMounted(() => {
-  loadHealthData();
-});
 </script>
 
 <style scoped>

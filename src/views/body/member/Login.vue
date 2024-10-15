@@ -1,11 +1,43 @@
 <template>
-  <div class="login">
-    <h1>Login</h1>
-    <form @submit.prevent="login">
-      <input v-model="loginId" placeholder="아이디" autocomplete="username" required />
-      <input v-model="password" type="password" placeholder="비밀번호" autocomplete="current-password" required />
-      <button type="submit">로그인</button>
-    </form>
+  <div class="login-container">
+    <div class="login-box">
+      <h1 class="login-title">로그인</h1>
+      <form @submit.prevent="login">
+        <div class="input-group">
+          <label for="loginId">아이디</label>
+          <input 
+            v-model="loginId" 
+            id="loginId" 
+            placeholder="아이디를 입력해 주세요." 
+            autocomplete="username" 
+            required 
+          />
+        </div>
+        
+        <div class="input-group">
+          <label for="password">비밀번호</label>
+          <input 
+            v-model="password" 
+            id="password" 
+            type="password" 
+            placeholder="비밀번호를 입력해 주세요." 
+            autocomplete="current-password" 
+            required 
+          />
+        </div>
+
+        <button type="submit" class="login-button">로그인</button>
+      </form>
+
+      <div class="login-options">
+        <router-link to="/signup">회원가입</router-link>
+        <span>|</span>
+        <router-link to="/findId">아이디 찾기</router-link>
+        <span>|</span>
+        <router-link to="/findPwd">비밀번호 찾기</router-link>
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -45,7 +77,7 @@ const login = async () => {
     console.log('User Info:', authStore.userInfo); // 유저 정보 출력
 
     alert('로그인 성공!');
-    // router.push('/sample'); // 로그인 후 페이지 이동
+    router.push('/'); // 로그인 후 페이지 이동
   } catch (error) {
     console.error('Login failed:', error);
     alert(error.message || '로그인 실패! 아이디와 비밀번호를 확인해주세요.');
@@ -54,34 +86,86 @@ const login = async () => {
 </script>
 
 <style scoped>
-.login{
+/* 컨테이너 스타일 */
+.login-container {
   display: flex;
   justify-content: center;
-  margin-top: 5em;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f6f8;
 }
-input {
+
+/* 로그인 박스 */
+.login-box {
+  width: 400px;
+  padding: 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* 타이틀 스타일 */
+.login-title {
+  margin-bottom: 20px;
+  color: #007bff;
+  font-size: 24px;
+}
+
+/* 인풋 그룹 */
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+  color: #090F16;
+}
+
+.input-group label {
   display: block;
-  margin-bottom: 10px;
-  padding: 8px;
+  margin-bottom: 5px;
+  /* font-weight: bold; */
+}
+
+input {
   width: 100%;
-  max-width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   box-sizing: border-box;
 }
 
-button {
-  padding: 10px 20px;
-  background-color: #4caf50;
+/* 로그인 버튼 */
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #439AFF;
   color: white;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
 }
 
-button:hover {
+.login-button:hover {
   background-color: #45a049;
 }
 
-h2 {
-  margin-top: 20px;
+/* 로그인 옵션 (회원가입, 아이디 찾기, 비밀번호 찾기) */
+.login-options {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.login-options a {
+  text-decoration: none;
+  color: #627086;
+}
+.login-options :hover{
+  text-decoration: none;
+  color: #94C7FF;
+}
+
+.login-options span {
+  color: #ccc;
 }
 </style>

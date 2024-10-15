@@ -5,9 +5,15 @@ import Board from "../views/body/board/Board.vue";
 import Notice from "../views/body/notice/Notice.vue";
 import FAQ from "../views/body/faq/FAQ.vue";
 import Direction from "../views/body/direction/Direction.vue";
+import SignUp from "../views/body/member/SignUp.vue";
+import Login from "../views/body/member/Login.vue";
+import FindId from "../views/body/member/FindId.vue";
+import FindPwd from "../views/body/member/FindPwd.vue";
+
+
 // 아래 샘플!!
 import Sample from "../views/body/sample/Sample.vue";
-import Login from "../views/body/member/Login.vue";
+
 
 const routes = [
     {
@@ -50,6 +56,21 @@ const routes = [
         path: '/direction',
         name: 'Direction',
         component: Direction,
+    },
+    {
+        path: '/signup',
+        name: 'SignUp',
+        component: SignUp,
+    },
+    {
+        path: '/findId',
+        name: 'FindId',
+        component: FindId,
+    },
+    {
+        path: '/findPwd',
+        name: 'FindPwd',
+        component: FindPwd
     }
 ];
 

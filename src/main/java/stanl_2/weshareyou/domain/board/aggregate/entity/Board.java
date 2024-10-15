@@ -3,6 +3,7 @@ package stanl_2.weshareyou.domain.board.aggregate.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
@@ -31,14 +32,6 @@ public class Board {
     @Column(name = "BOARD_CONTENT", columnDefinition = "TEXT")
     @NotNull
     private String content;
-
-//    @OneToMany(mappedBy = "BOARD")
-//    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-//    private List<BoardImage> imageList;
-
-    @ElementCollection
-    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-    private List<String> imageList = new ArrayList<>();
 
     @Column(name = "BOARD_TAG")
     @Enumerated(EnumType.STRING)
@@ -72,4 +65,7 @@ public class Board {
 
     @OneToMany(mappedBy = "board"/*, cascade = CascadeType.ALL, fetch = FetchType.LAZY*/)
     private List<BoardLike> boardLikes/* = new ArrayList<>()*/;
+
+    @OneToMany(mappedBy = "board")
+    private List<BoardImage> imageList;
 }

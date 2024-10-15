@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,7 @@ public class BoardServiceImpl implements BoardService{
     public BoardDTO createBoard(BoardDTO boardDTO) {
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardDTO.getMemberId();
-        List<MultipartFile> files = boardDTO.getFile();
+//        List<MultipartFile> files = boardDTO.getFile();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -79,26 +80,18 @@ public class BoardServiceImpl implements BoardService{
         board.setActive(true);
         board.setMember(member);
 
-        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
-        System.out.println("imageList : "+ imageList);
-        board.setImageList(imageList);
+//        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
+        s3uploader.uploadImg(boardDTO.getFile());
 
-        if(files != null){
-//            List<String> ImageList = s3uploader.uploadImg(boardDTO.getFile());
+//        List<BoardImage> images = imageList.stream()
+//                        .map( url -> new BoardImage(null, url, board)
+//                        ).collect(Collectors.toList());
 
-//            log.info("값 출력: {}", Arrays.toString(new List[]{imageList}));
-
-            List<String> images = new ArrayList<>();
-            for(String imgUrl: images){
-                BoardImage boardImage = new BoardImage(imgUrl, board);
-                boardImageRepository.save(boardImage);
-            }
-        }
+//        board.setImageList(images);
 
         boardRepository.save(board);
 
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
-        boardResponseDTO.setMemberId(member.getId());
 
         return boardResponseDTO;
     }

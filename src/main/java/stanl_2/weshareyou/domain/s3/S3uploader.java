@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
+import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,10 +26,12 @@ import java.util.stream.Collectors;
 public class S3uploader {
 
     private final AmazonS3Client amazonS3Client;
+    private final BoardImageRepository boardImageRepository;
 
     @Autowired
-    public S3uploader(AmazonS3Client amazonS3Client) {
+    public S3uploader(AmazonS3Client amazonS3Client, BoardImageRepository boardImageRepository) {
         this.amazonS3Client = amazonS3Client;
+        this.boardImageRepository = boardImageRepository;
     }
 
     @Value("${cloud.aws.s3.bucket}")
@@ -51,9 +53,10 @@ public class S3uploader {
                         amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
 
                         BoardImage boardImage = new BoardImage();
-//                        boardImage(fileName);
+                        boardImage.setFileName(fileName);
                         String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
                         boardImage.setImageUrl(fileUrl);
+                        boardImageRepository.save(boardImage);
 
                         return fileUrl;
                     } catch (IOException e) {

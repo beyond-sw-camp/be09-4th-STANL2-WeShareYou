@@ -2,68 +2,68 @@
     <nav class="navigation">
         <div class="nav-left">
             <!-- 프로젝트 대표이미지 -->
-            <RouterLink to="/">
+            <RouterLink to="/" @click="resetDropdown">
                 <img src="../../assets/icon/navigation/logo.png" alt="Project Logo" class="project-logo" />
             </RouterLink>
 
             <!-- 메뉴 리스트 -->
             <ul class="menu-list">
                 <li>
-                    <RouterLink to="/sample">피니아 샘플</RouterLink>
+                    <RouterLink to="/sample" @click="resetDropdown">피니아 샘플</RouterLink>
                 </li>
 
                 <!-- 공유 물품 드롭다운 -->
-                <li class="dropdown" @mouseenter="toggleDropdown('product')" @mouseleave="hideDropdown">
-                    <RouterLink to="/product">공유 물품</RouterLink>
-                    <ul v-show="activeDropdown === 'product'" class="dropdown-menu">
+                <li class="dropdown" @click="toggleDropdown('product')">
+                    <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
+                    <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category1">생활품</RouterLink>
+                            <RouterLink to="/product/category1" @click="setActiveMenu('product')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category2">주방용품</RouterLink>
+                            <RouterLink to="/product/category2" @click="setActiveMenu('product')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category3">의류</RouterLink>
+                            <RouterLink to="/product/category3" @click="setActiveMenu('product')">의류</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category4">놀이</RouterLink>
+                            <RouterLink to="/product/category4" @click="setActiveMenu('product')">놀이</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category5">전자기기</RouterLink>
+                            <RouterLink to="/product/category5" @click="setActiveMenu('product')">전자기기</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category6">기타</RouterLink>
+                            <RouterLink to="/product/category6" @click="setActiveMenu('product')">기타</RouterLink>
                         </li>
                     </ul>
                 </li>
 
                 <!-- 게시글 드롭다운 -->
-                <li class="dropdown" @mouseenter="toggleDropdown('board')" @mouseleave="hideDropdown">
-                    <RouterLink to="/board">게시글</RouterLink>
-                    <ul v-show="activeDropdown === 'board'" class="dropdown-menu">
+                <li class="dropdown" @click="toggleDropdown('board')">
+                    <span :class="{ active: activeMenu === 'board' }">게시글</span>
+                    <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/notice">가이드</RouterLink>
+                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">가이드</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/event">프리마켓</RouterLink>
+                            <RouterLink to="/board/event" @click="setActiveMenu('board')">프리마켓</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/faq">동행</RouterLink>
+                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">동행</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/faq">TIP</RouterLink>
+                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">TIP</RouterLink>
                         </li>
                     </ul>
                 </li>
 
                 <li>
-                    <RouterLink to="/notice">공지사항</RouterLink>
+                    <RouterLink to="/notice" @click="resetDropdown">공지사항</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/faq">자주 묻는 질문</RouterLink>
+                    <RouterLink to="/faq" @click="resetDropdown">자주 묻는 질문</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/direction">오시는 길</RouterLink>
+                    <RouterLink to="/direction" @click="resetDropdown">오시는 길</RouterLink>
                 </li>
             </ul>
         </div>
@@ -72,7 +72,23 @@
             <span class="language">Language</span>
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
-            <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
+
+            <!-- 프로필 이미지 -->
+            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
+                <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
+                <!-- 프로필 드롭다운 메뉴 -->
+                <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
+                    <li  @click="resetDropdown">
+                        <RouterLink to="/mypage">마이페이지</RouterLink>
+                    </li>
+                    <li  @click="resetDropdown">
+                        <RouterLink to="/profile">내 프로필</RouterLink>
+                    </li>
+                    <li  @click="resetDropdown">
+                        <RouterLink to="/logout">로그아웃</RouterLink>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 </template>
@@ -81,15 +97,28 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 const activeDropdown = ref(null)
+const activeMenu = ref(null)
 
 // 드롭다운 열고 닫기
 const toggleDropdown = (menu) => {
     activeDropdown.value = activeDropdown.value === menu ? null : menu
 }
 
+// 메뉴 활성화
+const setActiveMenu = (menu) => {
+    activeMenu.value = menu
+    activeDropdown.value = null // 드롭다운 닫기
+}
+
+// 드롭다운 및 메뉴 초기화
+const resetDropdown = () => {
+    activeDropdown.value = null
+    activeMenu.value = null
+}
+
 // 외부 클릭 감지
 const handleClickOutside = (event) => {
-    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a')
+    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span')
     const isClickInside = [...dropdowns].some(dropdown =>
         dropdown.contains(event.target)
     )
@@ -106,11 +135,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
     window.removeEventListener('click', handleClickOutside)
 })
-
-// 드롭다운 마우스 떠날 때 닫기
-const hideDropdown = () => {
-    activeDropdown.value = null
-}
 </script>
 
 <style scoped>
@@ -146,15 +170,25 @@ const hideDropdown = () => {
 .menu-list li {
     display: inline;
     position: relative;
+    padding-left: 20px;
+}
+
+.menu-list li span {
+    cursor: pointer;
+    color: #333; 
+    text-decoration: none; 
 }
 
 .menu-list li a {
-    text-decoration: none;
-    color: #333;
-    padding: 5px 10px;
+    text-decoration: none; 
+    color: inherit; 
 }
 
 .menu-list li a.router-link-exact-active {
+    color: #6CB1FF;
+}
+
+.menu-list li .active {
     color: #6CB1FF;
 }
 
@@ -170,11 +204,15 @@ const hideDropdown = () => {
     cursor: pointer;
 }
 
+.profile-container {
+    position: relative;
+    cursor: pointer;
+}
+
 .profile-image {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    cursor: pointer;
 }
 
 .icon-img {
@@ -196,23 +234,36 @@ const hideDropdown = () => {
     min-width: 120px;
     padding: 10px 0;
     z-index: 1000;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
 }
 
-.menu-list li:hover .dropdown-menu {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+.dropdown-menu li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.dropdown-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-menu li a:hover {
+    color: #439AFF !important;
 }
 
 .dropdown-menu li {
     padding: 10px 20px;
 }
 
-.dropdown-font :hover {
+.profile-dropdown {
+    right: 0;
+    top: 40px;
+    left: auto;
+}
+
+.dropdown-font:hover {
     color: #439AFF !important;
+}
+
+.active {
+    color: #6CB1FF; /* 활성화된 메뉴 색상 */
 }
 </style>

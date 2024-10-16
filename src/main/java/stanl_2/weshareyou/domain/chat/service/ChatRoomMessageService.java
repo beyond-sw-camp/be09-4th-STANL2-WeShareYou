@@ -18,11 +18,14 @@ import stanl_2.weshareyou.domain.chat.entity.ChatRoomMessage;
 import stanl_2.weshareyou.domain.chat.repository.ChatRoomMessageRepository;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
@@ -41,9 +44,16 @@ public class ChatRoomMessageService {
     // 특정 채팅방의 메시지 조회
     public ChatRoomMessage getMessagesByRoomId(String roomId) {
 
-        log.info(String.valueOf(getCurrentTimestamp()));
+//        log.info(String.valueOf(getCurrentTimestamp()));
 
-        return chatRoomMessageRepository.findByRoomId(roomId);
+        ChatRoomMessage chatRoomMessage = chatRoomMessageRepository.findByRoomId(roomId);
+        if (chatRoomMessage == null) {
+            log.warn("No messages found for roomId: " + roomId);
+            chatRoomMessage = new ChatRoomMessage();
+            chatRoomMessage.setRoomId(roomId);
+            chatRoomMessage.setMessages(new ArrayList<>()); // 빈 리스트로 초기화
+        }
+        return chatRoomMessage;
     }
 
     // 특정 채팅방에 메시지 추가 (업데이트 방식으로)

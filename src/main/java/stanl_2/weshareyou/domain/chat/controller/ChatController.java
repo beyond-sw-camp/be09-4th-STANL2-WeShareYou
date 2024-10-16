@@ -22,8 +22,8 @@ public class ChatController {
     private final ChatRoomMessageService chatRoomMessageService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/message")
-    @SendTo("/sub/{roomId}")
+    @MessageMapping("/message/{roomId}")
+//    @SendTo("/sub/{roomId}")
     public void sendMessage(ChatMessage message, @DestinationVariable String roomId) {
 
         log.info("여기까지 왔냐???? : " + message.getMessage());
@@ -38,6 +38,7 @@ public class ChatController {
             chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
 
 //            messagingTemplate.convertAndSend("/sub/" + message.getRoomId(), message);
+            messagingTemplate.convertAndSend("/sub/" + roomId, message);
         } catch (Exception e) {
             e.printStackTrace();
         }

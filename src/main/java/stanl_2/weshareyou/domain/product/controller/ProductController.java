@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
@@ -63,7 +64,8 @@ public class ProductController {
      * }
      */
     @PostMapping("")
-    public ApiResponse<?> createProduct(@RequestBody ProductCreateRequestVO productCreateRequestVO,
+    public ApiResponse<?> createProduct(@RequestPart("file") MultipartFile imageUrl,
+                                        @RequestPart("vo") ProductCreateRequestVO productCreateRequestVO,
                                         @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = new ProductDTO();
@@ -73,10 +75,9 @@ public class ProductController {
         productRequestDTO.setCategory(productCreateRequestVO.getCategory());
         productRequestDTO.setStartAt(productCreateRequestVO.getStartAt());
         productRequestDTO.setEndAt(productCreateRequestVO.getEndAt());
-        productRequestDTO.setImageUrl(productCreateRequestVO.getImageUrl());
         productRequestDTO.setStatus(productCreateRequestVO.getStatus());
 
-        ProductDTO productResponseDTO = productService.createProduct(productRequestDTO);
+        ProductDTO productResponseDTO = productService.createProduct(productRequestDTO, imageUrl);
 
         ProductCreateResponseVO productCreateResponseVO = modelMapper.map(productResponseDTO, ProductCreateResponseVO.class);
 

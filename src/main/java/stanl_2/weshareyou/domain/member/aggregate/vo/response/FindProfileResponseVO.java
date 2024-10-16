@@ -8,16 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class UpdateProfileResponseVO {
+public class FindProfileResponseVO {
     @NotNull
     private String nickname;
-
     @NotNull
     private String profileUrl;
-
     @NotNull
     private String introduction;
-
     @NotNull
     private String language;
 }

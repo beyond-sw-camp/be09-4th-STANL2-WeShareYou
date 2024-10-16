@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h2>{{ category }}</h2>
+        <span>{{ category }}</span>
         <ProductList :category = "category" />
     </div>
 </template>
@@ -31,11 +31,11 @@ watch(
 
 <style scoped>
 .container {
-    padding: 20px;
+    padding: 2rem;
 }
 
 h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 3.2rem;
+    margin-bottom: 2rem;
 }
 </style>

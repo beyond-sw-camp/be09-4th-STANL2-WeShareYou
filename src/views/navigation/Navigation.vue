@@ -78,13 +78,13 @@
                 <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
                 <!-- 프로필 드롭다운 메뉴 -->
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
-                    <li @click="resetDropdown">
+                    <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/mypage">마이페이지</RouterLink>
                     </li>
-                    <li @click="resetDropdown">
+                    <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/profile">내 프로필</RouterLink>
                     </li>
-                    <li @click="resetDropdown">
+                    <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/logout">로그아웃</RouterLink>
                     </li>
                 </ul>
@@ -139,7 +139,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .navigation {
-    height: 9rem;
+    height: 6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -162,15 +162,15 @@ onBeforeUnmount(() => {
 
 .project-logo {
     height: 4.5rem;
-    height: 40px;
-    margin-right: 20px;
+    height: 4rem;
+    margin-right: 2rem;
 }
 
 .menu-list {
-    font-size:1rem;
+    font-size: 3.8rem;
     list-style: none;
     display: flex;
-    gap: 15px;
+    gap: 1.5rem;
     margin: 0;
     padding: 0;
     align-items: center;
@@ -179,7 +179,7 @@ onBeforeUnmount(() => {
 .menu-list li {
     display: inline;
     position: relative;
-    padding-left: 20px;
+    padding-left: 2rem;
 }
 
 .menu-list li span {
@@ -204,13 +204,13 @@ onBeforeUnmount(() => {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1.5rem;
 }
 
 .language {
     color: #627086;
-    font-weight: 200;
     cursor: pointer;
+    font-size: 1.5rem;
 }
 
 .profile-container {
@@ -219,20 +219,20 @@ onBeforeUnmount(() => {
 }
 
 .profile-image {
-    width: 30px;
-    height: 30px;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
 }
 
 .icon-img {
-    width: 25px;
-    height: 25px;
+    width: 2.5rem;
+    height: 2.5rem;
     cursor: pointer;
 }
 
 .dropdown-menu {
     position: absolute;
-    top: 30px;
+    top: 3rem;
     left: 0;
     background-color: white;
     border: 1px solid #e0e0e0;
@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    min-width: 120px;
+    min-width: 12rem;
     padding: 10px 0;
     z-index: 1000;
 }
@@ -255,13 +255,17 @@ onBeforeUnmount(() => {
 }
 
 .dropdown-menu li {
-    padding: 10px 20px;
+    padding: 0.4rem 2rem;
 }
 
 .profile-dropdown {
     right: 0;
-    top: 40px;
+    top: 4rem;
     left: auto;
+}
+
+.dropdown-font {
+    font-size: 2.3rem;
 }
 
 .dropdown-font:hover {

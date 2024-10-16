@@ -18,7 +18,6 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
-import stanl_2.weshareyou.global.security.filter.CsrfCookieFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenGeneratorFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenValidatorFilter;
 import stanl_2.weshareyou.global.security.filter.TokenFilter;

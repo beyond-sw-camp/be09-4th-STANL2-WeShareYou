@@ -1,6 +1,5 @@
 package stanl_2.weshareyou.domain.member.aggregate.vo.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

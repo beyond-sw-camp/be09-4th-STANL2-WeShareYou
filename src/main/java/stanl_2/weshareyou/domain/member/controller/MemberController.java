@@ -51,8 +51,6 @@ public class MemberController {
                                       @RequestAttribute("sex") String sex,
                                       @RequestAttribute("point") Integer point,
                                       @RequestAttribute("nickname") String nickname,
-//                                      @RequestAttribute("profile") String profile,
-//                                      @RequestAttribute("introduction") String introduction,
                                       @RequestAttribute("language") String language) {
         Map<String, Object> result = new HashMap<>();
         result.put("id", id);
@@ -61,8 +59,6 @@ public class MemberController {
         result.put("sex", sex);
         result.put("point", point);
         result.put("nickname", nickname);
-//        result.put("profile", profile);
-//        result.put("introduction", introduction);
         result.put("language", language);
 
         return ApiResponse.ok(result);

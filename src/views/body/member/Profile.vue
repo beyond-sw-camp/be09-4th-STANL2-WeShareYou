@@ -144,8 +144,8 @@ function goToModify() {
 }
 
 .profile-img {
-  width: 10rem;
-  height: 10rem;
+  width: 20rem;
+  height: 20rem;
   border-radius: 50%;
   margin-right: 2rem;
 }

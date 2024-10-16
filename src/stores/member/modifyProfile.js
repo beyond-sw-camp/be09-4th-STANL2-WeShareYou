@@ -6,11 +6,16 @@ export async function modifyProfile(nickname, introduction, language, file) {
         formData.append('file', file); // 이미지 파일 추가
         formData.append(
             'vo',
-            JSON.stringify({
-                nickname: nickname,
-                introduction: introduction,
-                language: language,
-            })
+            new Blob(
+                [
+                    JSON.stringify({
+                        nickname: nickname,
+                        introduction: introduction,
+                        language: language,
+                    }),
+                ],
+                { type: 'application/json' }
+            )
         );
 
         const jwtToken = localStorage.getItem('jwtToken');

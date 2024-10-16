@@ -8,6 +8,6 @@
 <style scoped>
 .header-content {
     text-align: center;
-    padding: 10px;
+    padding: 1rem;
 }
 </style>  

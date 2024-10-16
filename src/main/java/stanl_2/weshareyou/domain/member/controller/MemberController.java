@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
@@ -211,12 +212,13 @@ public class MemberController {
      */
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
-                                        @RequestBody @Valid UpdateProfileRequestVO updateProfileRequestVO) {
+                                        @RequestPart("vo") UpdateProfileRequestVO updateProfileRequestVO,
+                                        @RequestPart("file") MultipartFile profileImage) {
 
         MemberDTO requestMemberDTO = modelMapper.map(updateProfileRequestVO, MemberDTO.class);
         requestMemberDTO.setId(id);
 
-        MemberDTO responseMemberDTO = memberService.updateProfile(requestMemberDTO);
+        MemberDTO responseMemberDTO = memberService.updateProfile(requestMemberDTO, profileImage);
 
         UpdateProfileResponseVO updateProfileResponseVO = modelMapper.map(responseMemberDTO, UpdateProfileResponseVO.class);
 

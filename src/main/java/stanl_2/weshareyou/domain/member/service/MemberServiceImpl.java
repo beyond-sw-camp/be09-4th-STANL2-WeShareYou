@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
@@ -21,6 +22,7 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.Like
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
+import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
@@ -48,6 +50,7 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationConstants applicationConstants;
+    private final S3uploader s3uploader;
     private static final long JWT_EXPIRATION_TIME = 30000000L;
 
     private Timestamp getCurrentTimestamp() {
@@ -158,17 +161,32 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberDTO updateProfile(MemberDTO requestMemberDTO) {
+    public MemberDTO updateProfile(MemberDTO requestMemberDTO, MultipartFile file) {
         Timestamp currentTimestamp = getCurrentTimestamp();
 
         Member member = memberRepository.findById(requestMemberDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.setNickname(requestMemberDTO.getNickname());
-        member.setProfileUrl(requestMemberDTO.getProfileUrl());
         member.setIntroduction(requestMemberDTO.getIntroduction());
         member.setLanguage(requestMemberDTO.getLanguage());
         member.setUpdatedAt(currentTimestamp);
+
+        // s3 이미지 저장
+        if(member.getProfileUrl() == null || member.getProfileUrl().isEmpty()){
+            // 프로필 이미지 없는 경우
+            String url = s3uploader.uploadOneImage(file);
+            member.setProfileUrl(url);
+        }else{
+            // 프로필 이미지 있는 경우
+            String key = member.getProfileUrl();
+            if(key == null){
+                throw new CommonException(ErrorCode.BAD_REQUEST_IMAGE);
+            }
+            s3uploader.deleteImg(key);
+            String url = s3uploader.uploadOneImage(file);
+            member.setProfileUrl(url);
+        }
 
         memberRepository.save(member);
 
@@ -390,5 +408,13 @@ public class MemberServiceImpl implements MemberService {
         return responseMemberDTO;
     }
 
+    private String getKey(String url){
+        for(int i=0;i<url.length()-15;i++){
+            if(url.substring(i, i+15).equals(".amazonaws.com/")){
+                return url.substring(i+15, url.length());
+            }
+        }
+        return null;
+    }
 
 }

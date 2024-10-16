@@ -41,6 +41,7 @@ public class S3uploader {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    // 다중 이미지 업로드를 위한 메소드
     public List<BoardImage> uploadImg(List<MultipartFile> fileList){
 
         List<BoardImage> imageList = new ArrayList<>();
@@ -68,6 +69,24 @@ public class S3uploader {
         }
 
         return imageList;
+    }
+
+    // 단일 이미지 업로드를 위한 메소드
+    public String uploadOneImage(MultipartFile file){
+
+        String fileName = createFileName(file.getOriginalFilename());
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+
+        try {
+            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+            String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
+
+            return fileUrl;
+        } catch (IOException e) {
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private String createFileName(String fileName) {

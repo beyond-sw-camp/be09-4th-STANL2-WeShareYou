@@ -122,7 +122,7 @@ public class BoardServiceImpl implements BoardService{
 
         // 삭제할 이미지 처리 (여러 개 삭제 가능)
         if (deletedFileIds != null && !deletedFileIds.isEmpty()) {
-            boardImageService.deleteImagesByIds(deletedFileIds);
+            boardImageService.updateImages(deletedFileIds);
         }
 
         Board board = boardRepository.findById(boardDTO.getId())
@@ -176,6 +176,8 @@ public class BoardServiceImpl implements BoardService{
         board.setUpdatedAt(currentTimestamp);
 
         boardRepository.save(board);
+
+        boardImageService.deleteImages(board);
 
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
 

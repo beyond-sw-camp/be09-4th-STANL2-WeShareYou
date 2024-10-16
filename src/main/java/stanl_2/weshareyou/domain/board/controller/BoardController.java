@@ -144,12 +144,10 @@ public class BoardController {
      */
     @DeleteMapping("")
     public ApiResponse<?> deleteBoard(@RequestAttribute("id") Long memberId,
-                                      @RequestBody @Valid BoardDeleteRequestVO boardDeleteRequestVO){
+                                      @RequestBody BoardDeleteRequestVO boardDeleteRequestVO){
 
         BoardDTO boardDTO = modelMapper.map(boardDeleteRequestVO, BoardDTO.class);
         boardDTO.setMemberId(memberId);
-
-        log.info("값 확인2: {}", boardDTO.toString());
 
         BoardDTO boardResponseDTO = boardService.deleteBoard(boardDTO);
 

@@ -8,10 +8,6 @@
 
             <!-- 메뉴 리스트 -->
             <ul class="menu-list">
-                <li>
-                    <RouterLink to="/sample" @click="resetDropdown">피니아 샘플</RouterLink>
-                </li>
-
                 <!-- 공유 물품 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('product')">
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>

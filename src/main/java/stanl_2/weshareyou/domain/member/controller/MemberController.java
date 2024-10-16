@@ -148,7 +148,7 @@ public class MemberController {
      *
      * JWT Token, 인증번호(Request Body)
      */
-    @GetMapping("/mail/check")
+    @PostMapping("/mail/check")
     public ApiResponse<?> checkEmailCode(@RequestBody CheckEmailCodeRequestVO checkEmailCodeRequestVO){
         if(!mailService.verifyEmailCode(checkEmailCodeRequestVO.getEmail(), checkEmailCodeRequestVO.getCode())) {
             throw new CommonException(ErrorCode.EMAIL_VERIFY_FAIL);
@@ -310,12 +310,14 @@ public class MemberController {
      * 내용: sms인증에 성공하셨습니다!
      *
      */
-    @GetMapping("/sms/check")
+    @PostMapping("/sms/check")
     public ApiResponse<?> checkSmsCode(@RequestBody CheckSmsCodeRequestVO checkSmsCodeRequestVO){
+
         if(!smsService.verifySmsCode(checkSmsCodeRequestVO.getPhone(), checkSmsCodeRequestVO.getCode())) {
             throw new CommonException(ErrorCode.SMS_VERIFY_FAIL);
+        }else{
+            return ApiResponse.ok("SMS 인증 성공!");
         }
-        return ApiResponse.ok("SMS 인증 성공!");
     }
 
     /**
@@ -499,6 +501,27 @@ public class MemberController {
      * 내용 : 내 댓글 조회
      * [GET] localhost:8080/api/v1/member/mycomment
      * JWT 토큰의 pk 값을 활용한 내 댓글 조회
+     * Response
+     * {
+     *         "nickname": "가지남",
+     *         "boardComment": [
+     *             {
+     *                 "content": "aaa",
+     *                 "createdAt": "2024-10-13 00:05:23.0",
+     *                 "updatedAt": "2024-10-13 00:05:23.896685"
+     *             },
+     *             {
+     *                 "content": "bbb",
+     *                 "createdAt": "2024-10-13 00:05:37.0",
+     *                 "updatedAt": "2024-10-13 00:05:37.061557"
+     *             },
+     *             {
+     *                 "content": "ccc",
+     *                 "createdAt": "2024-10-13 00:05:40.0",
+     *                 "updatedAt": "2024-10-13 00:05:40.415405"
+     *             }
+     *         ]
+     *     }
      */
     @GetMapping("mycomment")
     public ApiResponse<?> findMyComment(@RequestAttribute("id") Long id) {

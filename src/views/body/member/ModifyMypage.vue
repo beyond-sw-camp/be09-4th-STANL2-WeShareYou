@@ -14,12 +14,7 @@
 
             <div class="form-group">
                 <label for="phone">연락처</label>
-                <input
-                    v-model="phone"
-                    id="phone"
-                    type="text"
-                    placeholder="새로운 연락처를 입력해 주세요."
-                />
+                <input v-model="phone" id="phone" type="text" placeholder="새로운 연락처를 입력해 주세요." />
             </div>
 
             <div class="profile-item row-group">
@@ -55,10 +50,10 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMypageStore } from '@/stores/member/modifyMypage';
 
-    const router = useRouter();
-    const mypageStore = useMypageStore();
-    const phone = ref(''); // 초기값 빈 문자열로 설정
-    const userInfo = computed(() => mypageStore.userInfo); // store의 userInfo 반영
+const router = useRouter();
+const mypageStore = useMypageStore();
+const phone = ref(''); // 초기값 빈 문자열로 설정
+const userInfo = computed(() => mypageStore.userInfo); // store의 userInfo 반영
 
 onMounted(async () => {
     try {

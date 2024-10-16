@@ -12,16 +12,10 @@ import FindPwd from "../views/body/member/FindPwd.vue";
 import Mypage from "@/views/body/member/Mypage.vue";
 import ModifyMypage from "../views/body/member/ModifyMypage.vue";
 
-// 아래 샘플!!
-import Sample from "../views/body/sample/Sample.vue";
+
 
 
 const routes = [
-    {
-        path: '/sample',
-        name: 'Sample',
-        component: Sample
-    },
     {
         path: '/login',
         name: 'Login', 

@@ -8,10 +8,6 @@
 
             <!-- 메뉴 리스트 -->
             <ul class="menu-list">
-                <li>
-                    <RouterLink to="/sample" @click="resetDropdown">피니아 샘플</RouterLink>
-                </li>
-
                 <!-- 공유 물품 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('product')">
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
@@ -140,11 +136,10 @@ onBeforeUnmount(() => {
 <style scoped>
 .navigation {
     font-size: 2rem;
-    height: 6rem;
+    height: 10vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 8rem;
     background-color: #ffffff;
     border-bottom: 0.1rem solid #e0e0e0;
 }
@@ -156,8 +151,7 @@ onBeforeUnmount(() => {
 }
 
 .project-logo {
-    height: 4.5rem;
-    height: 4rem;
+    height: 10vh;
     margin-right: 2rem;
 }
 
@@ -173,7 +167,7 @@ onBeforeUnmount(() => {
 }
 
 .menu-list li {
-    font-size: 2rem;
+    font-size: 5vh;
     color: #090F16;
     display: inline;
     position: relative;
@@ -208,7 +202,7 @@ onBeforeUnmount(() => {
 .language {
     color: #627086;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 3vh;
 }
 
 .profile-container {
@@ -217,20 +211,21 @@ onBeforeUnmount(() => {
 }
 
 .profile-image {
-    width: 3rem;
-    height: 3rem;
+    width: 5.4vw;
+    height: 7.8vh;
     border-radius: 50%;
+    margin-bottom: -0.5vh;
 }
 
 .icon-img {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 4vw;
+    height: 6.5vh;
     cursor: pointer;
 }
 
 .dropdown-menu {
     position: absolute;
-    top: 3rem;
+    top: 4rem;
     left: 0;
     background-color: white;
     border: 0.1rem solid #e0e0e0;

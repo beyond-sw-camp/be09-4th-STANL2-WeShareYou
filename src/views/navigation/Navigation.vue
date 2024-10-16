@@ -17,22 +17,22 @@
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/생활품'" @click="setActiveMenu('product')">생활품</RouterLink>
+                            <RouterLink :to="'/product/NECESSITIES'" @click="setActiveMenu('product')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/주방용품'" @click="setActiveMenu('product')">주방용품</RouterLink>
+                            <RouterLink :to="'/product/KITCHENWARES'" @click="setActiveMenu('product')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/의류'" @click="setActiveMenu('product')">의류</RouterLink>
+                            <RouterLink :to="'/product/CLOTHES'" @click="setActiveMenu('product')">의류</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/놀이'" @click="setActiveMenu('product')">놀이</RouterLink>
+                            <RouterLink :to="'/product/TOY'" @click="setActiveMenu('product')">놀이</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/전자기기'" @click="setActiveMenu('product')">전자기기</RouterLink>
+                            <RouterLink :to="'/product/DEVICE'" @click="setActiveMenu('product')">전자기기</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/기타'" @click="setActiveMenu('product')">기타</RouterLink>
+                            <RouterLink :to="'/product/ETC'" @click="setActiveMenu('product')">기타</RouterLink>
                         </li>
                     </ul>
                 </li>

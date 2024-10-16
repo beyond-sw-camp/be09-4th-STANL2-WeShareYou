@@ -241,6 +241,14 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    public MemberDTO findProfile(MemberDTO requestMemberDTO) {
+        MemberDTO responseMemberDTO = getMemberDTO(requestMemberDTO);
+
+        return responseMemberDTO;
+    }
+
+
+    @Override
     @Transactional
     public MemberDTO findMypage(MemberDTO requestMemberDTO) {
         MemberDTO responseMemberDTO = getMemberDTO(requestMemberDTO);

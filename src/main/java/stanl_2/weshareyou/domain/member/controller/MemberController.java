@@ -344,6 +344,20 @@ public class MemberController {
         return ApiResponse.ok(findIdResponseVO);
     }
 
+    /**
+     * 내용 : 프로필 조회
+     */
+    @GetMapping("/profile")
+    public ApiResponse<?> findProfile(@RequestAttribute("id") Long id){
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findProfile(requestMemberDTO);
+
+        FindProfileResponseVO findProfileResponseVO = modelMapper.map(responseMemberDTO, FindProfileResponseVO.class);
+
+        return ApiResponse.ok(findProfileResponseVO);
+    }
 
     /**
      * 내용 : 마이페이지 조회
@@ -364,7 +378,7 @@ public class MemberController {
      *      "updatedAt": "2024-10-11T12:14:48"
      * }
      */
-    @GetMapping("mypage")
+    @GetMapping("/mypage")
     public ApiResponse<?> findMypage(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();

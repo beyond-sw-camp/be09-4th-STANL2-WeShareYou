@@ -35,4 +35,6 @@ public interface MemberService {
     MemberDTO findMyComment(MemberDTO requestMemberDTO);
 
     MemberDTO checkMember(MemberDTO requestMemberDTO);
+
+    MemberDTO findProfile(MemberDTO requestMemberDTO);
 }

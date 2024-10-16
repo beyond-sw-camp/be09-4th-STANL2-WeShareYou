@@ -191,6 +191,15 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
+        List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+        List<BoardImageDTO> imageObj = new ArrayList<>();
+
+        for (BoardImage image : savedImages) {
+            BoardImageDTO imageDTO
+                    = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+            imageObj.add(imageDTO);
+        }
+
         List<BoardComment> boardComments = boardCommentRepository.findByBoardId(board.getId());
 
         List<BoardCommentDto> boardCommentDTOs = boardComments.stream()
@@ -198,7 +207,7 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
 
         BoardDTO boardResponseDTO = new BoardDTO();
-//        boardResponseDTO.setImageUrl(board.getImageUrl());
+        boardResponseDTO.setImageObj(imageObj);
         boardResponseDTO.setContent(board.getContent());
         boardResponseDTO.setLikesCount(board.getLikesCount());
         boardResponseDTO.setMemberProfileUrl(board.getMember().getProfileUrl());

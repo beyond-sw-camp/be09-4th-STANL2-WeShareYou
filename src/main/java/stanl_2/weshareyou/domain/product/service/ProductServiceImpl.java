@@ -2,29 +2,26 @@ package stanl_2.weshareyou.domain.product.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
-import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.repository.ProductRepository;
+import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,16 +32,19 @@ public class ProductServiceImpl implements ProductService {
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final S3uploader s3uploader;
+
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
     }
 
     @Autowired
-    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, MemberRepository memberRepository) {
+    public ProductServiceImpl(ModelMapper modelMapper, ProductRepository productRepository, MemberRepository memberRepository, S3uploader s3uploader) {
         this.modelMapper = modelMapper;
         this.productRepository = productRepository;
         this.memberRepository = memberRepository;
+        this.s3uploader = s3uploader;
     }
 
     public ProductDTO toProductDTO(Product product) {
@@ -65,9 +65,18 @@ public class ProductServiceImpl implements ProductService {
         return productResponseDTO;
     }
 
+    private String getKey(String url){
+        for(int i=0;i<url.length()-15;i++){
+            if(url.substring(i, i+15).equals(".amazonaws.com/")){
+                return url.substring(i+15, url.length());
+            }
+        }
+        return null;
+    }
+
     @Override
     @Transactional
-    public ProductDTO createProduct(ProductDTO productDTO) {
+    public ProductDTO createProduct(ProductDTO productDTO, MultipartFile file) {
         Timestamp currentTimestamp = getCurrentTimestamp();
         Member member = memberRepository.findById(productDTO.getAdminId())
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
@@ -78,15 +87,16 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(productDTO.getCategory());
         product.setStartAt(productDTO.getStartAt());
         product.setEndAt(productDTO.getEndAt());
-        product.setImageUrl(productDTO.getImageUrl());
         product.setStatus(productDTO.getStatus());
         product.setAdminId(member);
         product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
         product.setStatus(productDTO.getStatus());
 
-        productRepository.save(product);
+        String imageUrl = s3uploader.uploadOneImage(file);
+        product.setImageUrl(imageUrl);
 
+        productRepository.save(product);
         ProductDTO productResponseDTO = toProductDTO(product);
 
         return productResponseDTO;
@@ -94,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateProduct(ProductDTO productDTO) {
+    public ProductDTO updateProduct(ProductDTO productDTO, MultipartFile file) {
         Timestamp currentTimestamp = getCurrentTimestamp();
 
         Member member = memberRepository.findById(productDTO.getAdminId())
@@ -108,11 +118,19 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(productDTO.getCategory());
         product.setStartAt(productDTO.getStartAt());
         product.setEndAt(productDTO.getEndAt());
-        product.setImageUrl(productDTO.getImageUrl());
         product.setStatus(productDTO.getStatus());
         product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
         product.setAdminId(member);
+
+        String key = product.getImageUrl();
+        if(key == null){
+            throw new CommonException(ErrorCode.BAD_REQUEST_IMAGE);
+        }
+        s3uploader.deleteImg(key);
+        String url = s3uploader.uploadOneImage(file);
+        product.setImageUrl(url);
+
         productRepository.save(product);
 
         ProductDTO productResponseDTO = toProductDTO(product);
@@ -134,6 +152,8 @@ public class ProductServiceImpl implements ProductService {
         product.setAdminId(member);
 
         productRepository.delete(product);
+
+        s3uploader.deleteImg(product.getImageUrl());
 
         ProductDTO productResponseDTO = toProductDTO(product);
 

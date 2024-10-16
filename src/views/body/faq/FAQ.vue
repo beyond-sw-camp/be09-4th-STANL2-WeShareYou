@@ -10,7 +10,7 @@
           Q: {{ item.question }}
         </div>
         <div v-if="item.isOpen" class="answer">
-          {{ item.answer }}
+          <p v-html="item.answer"></p>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
   const faqItems = reactive([
     {
       question: "대여 물품을 어떻게 반납하나요?",
-      answer: "대여한 물품은 가까운 대여소에 방문하여 반납할 수 있습니다.",
+      answer: "대여한 물품은 약정된 반납일에 지정된 반납 장소로 직접 반납하거나,<br> 반납 택배 서비스를 이용하실 수 있습니다. 반납 방법은 대여할 때 선택 가능합니다.",
       isOpen: false,
     },
     {
@@ -62,31 +62,34 @@
   }
   </script>
   
-  <style scoped>
+
+<style scoped>
+  .faq-container h2{
+    font-size:3.2rem;
+    font-weight: bold;
+    color:#212632;
+  }
   .faq-container {
     width: 100%;
-    margin: 6rem 0 0 6rem;
+    margin: 6rem 0 0 12rem;
   }
   
   .faq-item {
+    margin-left: 4vw;
+    width: 62vw;
+    font-size: 3.2rem;
     border-bottom: 1px solid #ccc;
     padding: 1rem 0;
   }
   
   .question {
-    font-weight: bold;
+    font-weight: regular;
     cursor: pointer;
-    color: #2c3e50;
+    color: #627086;
   }
   
   .answer {
-    padding: 10px 0;
+    padding: 1rem 0;
     color: #34495e;
   }
   </style>
-<script setup>
-</script>
-
-<style scoped>
-
-</style>

@@ -225,12 +225,24 @@ public class BoardServiceImpl implements BoardService{
         Long lastBoardId = boardList.getContent().isEmpty() ? null :
                 boardList.getContent().get(boardList.getNumberOfElements() - 1).getId();
 
+
+
         List<BoardDTO> boardDTOList = boardList.getContent().stream()
                 .map(board -> {
+
+                    List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+                    List<BoardImageDTO> imageObj = new ArrayList<>();
+
+                    for (BoardImage image : savedImages) {
+                        BoardImageDTO imageDTO
+                                = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+                        imageObj.add(imageDTO);
+                    }
+
                     BoardDTO boardDTO = new BoardDTO();
                     boardDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
                     boardDTO.setMemberNickname(board.getMember().getNickname());
-//                    boardDTO.setImageUrl(board.getImageUrl());
+                    boardDTO.setImageObj(imageObj);
                     boardDTO.setTitle(board.getTitle());
                     boardDTO.setLikesCount(board.getLikesCount());
                     boardDTO.setCommentCount(board.getCommentCount());

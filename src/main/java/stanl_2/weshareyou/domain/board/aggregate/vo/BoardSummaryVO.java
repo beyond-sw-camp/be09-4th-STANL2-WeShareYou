@@ -2,6 +2,9 @@ package stanl_2.weshareyou.domain.board.aggregate.vo;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.board_image.aggregate.dto.BoardImageDTO;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +23,7 @@ public class BoardSummaryVO {
     private String title;
 
     @NotNull
-    private String imageUrl;
+    private List<BoardImageDTO> imageObj;
 
     @NotNull
     private Integer commentCount;

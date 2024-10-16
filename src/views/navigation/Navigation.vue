@@ -139,6 +139,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .navigation {
+    font-size: 2rem;
     height: 9rem;
     display: flex;
     justify-content: space-between;
@@ -162,24 +163,26 @@ onBeforeUnmount(() => {
 
 .project-logo {
     height: 4.5rem;
-    height: 40px;
-    margin-right: 20px;
+    height: 4rem;
+    margin-right: 2rem;
 }
 
 .menu-list {
-    font-size:1rem;
+    font-size:2rem;
     list-style: none;
     display: flex;
-    gap: 15px;
+    gap: 1.5rem;
     margin: 0;
     padding: 0;
     align-items: center;
 }
 
 .menu-list li {
+    font-size: 2rem;
+    color: #090F16;
     display: inline;
     position: relative;
-    padding-left: 20px;
+    padding-left: 2rem;
 }
 
 .menu-list li span {
@@ -204,7 +207,7 @@ onBeforeUnmount(() => {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1.5rem;
 }
 
 .language {
@@ -219,8 +222,8 @@ onBeforeUnmount(() => {
 }
 
 .profile-image {
-    width: 30px;
-    height: 30px;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
 }
 

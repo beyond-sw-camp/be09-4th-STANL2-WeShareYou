@@ -56,6 +56,7 @@ import { RouterLink } from 'vue-router';
 }
     
 .menu-list {
+    font-size:1rem;
     list-style: none;
     display: flex;
     gap: 15px;

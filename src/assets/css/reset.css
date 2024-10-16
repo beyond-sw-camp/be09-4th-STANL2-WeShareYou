@@ -51,3 +51,50 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+
+@media (min-width: 1024px){
+    body {
+        font-size: 18px;
+    }
+    .container {
+        width: 80vw;
+        height: 70vh;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    body {
+      font-size: 16px;
+    }
+  
+    .container {
+      width: 90vw;
+      height: 60vh;
+    }
+
+  
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    body {
+      font-size: 14px;
+    }
+  
+    .container {
+      width: 100vw;
+      height: 50vh;
+    }
+  }
+
+
+  @media (max-width: 576px) {
+    body {
+      font-size: 12px;
+    }
+  
+    .container {
+      width: 100vw;
+      height: 40vh;
+    }
+  }
+}

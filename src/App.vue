@@ -26,7 +26,11 @@ import Navigation from './views/navigation/Navigation.vue';
 </template>
 
 <style scoped>
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+}
 #app {
+  width: 100%;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

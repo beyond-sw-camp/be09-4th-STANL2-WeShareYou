@@ -143,9 +143,9 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 8rem;
+    padding: 0 8rem;
     background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 0.1rem solid #e0e0e0;
 }
 
 .nav-left {
@@ -155,8 +155,8 @@ onBeforeUnmount(() => {
 }
 
 .project-logo {
-    height: 7rem;
-    margin-right: 2rem;
+    height: 4.5rem;
+    margin-right: 20px;
 }
 
 .menu-list {

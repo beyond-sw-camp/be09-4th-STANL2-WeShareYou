@@ -22,7 +22,7 @@ time, mark, audio, video {
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 100%;
+    font-size: 62.5%;
     font-family: 'Pretendard', sans-serif; /* 폰트 적용 */
     vertical-align: baseline;
 }
@@ -33,6 +33,7 @@ footer, header, hgroup, menu, nav, section {
     display: block;
 }
 body {
+    font-size: 1rem; 
     line-height: 1;
     font-family: 'Pretendard', sans-serif; /* 여기서도 폰트 적용 */
 }

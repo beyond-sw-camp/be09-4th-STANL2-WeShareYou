@@ -17,25 +17,32 @@
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/NECESSITIES'" @click="setActiveMenu('product')">생활품</RouterLink>
+                            <RouterLink :to="'/product/NECESSITIES'"
+                                @click="handleCategoryClick('product', 'NECESSITIES')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/KITCHENWARES'" @click="setActiveMenu('product')">주방용품</RouterLink>
+                            <RouterLink :to="'/product/KITCHENWARES'"
+                                @click="handleCategoryClick('product', 'KITCHENWARES')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="setActiveMenu('product')">의류</RouterLink>
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">의류
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="setActiveMenu('product')">놀이</RouterLink>
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">놀이
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="setActiveMenu('product')">전자기기</RouterLink>
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">전자기기
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="setActiveMenu('product')">기타</RouterLink>
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">기타
+                            </RouterLink>
                         </li>
                     </ul>
                 </li>
+
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
@@ -94,47 +101,55 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
 
-const activeDropdown = ref(null)
-const activeMenu = ref(null)
+const activeDropdown = ref(null);
+const activeMenu = ref(null);
+const router = useRouter();
 
 // 드롭다운 열고 닫기
 const toggleDropdown = (menu) => {
-    activeDropdown.value = activeDropdown.value === menu ? null : menu
-}
+    activeDropdown.value = activeDropdown.value === menu ? null : menu;
+};
+
+// 메뉴 클릭 시 처리
+const handleCategoryClick = (menu, category) => {
+    setActiveMenu(menu); // 메뉴 활성화
+    activeDropdown.value = null; // 드롭다운 닫기
+    router.push(`/product/${category}`); // 선택된 카테고리로 이동
+};
 
 // 메뉴 활성화
 const setActiveMenu = (menu) => {
-    activeMenu.value = menu
-    activeDropdown.value = null // 드롭다운 닫기
-}
+    activeMenu.value = menu;
+};
 
 // 드롭다운 및 메뉴 초기화
 const resetDropdown = () => {
-    activeDropdown.value = null
-    activeMenu.value = null
-}
+    activeDropdown.value = null;
+    activeMenu.value = null;
+};
 
 // 외부 클릭 감지
 const handleClickOutside = (event) => {
-    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span')
-    const isClickInside = [...dropdowns].some(dropdown =>
+    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span');
+    const isClickInside = [...dropdowns].some((dropdown) =>
         dropdown.contains(event.target)
-    )
+    );
     if (!isClickInside) {
-        activeDropdown.value = null
+        activeDropdown.value = null;
     }
-}
+};
 
 // 이벤트 등록 및 해제
 onMounted(() => {
-    window.addEventListener('click', handleClickOutside)
-})
+    window.addEventListener('click', handleClickOutside);
+});
 
 onBeforeUnmount(() => {
-    window.removeEventListener('click', handleClickOutside)
-})
+    window.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>

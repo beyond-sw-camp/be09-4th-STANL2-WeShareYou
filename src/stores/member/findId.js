@@ -1,4 +1,3 @@
-// src/stores/findId.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -19,8 +18,8 @@ export const useFindIdStore = defineStore('findId', {
     },
 
     async verifyCode(phone, code) {
-        if (this.isVerifying) return; // 중복 호출 방지
-        this.isVerifying = true;
+      if (this.isVerifying) return; // 중복 호출 방지
+      this.isVerifying = true;
 
       try {
         const response = await axios.post('http://localhost:8080/api/v1/member/sms/check', {
@@ -28,18 +27,14 @@ export const useFindIdStore = defineStore('findId', {
           code,
         });
 
-        console.log('응답:', response.data); // 응답 데이터 확인
-        console.log('==', phone);
-        console.log('==', code);
-
         if (!response.data.success) {
           throw new Error('인증 실패');
         }
       } catch (error) {
         console.error('인증 실패:', error);
         throw error;
-      }finally {
-        this.isVerifying = false; // 플래그 초기화
+      } finally {
+        this.isVerifying = false;
       }
     },
 

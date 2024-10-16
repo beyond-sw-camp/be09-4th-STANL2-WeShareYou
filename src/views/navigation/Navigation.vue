@@ -139,10 +139,17 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .navigation {
+    height: 9rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 80px;
+    padding: 0 8rem;
+    background-color: #ffffff;
+    border-bottom: 0.1rem solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 80px;
     background-color: #ffffff;
     border-bottom: 1px solid #e0e0e0;
 }
@@ -154,11 +161,13 @@ onBeforeUnmount(() => {
 }
 
 .project-logo {
+    height: 4.5rem;
     height: 40px;
     margin-right: 20px;
 }
 
 .menu-list {
+    font-size:1rem;
     list-style: none;
     display: flex;
     gap: 15px;

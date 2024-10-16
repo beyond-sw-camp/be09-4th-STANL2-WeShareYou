@@ -17,18 +17,26 @@
   </template>
   
   <script setup>
-    import {userRouter} from 'vue-router';
+    import {useRouter} from 'vue-router';
     import {ref, onMounted} from 'vue';
-    import {axios} from 'axios';
+    import axios from 'axios';
 
     const router = useRouter();
     const notices = ref([]);
 
+    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkwNDAzMDYsImV4cCI6MTcyOTA3MDMwNn0.sWxz3QLqqLt97uemUyPl3uVNwnuA8XcpHpYt8AoSwfs';  
+
+
     const fetchNoticeItems = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/notice');
-        if(!response.ok) throw new Error('에러 발생');
-        const data = await response.json();
+        const response = await axios.get('http://localhost:8080/api/v1/notice?cursor=14&size=5', {
+                      headers: {
+                Authorization: `Bearer ${token}`,
+              }
+        });
+        // if(!response.ok) throw new Error('에러 발생');
+        const data = await response;
+        console.log(data);
         notices.value = data;
       } catch (error) {
         console.error(error);
@@ -47,6 +55,10 @@
     const goToNoticeDetail = (id) => {
       router.push(`/notice/${id}`);
     }
+
+    onMounted( () => {
+      fetchNoticeItems();
+    })
 
   </script>
   

@@ -19,13 +19,15 @@
 
 <script setup>
     import { ref, onMounted} from 'vue'
-    import { userRoute, useRouter } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
 
     const route = useRoute();
     const router = useRouter();
 
     const noticeId = ref('');
     const noticeValues = ref({});
+
+    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkwNDAzMDYsImV4cCI6MTcyOTA3MDMwNn0.sWxz3QLqqLt97uemUyPl3uVNwnuA8XcpHpYt8AoSwfs'
 
     const formatTimeStamp = (timestamp) => {
       const date = new Date(timestamp);
@@ -36,7 +38,11 @@
     }
 
     const fetchNoticeData = async () => {
-        const response = await fetch(`https://localhost:8080/api/v1/notice/${noticeId.value}`);
+        const response = await fetch(`https://localhost:8080/api/v1/notice/${noticeId.value}`, {
+                      headers: {
+                Authorization: `Bearer ${token}`,
+              }
+        });
         const data = await response.json();
 
         noticeValues.value = {
@@ -55,7 +61,8 @@
     }
 
     onMounted(() => {
-        noticeId.value = route.params.noticeId;
+      fetchNoticeData();
+      noticeId.value = route.params.noticeId;
     }) 
 
 </script>

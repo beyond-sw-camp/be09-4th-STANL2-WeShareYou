@@ -50,6 +50,6 @@ watch(
 .title {
     font-size: 2.4rem;
     font-weight: 600;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 </style>

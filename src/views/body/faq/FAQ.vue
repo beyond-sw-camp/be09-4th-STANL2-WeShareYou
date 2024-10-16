@@ -84,4 +84,9 @@
     color: #34495e;
   }
   </style>
-  
+<script setup>
+</script>
+
+<style scoped>
+
+</style>

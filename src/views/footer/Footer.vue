@@ -19,10 +19,8 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
     background-color: #F0F1F5;
     color: #979797;
-    bottom: 0;
     width: 100%;
     box-sizing: border-box;
     font-size: 14px;

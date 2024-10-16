@@ -3,8 +3,8 @@ import { RouterView } from 'vue-router';
 import Header from './views/header/Header.vue';
 import Footer from './views/footer/Footer.vue';
 import Navigation from './views/navigation/Navigation.vue';
-
 </script>
+
 <template>
   <div id="app">
     <header>
@@ -27,9 +27,10 @@ import Navigation from './views/navigation/Navigation.vue';
 
 <style scoped>
 #app {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 header {
   line-height: 1.5;

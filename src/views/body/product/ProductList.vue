@@ -3,7 +3,10 @@
         <div v-for="item in products" :key="item.id" class="product-card" @click="goToProductDetail(item.id)">
             <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
             <div class="product-info">
-                <span class="available">{{ getStatusText(item.status) }}</span>
+                <div style="margin-bottom: 1rem;">
+                    <span class="available">{{ getStatusText(item.status) }}</span>
+                    <span class="available1" style="margin-left: 0.5rem;">{{ getIsRentalText(item.rental) }}</span>
+                </div>
                 <h3>{{ item.title }}</h3>
                 <p>{{ item.content }}</p>
             </div>
@@ -118,7 +121,11 @@ const goToProductDetail = (id) => {
 
 // 상태 텍스트 변환 함수
 const getStatusText = (status) => {
-    return status === 'RENTAL' ? '대여 중' : '사용 가능';
+    return status === 'RENTAL' ? '대여' : '공유';
+};
+
+const getIsRentalText = (rental) => {
+    return status === 'false' ? '대여 가능' : '대여 중';
 };
 
 // 카테고리가 변경될 때마다 데이터를 새로 불러옴
@@ -181,6 +188,15 @@ onMounted(() => {
 .available {
     background-color: #d9eaff;
     color: #1a73e8;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.available1 {
+    color: #1a73e8;
+    border: 1.3px solid #d9eaff;
     border-radius: 12px;
     padding: 5px 10px;
     font-size: 1.2rem;

@@ -13,8 +13,6 @@ import Mypage from "@/views/body/member/Mypage.vue";
 import ModifyMypage from "../views/body/member/ModifyMypage.vue";
 
 
-
-
 const routes = [
     {
         path: '/login',

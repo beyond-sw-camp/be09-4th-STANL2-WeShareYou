@@ -62,6 +62,7 @@
   });
   
   const fetchBoardItems = async () => {
+    
     try {
       console.log("Selected Category:", props.category);
   
@@ -71,32 +72,33 @@
   
       console.log("Raw API Response:", response.data);
       
-      const data = response.data;
-      const newContents = [];
+      let data = response.data;
+      let newContents = [];
 
       if (typeof data === 'string') {
         console.log("Received JSON as String. Attempting to parse...");
 
         // JSON이 중첩되어 붙어 있는 경우 처리
-            const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
+          const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
 
-            if (jsonParts.length > 0) {
-                try {
-                    const parsed = JSON.parse(jsonParts[0]);
-                    console.log("Parsed JSON:", parsed.result.contents);
+          if (jsonParts.length > 0) {
+              try {
+                  const parsed = JSON.parse(jsonParts[0]);
+                  console.log("Parsed JSON:", parsed.result.comment);
 
-                    newContents = parsed.result?.contents || [];
-                    cursorId.value = parsed.result?.cursorId || ''; // cursorId 업데이트
-                    hasNext.value = parsed.result?.hasNext; // hasNext 상태 업데이트
-                } catch (error) {
-                    console.error("JSON 파싱 실패:", error);
+                  newContents = parsed.result?.comment || [];
+                  cursorId.value = parsed.result?.cursorId || ''; // cursorId 업데이트
+                  hasNext.value = parsed.result?.hasNext; // hasNext 상태 업데이트
+                  
+              } catch (error) {
+                console.error("JSON 파싱 실패:", error);
                 }
             }
         } else {
             console.log("Parsed Data:", data);
 
             // 2. 데이터가 이미 객체일 경우 바로 처리
-            newContents = data.result?.contents || [];
+            newContents = data.result?.comment || [];
             cursorId.value = data.result?.cursorId || ''; // cursorId 업데이트
             hasNext.value = data.result?.hasNext; // hasNext 상태 업데이트
         }
@@ -106,7 +108,7 @@
         console.log("Products after assignment:", boards.value);
 
         if (boards.value.length === 0) {
-            console.warn("No products found.");
+            console.warn("No boards found.");
         }
     } catch (error) {
         console.error("API 호출 에러:", error.response?.data || error.message);
@@ -216,5 +218,5 @@ const handleScroll = () => {
     color: #999;
     margin-top: 20px;
   }
-  </style>
+</style>
   

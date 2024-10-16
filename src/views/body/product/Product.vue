@@ -1,22 +1,21 @@
 <template>
     <div class="container">
-        <span class="title">{{ translatedCategory  }}</span>
-        <ProductList :category = "category" />
+        <span class="title">{{ translatedCategory }}</span>
+        <RouterView :category="category" />
     </div>
 </template>
 
 <script setup>
-import ProductList from './ProductList.vue';
-
 import { ref, watch } from 'vue';
-import { useRoute, RouterView, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 // Vue Router에서 현재 경로 정보 가져오기
 const route = useRoute();
 
-// 동적 경로에서 'category' 값을 가져옴
+// 카테고리 ref로 설정
 const category = ref(route.params.category || '공유 물품');
 
+// 카테고리 한글 변환 객체
 const categoryTranslations = {
     NECESSITIES: '생활품',
     KITCHENWARES: '주방용품',
@@ -24,21 +23,20 @@ const categoryTranslations = {
     TOY: '놀이',
     DEVICE: '전자기기',
     ETC: '기타',
-    // 필요에 따라 추가
 };
 
-// 한글로 변환된 카테고리
-const translatedCategory = ref(categoryTranslations[category.value] || category.value);
+// 한글로 변환된 카테고리 초기화
+const translatedCategory = ref(categoryTranslations[category.value] || '공유 물품');
 
-// 'category' 값이 변경될 때마다 반응하도록 설정
+// 경로의 'category' 값이 변경될 때마다 반응하여 업데이트
 watch(
     () => route.params.category,
     (newCategory) => {
-        category.value = newCategory || '공유 물품';
-        translatedCategory.value = categoryTranslations[category.value] || category.value; // 매핑된 한글 카테고리 업데이트
-    }
+        category.value = newCategory || '공유 물품'; // 카테고리가 없으면 디폴트 설정
+        translatedCategory.value = categoryTranslations[newCategory] || '공유 물품'; // 번역 적용
+    },
+    { immediate: true } // 초기 로딩 시에도 값 적용
 );
-
 </script>
 
 

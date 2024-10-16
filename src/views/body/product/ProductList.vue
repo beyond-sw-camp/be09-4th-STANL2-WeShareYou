@@ -1,6 +1,6 @@
 <template>
     <div class="product-grid" ref="gridElement">
-        <div v-for="item in products" :key="item.id" class="product-card" @click="goToProductDetail(item.id)">
+        <div v-for="item in products" :key="item.id" class="product-card" @click="goToProductDetail(item.id, category)">
             <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
             <div class="product-info">
                 <div style="margin-bottom: 1rem;">
@@ -115,8 +115,8 @@ const handleScroll = () => {
 };
 
 // 제품 상세 페이지로 이동하는 함수
-const goToProductDetail = (id) => {
-    router.push(`/product/${id}`);
+const goToProductDetail = (id, category) => {
+    router.push(`/product/${category}/${id}`);
 };
 
 // 상태 텍스트 변환 함수

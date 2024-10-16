@@ -29,9 +29,19 @@ const routes = [
         component: Home,
     },
     {
-        path: '/product/:category',
+        path: '/product',
         name: 'Product',
-        component: () => Product,
+        component: () => import('@/views/body/product/Product.vue'),
+        children: [
+            {
+                path: ':category',
+                component: () => import('@/views/body/product/ProductList.vue'),
+            },
+            {
+                path: ':category/:id', // :category 뒤에 :id 추가
+                component: () => import('@/views/body/product/ProductDetail.vue'),
+            },
+        ],
     },
     {
         path: '/board',

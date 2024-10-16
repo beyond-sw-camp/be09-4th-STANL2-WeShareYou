@@ -13,13 +13,6 @@
             <img src="../../../assets/image/home/banner2.png" alt="Banner" class="banner-2"/>
         </div>
     </div>
-    <div>
-        <div class="images">
-            <img src="../../../assets/image/home/banner1.png" alt="Banner" class="banner-1"/>
-            <img src="../../../assets/image/home/text1.png" alt="Banner" class="text-1"/>
-            <img src="../../../assets/image/home/banner2.png" alt="Banner" class="banner-2"/>
-        </div>
-    </div>
 </template>
 
 <script setup>

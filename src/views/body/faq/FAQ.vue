@@ -87,7 +87,6 @@
     color:#212632;
   }
   .faq-container {
-    width: 100%;
     margin: 6rem 0 0 15rem;
   }
   

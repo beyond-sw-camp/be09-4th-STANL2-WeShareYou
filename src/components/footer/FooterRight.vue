@@ -23,5 +23,6 @@ WSU @ 2024. All rights reserved.</p>
 	
 	p {
 		margin-bottom: 0 !important;
+		font-size: 1.7vh
 	}
 </style>

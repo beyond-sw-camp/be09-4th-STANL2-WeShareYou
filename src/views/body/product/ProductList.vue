@@ -12,27 +12,38 @@
 </template>
 
 <script setup>
-    // import {userRouter} from 'vue-router';
-    // import {ref, onMounted} from 'vue';
-    // import axios from 'axios';
+    import {useRouter} from 'vue-router';
+    import {ref, onMounted} from 'vue';
+    import axios from 'axios';
 
-    // const router = userRouter();
-    // const products = ref([]);
+    const router = useRouter();
+    const products = ref([]);
 
-    // const fetchProductItems = async () => {
-    //     try {
-    //         const response = await axios.get('http://localhost:8080/api/v1/product');
-    //         if(!response.ok) throw new Error('에러 발생');
-    //         const data = await response.json();
-    //         products.value = data;
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+    const props = defineProps({
+        category: {
+            type: String,
+            default: '생활품'
+        }
+    });
 
-    // const goToProductDetail = (id) => {
-    //     router.push(`/product/${id}`);
-    // }
+    const fetchProductItems = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/product/category/${category}`);
+            // if(!response.ok) throw new Error('에러 발생');
+            const data = await response;
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const goToProductDetail = (id) => {
+        router.push(`/product/${id}`);
+    }
+
+    onMounted( () => {
+        fetchProductItems();
+    })
 
 
 </script>

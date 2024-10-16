@@ -17,22 +17,22 @@
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category1" @click="setActiveMenu('product')">생활품</RouterLink>
+                            <RouterLink :to="'/product/생활품'" @click="setActiveMenu('product')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category2" @click="setActiveMenu('product')">주방용품</RouterLink>
+                            <RouterLink :to="'/product/주방용품'" @click="setActiveMenu('product')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category3" @click="setActiveMenu('product')">의류</RouterLink>
+                            <RouterLink :to="'/product/의류'" @click="setActiveMenu('product')">의류</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category4" @click="setActiveMenu('product')">놀이</RouterLink>
+                            <RouterLink :to="'/product/놀이'" @click="setActiveMenu('product')">놀이</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category5" @click="setActiveMenu('product')">전자기기</RouterLink>
+                            <RouterLink :to="'/product/전자기기'" @click="setActiveMenu('product')">전자기기</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category6" @click="setActiveMenu('product')">기타</RouterLink>
+                            <RouterLink :to="'/product/기타'" @click="setActiveMenu('product')">기타</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -78,13 +78,13 @@
                 <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
                 <!-- 프로필 드롭다운 메뉴 -->
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
-                    <li  @click="resetDropdown">
+                    <li @click="resetDropdown">
                         <RouterLink to="/mypage">마이페이지</RouterLink>
                     </li>
-                    <li  @click="resetDropdown">
+                    <li @click="resetDropdown">
                         <RouterLink to="/profile">내 프로필</RouterLink>
                     </li>
-                    <li  @click="resetDropdown">
+                    <li @click="resetDropdown">
                         <RouterLink to="/logout">로그아웃</RouterLink>
                     </li>
                 </ul>
@@ -175,13 +175,13 @@ onBeforeUnmount(() => {
 
 .menu-list li span {
     cursor: pointer;
-    color: #333; 
-    text-decoration: none; 
+    color: #333;
+    text-decoration: none;
 }
 
 .menu-list li a {
-    text-decoration: none; 
-    color: inherit; 
+    text-decoration: none;
+    color: inherit;
 }
 
 .menu-list li a.router-link-exact-active {
@@ -241,10 +241,6 @@ onBeforeUnmount(() => {
     color: inherit;
 }
 
-.dropdown-menu li:hover {
-    background-color: #f0f0f0;
-}
-
 .dropdown-menu li a:hover {
     color: #439AFF !important;
 }
@@ -264,6 +260,7 @@ onBeforeUnmount(() => {
 }
 
 .active {
-    color: #6CB1FF; /* 활성화된 메뉴 색상 */
+    color: #6CB1FF;
+    /* 활성화된 메뉴 색상 */
 }
 </style>

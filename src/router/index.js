@@ -39,7 +39,7 @@ const routes = [
         component: Product,
     },
     {
-        path: '/board',
+        path: '/board/:tag',
         name: 'Board',
         component: Board,
     },

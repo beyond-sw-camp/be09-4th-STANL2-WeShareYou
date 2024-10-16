@@ -144,9 +144,9 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 80px;
+    padding: 0 8rem;
     background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 0.1rem solid #e0e0e0;
 }
 
 .nav-left {
@@ -233,13 +233,13 @@ onBeforeUnmount(() => {
     top: 3rem;
     left: 0;
     background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 0.1rem solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     min-width: 12rem;
-    padding: 10px 0;
+    padding: 1rem 0;
     z-index: 1000;
 }
 

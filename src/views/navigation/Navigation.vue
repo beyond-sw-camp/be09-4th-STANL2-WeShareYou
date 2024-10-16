@@ -182,7 +182,7 @@ onBeforeUnmount(() => {
 }
 
 .menu-list li {
-    font-size: 5vh;
+    font-size: 2.8rem;
     color: #090F16;
     display: inline;
     position: relative;
@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
 .language {
     color: #627086;
     cursor: pointer;
-    font-size: 3vh;
+    font-size: 1.8rem;
 }
 
 .profile-container {
@@ -226,15 +226,13 @@ onBeforeUnmount(() => {
 }
 
 .profile-image {
-    width: 5.4vw;
-    height: 7.8vh;
+    width: 3vw;
     border-radius: 50%;
     margin-bottom: -0.5vh;
 }
 
 .icon-img {
-    width: 4vw;
-    height: 6.5vh;
+    width: 2.3vw;
     cursor: pointer;
 }
 

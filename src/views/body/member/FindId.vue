@@ -1,10 +1,9 @@
 <template>
   <div class="find-id-container">
     <h1 class="page-title">아이디 찾기</h1>
-
+    <label for="name">이름</label>
     <div class="form-group">
-      <label for="name">이름</label>
-      <input v-model="name" id="name" type="text" placeholder="성을 입력해 주세요." />
+      <input v-model="name" id="name" type="text" placeholder="성함을 입력해 주세요." />
     </div>
     <label for="phone">연락처</label>
     <div class="row-btn">
@@ -91,6 +90,7 @@ async function findId() {
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 2.5rem;
 }
 
 .page-title {
@@ -101,6 +101,7 @@ async function findId() {
 }
 
 .form-group {
+  font-size:1.5rem;
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
@@ -108,6 +109,7 @@ async function findId() {
 }
 
 .form-group input {
+  font-size:1.7rem;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -151,6 +153,7 @@ async function findId() {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-size: 1.6rem;
 }
 
 .submit-button:disabled {

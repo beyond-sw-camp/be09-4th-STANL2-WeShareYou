@@ -97,50 +97,52 @@ const login = async () => {
 
 /* 로그인 박스 */
 .login-box {
-  width: 400px;
-  padding: 40px;
+  width: 60rem;
+  padding: 4rem;
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 /* 타이틀 스타일 */
 .login-title {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
   color: #007bff;
-  font-size: 24px;
+  font-size: 2.4rem;
 }
 
 /* 인풋 그룹 */
 .input-group {
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
   text-align: left;
   color: #090F16;
+  font-size: 1.6rem;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 5px;
-  /* font-weight: bold; */
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 1rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.4rem;
   box-sizing: border-box;
 }
 
 /* 로그인 버튼 */
 .login-button {
   width: 100%;
-  padding: 10px;
+  padding: 1rem;
   background-color: #439AFF;
   color: white;
   border: none;
   cursor: pointer;
+  font-size: 1.6rem;
 }
 
 .login-button:hover {
@@ -149,11 +151,11 @@ input {
 
 /* 로그인 옵션 (회원가입, 아이디 찾기, 비밀번호 찾기) */
 .login-options {
-  margin-top: 15px;
+  margin-top: 1.5rem;
   display: flex;
   justify-content: center;
-  gap: 10px;
-  font-size: 14px;
+  gap: 1rem;
+  font-size: 1.8rem;
 }
 
 .login-options a {

@@ -13,13 +13,6 @@
             <img src="../../../assets/image/home/banner2.png" alt="Banner" class="banner-2"/>
         </div>
     </div>
-    <div>
-        <div class="images">
-            <img src="../../../assets/image/home/banner1.png" alt="Banner" class="banner-1"/>
-            <img src="../../../assets/image/home/text1.png" alt="Banner" class="text-1"/>
-            <img src="../../../assets/image/home/banner2.png" alt="Banner" class="banner-2"/>
-        </div>
-    </div>
 </template>
 
 <script setup>
@@ -53,7 +46,7 @@
     max-width: 100%;
     margin: 0 0 3vh 0;
     width: auto; 
-    max-width: 80%;
+    max-width: 100%;
     margin: 5vh 0; 
 }
 </style>

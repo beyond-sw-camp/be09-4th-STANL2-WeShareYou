@@ -151,7 +151,7 @@ onBeforeUnmount(() => {
 }
 
 .project-logo {
-    height: 14.5em;
+    height: 10vh;
     margin-right: 2rem;
 }
 
@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
 }
 
 .menu-list li {
-    font-size: 3rem;
+    font-size: 5vh;
     color: #090F16;
     display: inline;
     position: relative;
@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
 .language {
     color: #627086;
     cursor: pointer;
-    font-size: 2rem;
+    font-size: 3vh;
 }
 
 .profile-container {
@@ -211,14 +211,15 @@ onBeforeUnmount(() => {
 }
 
 .profile-image {
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 5.4vw;
+    height: 7.8vh;
     border-radius: 50%;
+    margin-bottom: -0.5vh;
 }
 
 .icon-img {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 4vw;
+    height: 6.5vh;
     cursor: pointer;
 }
 

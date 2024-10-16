@@ -46,7 +46,7 @@
     max-width: 100%;
     margin: 0 0 3vh 0;
     width: auto; 
-    max-width: 80%;
+    max-width: 100%;
     margin: 5vh 0; 
 }
 </style>

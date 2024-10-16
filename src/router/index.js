@@ -9,6 +9,8 @@ import SignUp from "../views/body/member/SignUp.vue";
 import Login from "../views/body/member/Login.vue";
 import FindId from "../views/body/member/FindId.vue";
 import FindPwd from "../views/body/member/FindPwd.vue";
+import Mypage from "@/views/body/member/Mypage.vue";
+import ModifyMypage from "../views/body/member/ModifyMypage.vue";
 
 
 // 아래 샘플!!
@@ -71,6 +73,16 @@ const routes = [
         path: '/findPwd',
         name: 'FindPwd',
         component: FindPwd
+    },
+    {
+        path: '/mypage',
+        name: 'Mypage',
+        component: Mypage
+    },
+    {
+        path: '/modifyMypage',
+        name: 'ModifyMypage',
+        component: ModifyMypage
     }
 ];
 

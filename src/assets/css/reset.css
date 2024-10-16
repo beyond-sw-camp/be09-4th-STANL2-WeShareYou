@@ -22,17 +22,17 @@ time, mark, audio, video {
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 100%;
+    font-size: 62.5%;
     font-family: 'Pretendard', sans-serif; /* 폰트 적용 */
     vertical-align: baseline;
 }
-
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
     display: block;
 }
 body {
+    font-size: 1rem; 
     line-height: 1;
     font-family: 'Pretendard', sans-serif; /* 여기서도 폰트 적용 */
 }
@@ -50,4 +50,51 @@ q:before, q:after {
 table {
     border-collapse: collapse;
     border-spacing: 0;
+}
+
+
+@media (min-width: 1024px){
+    body {
+        font-size: 18px;
+    }
+    .container {
+        width: 80vw;
+        height: 70vh;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    body {
+      font-size: 16px;
+    }
+  
+    .container {
+      width: 90vw;
+      height: 60vh;
+    }
+
+  
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    body {
+      font-size: 14px;
+    }
+  
+    .container {
+      width: 100vw;
+      height: 50vh;
+    }
+  }
+
+
+  @media (max-width: 576px) {
+    body {
+      font-size: 12px;
+    }
+  
+    .container {
+      width: 100vw;
+      height: 40vh;
+    }
+  }
 }

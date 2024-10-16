@@ -1,51 +1,66 @@
 <template>
     <div class="product-grid">
-        <div class="product-card" v-for="item in products" :key="item.id" @click="goToProductDetail(item.id)">
-            <img :src="item.imageUrl" :alt="item.title" class="product-image" />
+        <div v-for="item in products" :key="item.id" class="product-card" @click="goToProductDetail(item.id)">
+            <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
             <div class="product-info">
-                <span class="available">{{item.status}}</span>
+                <span class="available">{{ getStatusText(item.status) }}</span>
                 <h3>{{ item.title }}</h3>
                 <p>{{ item.content }}</p>
             </div>
         </div>
+        <p v-if="products.length === 0" class="no-products">No products available.</p>
     </div>
 </template>
 
 <script setup>
-    import {useRouter} from 'vue-router';
-    import {ref, onMounted} from 'vue';
-    import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-    const router = useRouter();
-    const products = ref([]);
+const router = useRouter();
+const products = ref([]); // 제품 목록을 저장할 ref
 
-    const props = defineProps({
-        category: {
-            type: String,
-            default: '생활품'
+const props = defineProps({
+    category: {
+        type: String,
+        default: 'NECESSITIES',
+    },
+});
+
+// API에서 제품 아이템을 가져오는 함수
+const fetchProductItems = async () => {
+    try {
+        console.log("Selected Category: " + props.category);
+        const response = await axios.get(`http://localhost:8080/api/v1/product/category/${props.category}?cursor=&size=3`);
+
+        console.log("API Response:", response.data);
+        console.log("API Response:", response);
+        const result = response.data;
+
+        if (result.success) {
+            products.value = result.result.contents || [];
+        } else {
+            console.error("데이터 가져오기 실패:", result.error || "알 수 없는 오류");
         }
-    });
-
-    const fetchProductItems = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/v1/product/category/${category}`);
-            // if(!response.ok) throw new Error('에러 발생');
-            const data = await response;
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
+    } catch (error) {
+        console.error("에러 발생:", error);
     }
+};
 
-    const goToProductDetail = (id) => {
-        router.push(`/product/${id}`);
-    }
+// 제품 상세 페이지로 이동하는 함수
+const goToProductDetail = (id) => {
+    router.push(`/product/${id}`);
+};
 
-    onMounted( () => {
-        fetchProductItems();
-    })
+// 상태 텍스트 변환 함수
+const getStatusText = (status) => {
+    return status === 'RENTAL' ? '대여 중' : '사용 가능';
+};
 
-
+// 컴포넌트가 마운트될 때 fetchProductItems 함수 호출
+onMounted(() => {
+    fetchProductItems();
+});
 </script>
 
 <style scoped>

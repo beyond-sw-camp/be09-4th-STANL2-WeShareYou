@@ -17,22 +17,22 @@
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/생활품'" @click="setActiveMenu('product')">생활품</RouterLink>
+                            <RouterLink :to="'/product/NECESSITIES'" @click="setActiveMenu('product')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/주방용품'" @click="setActiveMenu('product')">주방용품</RouterLink>
+                            <RouterLink :to="'/product/KITCHENWARES'" @click="setActiveMenu('product')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/의류'" @click="setActiveMenu('product')">의류</RouterLink>
+                            <RouterLink :to="'/product/CLOTHES'" @click="setActiveMenu('product')">의류</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/놀이'" @click="setActiveMenu('product')">놀이</RouterLink>
+                            <RouterLink :to="'/product/TOY'" @click="setActiveMenu('product')">놀이</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/전자기기'" @click="setActiveMenu('product')">전자기기</RouterLink>
+                            <RouterLink :to="'/product/DEVICE'" @click="setActiveMenu('product')">전자기기</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/기타'" @click="setActiveMenu('product')">기타</RouterLink>
+                            <RouterLink :to="'/product/ETC'" @click="setActiveMenu('product')">기타</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -139,6 +139,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .navigation {
+    font-size: 2rem;
     height: 6rem;
     display: flex;
     justify-content: space-between;
@@ -146,12 +147,6 @@ onBeforeUnmount(() => {
     padding: 0 8rem;
     background-color: #ffffff;
     border-bottom: 0.1rem solid #e0e0e0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 80px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
 }
 
 .nav-left {
@@ -167,6 +162,7 @@ onBeforeUnmount(() => {
 }
 
 .menu-list {
+    white-space: nowrap;
     font-size: 3.8rem;
     list-style: none;
     display: flex;
@@ -177,6 +173,8 @@ onBeforeUnmount(() => {
 }
 
 .menu-list li {
+    font-size: 2rem;
+    color: #090F16;
     display: inline;
     position: relative;
     padding-left: 2rem;
@@ -235,13 +233,13 @@ onBeforeUnmount(() => {
     top: 3rem;
     left: 0;
     background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 0.1rem solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     min-width: 12rem;
-    padding: 10px 0;
+    padding: 1rem 0;
     z-index: 1000;
 }
 

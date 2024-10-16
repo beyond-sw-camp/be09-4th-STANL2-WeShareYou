@@ -27,6 +27,7 @@ public class BoardDTO {
     private Boolean active;
 
     private List<MultipartFile> file;
+    private List<Long> deleteIds;
     private List<BoardImageDTO> imageObj;
 
     private Long memberId;

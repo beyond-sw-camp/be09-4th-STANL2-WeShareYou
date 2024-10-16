@@ -100,11 +100,23 @@ public class BoardController {
      */
     @PutMapping("")
     public ApiResponse<?> updateBoard(@RequestAttribute("id") Long memberId,
-                                      @RequestPart("vo") @Valid BoardUpdateRequestVO boardUpdateRequestVO,
-                                      @RequestPart("newFiles") List<MultipartFile> files) {
+                                      @RequestPart("vo") BoardUpdateRequestVO boardUpdateRequestVO,
+                                      @RequestPart("newFiles") List<MultipartFile> files,
+                                      @RequestPart("deletedFileIds") List<Long> deleteIds) {
 
         BoardDTO boardDTO = modelMapper.map(boardUpdateRequestVO, BoardDTO.class);
+
         boardDTO.setMemberId(memberId);
+
+        if(files != null) {
+            List<MultipartFile> fileList = new ArrayList<>(files);
+            boardDTO.setFile(fileList);
+        }
+
+        if(deleteIds != null){
+            List<Long> deleteId = new ArrayList<>(deleteIds);
+            boardDTO.setDeleteIds(deleteId);
+        }
 
         BoardDTO boardResponseDTO = boardService.updateBoard(boardDTO);
 

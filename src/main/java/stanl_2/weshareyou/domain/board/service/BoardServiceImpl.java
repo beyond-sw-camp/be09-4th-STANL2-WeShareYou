@@ -18,6 +18,7 @@ import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository
 import stanl_2.weshareyou.domain.board_image.aggregate.dto.BoardImageDTO;
 import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
+import stanl_2.weshareyou.domain.board_image.service.BoardImageService;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.s3.S3uploader;
@@ -44,6 +45,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardCommentRepository boardCommentRepository;
     private final S3uploader s3uploader;
     private final BoardImageRepository boardImageRepository;
+    private final BoardImageService boardImageService;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
@@ -52,13 +54,15 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper,
                             MemberRepository memberRepository, BoardCommentRepository boardCommentRepository,
-                            S3uploader s3uploader, BoardImageRepository boardImageRepository) {
+                            S3uploader s3uploader, BoardImageRepository boardImageRepository,
+                            BoardImageService boardImageService) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
         this.boardCommentRepository = boardCommentRepository;
         this.s3uploader = s3uploader;
         this.boardImageRepository = boardImageRepository;
+        this.boardImageService = boardImageService;
     }
 
     @Override
@@ -113,18 +117,48 @@ public class BoardServiceImpl implements BoardService{
     public BoardDTO updateBoard(BoardDTO boardDTO) {
 
         Timestamp currentTimestamp = getCurrentTimestamp();
+
+        List<Long> deletedFileIds = boardDTO.getDeleteIds();
+
+        // 삭제할 이미지 처리 (여러 개 삭제 가능)
+        if (deletedFileIds != null && !deletedFileIds.isEmpty()) {
+            boardImageService.deleteImagesByIds(deletedFileIds);
+        }
+
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
-//        board.setImageUrl(boardDTO.getImageUrl());
         board.setTag(boardDTO.getTag());
         board.setUpdatedAt(currentTimestamp);
 
         boardRepository.save(board);
 
+        List<MultipartFile> files = boardDTO.getFile();
+
+        List<BoardImageDTO> imageObj = new ArrayList<>();
+
+        // 추가할 이미지 처리 (여러 개 추가 기능)
+        if(files != null && !files.isEmpty()) {
+
+            List<BoardImage> images = s3uploader.uploadImg(files);
+
+            for(BoardImage image: images){
+                image.setBoard(board);
+                boardImageRepository.save(image);
+            }
+
+            List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+
+            for (BoardImage image : savedImages) {
+                BoardImageDTO imageDTO = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+                imageObj.add(imageDTO);
+            }
+        }
+
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
+        boardResponseDTO.setImageObj(imageObj);
 
         return boardResponseDTO;
     }

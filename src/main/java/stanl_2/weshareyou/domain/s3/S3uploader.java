@@ -70,28 +70,6 @@ public class S3uploader {
         return imageList;
     }
 
-    //        List<BoardImage> imgUrl = fileList.stream()
-//                .map(file -> {
-//                    String fileName = createFileName(file.getOriginalFilename());
-//                    ObjectMetadata metadata = new ObjectMetadata();
-//                    metadata.setContentType(file.getContentType());
-//                    metadata.setContentLength(file.getSize());
-//
-//                    try {
-//                        amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
-//                        String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
-//
-//                        BoardImage boardImage = new BoardImage();
-//                        boardImage.setImageUrl(fileUrl);
-//                        boardImageRepository.save(boardImage);
-//                    } catch (IOException e) {
-//                        throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
-//                    }
-//                }).collect(Collectors.toList());
-////        log.info("값 출력: {}", Arrays.toString(new List[]{imgUrl}));
-//
-//        return imgUrl;
-
     private String createFileName(String fileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }

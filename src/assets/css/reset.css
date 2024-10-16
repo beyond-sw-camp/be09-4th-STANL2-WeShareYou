@@ -50,6 +50,7 @@ q:before, q:after {
 table {
     border-collapse: collapse;
     border-spacing: 0;
+<<<<<<< HEAD
 }
 
 
@@ -97,4 +98,6 @@ table {
       height: 40vh;
     }
   }
+=======
+>>>>>>> be361d2bef0cb1f7e0d95f7840396b3844a15699
 }

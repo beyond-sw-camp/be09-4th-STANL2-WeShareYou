@@ -3,6 +3,7 @@ package stanl_2.weshareyou.domain.s3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import jakarta.mail.Multipart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,11 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
+import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,10 +27,12 @@ import java.util.stream.Collectors;
 public class S3uploader {
 
     private final AmazonS3Client amazonS3Client;
+    private final BoardImageRepository boardImageRepository;
 
     @Autowired
-    public S3uploader(AmazonS3Client amazonS3Client) {
+    public S3uploader(AmazonS3Client amazonS3Client, BoardImageRepository boardImageRepository) {
         this.amazonS3Client = amazonS3Client;
+        this.boardImageRepository = boardImageRepository;
     }
 
     @Value("${cloud.aws.s3.bucket}")
@@ -35,32 +41,52 @@ public class S3uploader {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    public List<String> uploadImg(List<MultipartFile> fileList){
+    // 다중 이미지 업로드를 위한 메소드
+    public List<BoardImage> uploadImg(List<MultipartFile> fileList){
 
-        List<String> imgUrl = fileList.stream()
-                .map(file -> {
-                    String fileName = createFileName(file.getOriginalFilename());
-                    ObjectMetadata metadata = new ObjectMetadata();
-                    metadata.setContentType(file.getContentType());
-                    metadata.setContentLength(file.getSize());
+        List<BoardImage> imageList = new ArrayList<>();
 
-                    try {
-                        amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+        for(MultipartFile file: fileList){
 
-                        BoardImage boardImage = new BoardImage();
-//                        boardImage(fileName);
-                        String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
-                        boardImage.setImageUrl(Collections.singletonList(fileUrl));
+            String fileName = createFileName(file.getOriginalFilename());
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(file.getContentType());
+            metadata.setContentLength(file.getSize());
 
-                        return fileUrl;
-                    } catch (IOException e) {
-                        throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
-                    }
-                }).collect(Collectors.toList());
+            try {
+                amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+                String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
 
-//        log.info("값 출력: {}", Arrays.toString(new List[]{imgUrl}));
+                BoardImage boardImage = new BoardImage();
+                boardImage.setName(fileName);
+                boardImage.setImageUrl(fileUrl);
 
-        return imgUrl;
+                imageList.add(boardImage);
+
+            } catch (IOException e) {
+                throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return imageList;
+    }
+
+    // 단일 이미지 업로드를 위한 메소드
+    public String uploadOneImage(MultipartFile file){
+
+        String fileName = createFileName(file.getOriginalFilename());
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(file.getContentType());
+        metadata.setContentLength(file.getSize());
+
+        try {
+            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), metadata);
+            String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
+
+            return fileUrl;
+        } catch (IOException e) {
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private String createFileName(String fileName) {

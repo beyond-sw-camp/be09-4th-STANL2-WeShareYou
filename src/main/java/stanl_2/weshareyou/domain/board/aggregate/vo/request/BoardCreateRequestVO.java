@@ -23,8 +23,6 @@ public class BoardCreateRequestVO {
     @Size(min=2, max=1000, message = "1자 이상 1000자 이내로 입력하여 주세요.")
     private String content;
 
-    private String imageUrl;
-
     @NotNull(message = "태그를 선택하여 주세요.")
     private TAG tag;
 

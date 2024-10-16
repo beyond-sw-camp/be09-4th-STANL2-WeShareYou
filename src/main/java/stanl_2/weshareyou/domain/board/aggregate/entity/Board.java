@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
@@ -63,8 +63,16 @@ public class Board {
     @NotNull
     private Member member;
 
+    @OneToMany(mappedBy = "board"/*, cascade = CascadeType.ALL, fetch = FetchType.LAZY*/)
+    private List<BoardLike> boardLikes/* = new ArrayList<>()*/;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-    private List<BoardImage> imageList = new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<BoardImage> imageList;
+
+    public void addImage(BoardImage image) {
+        if (!this.imageList.contains(image)) {
+            this.imageList.add(image);
+            image.setBoard(this); // 양방향 연관관계 설정
+        }
+    }
 }

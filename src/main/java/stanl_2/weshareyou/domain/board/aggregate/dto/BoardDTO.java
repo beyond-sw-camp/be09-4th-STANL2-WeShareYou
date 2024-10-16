@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+import stanl_2.weshareyou.domain.board_image.aggregate.dto.BoardImageDTO;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,7 +27,8 @@ public class BoardDTO {
     private Boolean active;
 
     private List<MultipartFile> file;
-    private List<String> imageUrl;
+    private List<Long> deleteIds;
+    private List<BoardImageDTO> imageObj;
 
     private Long memberId;
     private String memberProfileUrl;

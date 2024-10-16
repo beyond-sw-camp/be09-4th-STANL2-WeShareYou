@@ -18,14 +18,14 @@ const props = defineProps({
 <style scoped>
     #rounded-button {
         display: inline-block;
-        padding: 10px 20px;
-        border-radius: 20px;
+        padding: 1rem 2rem;
+        border-radius: 2rem;
         background-color: #e0e0e0;
         color: #5f6c80;
-        font-size: 2px;
+        font-size: 0.2rem;
         text-align: center;
-        margin: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 1rem;
+        box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
         cursor: pointer;
 }
 </style>

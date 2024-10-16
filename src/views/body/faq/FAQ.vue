@@ -2,14 +2,21 @@
     <div class="faq-container">
       <h2>자주 묻는 질문</h2>
       <div
-        v-for="(item, index) in faqItems" :key="index"class="faq-item">
+        v-for="(item, index) in faqItems" 
+        :key="index"
+        class="faq-item"
+      >
         <div class="question" @click="toggleAnswer(index)">
-          Q: {{ item.question }}
+          <span>Q: {{ item.question }}</span>
+          <span class="dropdown-arrow" v-html="item.isOpen ? '&#9650;' : '&#9660;'"></span>
         </div>
         <div v-if="item.isOpen" class="answer">
           <div class="tags">
-            <!-- 태그를 순회하며 둥근 버튼 컴포넌트를 렌더링 -->
-            <rounded-button v-for="(tag, tagIndex) in item.tags" :key="tagIndex" :text="tag"></rounded-button>
+            <rounded-button 
+              v-for="(tag, tagIndex) in item.tags" 
+              :key="tagIndex" 
+              :text="tag"
+            />
           </div>
           <p v-html="item.answer"></p>
         </div>
@@ -20,6 +27,7 @@
   <script setup>
   import { reactive } from 'vue'
   import RoundedButton from '@/components/faq/tags.vue';
+  
   const faqItems = reactive([
     {
       question: "대여 물품을 어떻게 반납하나요?",
@@ -80,7 +88,7 @@
   }
   .faq-container {
     width: 100%;
-    margin: 6rem 0 0 12rem;
+    margin: 6rem 0 0 15rem;
   }
   
   .faq-item {
@@ -93,9 +101,12 @@
   }
   
   .question {
-    font-size: 2.8vh;
+    font-size: 4vh;
     cursor: pointer;
     color: #627086;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .answer {
@@ -121,7 +132,15 @@
     align-items: center;
     border-radius: 1.2rem;
   }
+
   .p{
     font-size: 1.25rem;
+  }
+
+  .dropdown-arrow {
+    color:#BDC7D5;
+    font-size: 1.2rem;
+    margin-left: auto; 
+    transition: transform 0.3s ease;
   }
 </style>

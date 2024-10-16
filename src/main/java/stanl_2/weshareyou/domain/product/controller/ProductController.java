@@ -42,23 +42,24 @@ public class ProductController {
      * {
      *     "title": "스탠리 텀블러",
      *     "content": "스탠리 상태 좋습니다.",
-     *     "imageUrl": "tumbler_image_url",
      *     "category": "TOY",
+     *     "status": "RENTAL",
      *     "startAt": "2024-10-08T00:00:00",
-     *     "endAt": "2024-10-10T00:00:00",
-     *     "adminId": 1
+     *     "endAt": "2024-10-10T00:00:00"
      * }
      * res:
      * {
      *     "success": true,
      *     "result": {
-     *         "title": "스탠리 텀블러2",
-     *         "content": "스탠리 상태 좋습니다2.",
-     *         "imageUrl": "tumbler_image_url",
+     *         "id": 8,
+     *         "title": "스탠리 텀블러",
+     *         "content": "스탠리 상태 좋습니다.",
+     *         "imageUrl": "https://weshareubk.s3.ap-northeast-2.amazonaws.com/c24acf7d-037b-4bae-9893-1cea36f89c34.png",
      *         "category": "TOY",
-     *         "startAt": "2024-10-08T00:00:00",
-     *         "endAt": "2024-10-10T00:00:00",
-     *         "adminId": 1
+     *         "status": "RENTAL",
+     *         "startAt": "2024-10-08T00:00:00.000+00:00",
+     *         "endAt": "2024-10-10T00:00:00.000+00:00",
+     *         "adminId": 4
      *     },
      *     "error": null
      * }
@@ -88,12 +89,11 @@ public class ProductController {
      * 내용: 공유물품 수정
      * req:
      * {
-     *     "id":6,
-     *     "title": "스탠리 텀블러2",
-     *     "content": "스탠리 상태 좋습니다2.",
-     *     "imageUrl": "tumbler_image_url",
-     *     "category": "KITCHENWARES",
+     *     "id":8,
+     *     "title": "스탠리 텀블러1",
+     *     "content": "스탠리 상태 좋습니다1.",
      *     "status": "RENTAL",
+     *     "category": "KITCHENWARES",
      *     "startAt": "2024-10-08T00:00:00",
      *     "endAt": "2024-10-10T00:00:00"
      * }
@@ -101,10 +101,10 @@ public class ProductController {
      * {
      *     "success": true,
      *     "result": {
-     *         "id": 6,
-     *         "title": "스탠리 텀블러2",
-     *         "content": "스탠리 상태 좋습니다2.",
-     *         "imageUrl": "tumbler_image_url",
+     *         "id": 8,
+     *         "title": "스탠리 텀블러1",
+     *         "content": "스탠리 상태 좋습니다1.",
+     *         "imageUrl": "https://weshareubk.s3.ap-northeast-2.amazonaws.com/937afb52-6ecb-4eaf-ae0a-a2ae1839edbe.png",
      *         "category": "KITCHENWARES",
      *         "status": "RENTAL",
      *         "startAt": "2024-10-08T00:00:00.000+00:00",
@@ -112,15 +112,17 @@ public class ProductController {
      *         "adminId": 4
      *     },
      *     "error": null
+     * }rror": null
      * }
      */
     @PutMapping("")
-    public ApiResponse<?> updateProduct(@RequestBody ProductUpdateRequestVO productUpdateRequestVO,
+    public ApiResponse<?> updateProduct(@RequestPart("file") MultipartFile imageUrl,
+                                        @RequestPart("vo") ProductUpdateRequestVO productUpdateRequestVO,
                                         @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = modelMapper.map(productUpdateRequestVO, ProductDTO.class);
         productRequestDTO.setAdminId(id);
-        ProductDTO productResponseDTO = productService.updateProduct(productRequestDTO);
+        ProductDTO productResponseDTO = productService.updateProduct(productRequestDTO, imageUrl);
 
         ProductUpdateResponseVO productUpdateResponseVO = modelMapper.map(productResponseDTO, ProductUpdateResponseVO.class);
 

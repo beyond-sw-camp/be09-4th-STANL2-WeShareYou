@@ -96,9 +96,6 @@ public class ProductServiceImpl implements ProductService {
         String imageUrl = s3uploader.uploadOneImage(file);
         product.setImageUrl(imageUrl);
 
-        log.info("img: " + product.toString());
-
-
         productRepository.save(product);
         ProductDTO productResponseDTO = toProductDTO(product);
 
@@ -107,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateProduct(ProductDTO productDTO) {
+    public ProductDTO updateProduct(ProductDTO productDTO, MultipartFile file) {
         Timestamp currentTimestamp = getCurrentTimestamp();
 
         Member member = memberRepository.findById(productDTO.getAdminId())
@@ -121,11 +118,19 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(productDTO.getCategory());
         product.setStartAt(productDTO.getStartAt());
         product.setEndAt(productDTO.getEndAt());
-        product.setImageUrl(productDTO.getImageUrl());
         product.setStatus(productDTO.getStatus());
         product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
         product.setAdminId(member);
+
+        String key = product.getImageUrl();
+        if(key == null){
+            throw new CommonException(ErrorCode.BAD_REQUEST_IMAGE);
+        }
+        s3uploader.deleteImg(key);
+        String url = s3uploader.uploadOneImage(file);
+        product.setImageUrl(url);
+
         productRepository.save(product);
 
         ProductDTO productResponseDTO = toProductDTO(product);
@@ -147,6 +152,8 @@ public class ProductServiceImpl implements ProductService {
         product.setAdminId(member);
 
         productRepository.delete(product);
+
+        s3uploader.deleteImg(product.getImageUrl());
 
         ProductDTO productResponseDTO = toProductDTO(product);
 

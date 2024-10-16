@@ -7,7 +7,7 @@ import stanl_2.weshareyou.global.common.dto.CursorDTO;
 public interface ProductService {
     ProductDTO createProduct(ProductDTO productRequestDTO, MultipartFile imageUrl);
 
-    ProductDTO updateProduct(ProductDTO productRequestDTO);
+    ProductDTO updateProduct(ProductDTO productRequestDTO, MultipartFile imageUrl);
 
     ProductDTO deleteProduct(ProductDTO productRequestDTO);
 

@@ -13,7 +13,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
 public class Product {
     @Id
     @Column(name = "PRODUCT_ID")

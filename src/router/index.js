@@ -28,7 +28,7 @@ const routes = [
     {
         path: '/product/:category',
         name: 'Product',
-        component: Product,
+        component: () => Product,
     },
     {
         path: '/board/:tag',

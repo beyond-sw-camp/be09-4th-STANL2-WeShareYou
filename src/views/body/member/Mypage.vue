@@ -64,18 +64,18 @@ import { useRouter } from 'vue-router';
 
 <style scoped>
 .mypage-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 30px;
+    max-width: 60rem;
+    margin: 5rem auto;
+    padding: 3rem;
     background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 1.5rem;
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
 }
 
 .page-title {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 28px;
+    margin-bottom: 3rem;
+    font-size: 2.8rem;
     font-weight: bold;
     color: #007bff;
 }
@@ -83,22 +83,22 @@ import { useRouter } from 'vue-router';
 .profile-box {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 2rem;
 }
 
 .profile-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e6e6e6;
-    padding: 12px 0;
+    border-bottom: 0.1rem solid #e6e6e6;
+    padding: 1.2rem 0;
 }
 
 .row-group {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    gap: 10px;
+    gap: 1rem;
 }
 
 .gender-container,
@@ -107,16 +107,17 @@ import { useRouter } from 'vue-router';
 }
 
 .edit-button {
-    margin-top: 30px;
-    padding: 15px;
+    margin-top: 3rem;
+    padding: 1.5rem;
     background-color: white;
     color: #007bff;
-    border: 2px solid #007bff;
-    border-radius: 10px;
+    border: 0.2rem solid #007bff;
+    border-radius: 1rem;
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s, color 0.3s;
     width: 25%;
+    font-size: 1.6rem;
 }
 .modify-button{
     display: flex;
@@ -131,12 +132,12 @@ import { useRouter } from 'vue-router';
 
 label {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1.6rem;
     color: #333;
 }
 
 p {
-    font-size: 16px;
+    font-size: 1.6rem;
     color: #555;
     margin: 0;
 }

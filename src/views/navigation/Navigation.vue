@@ -17,22 +17,22 @@
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category1" @click="setActiveMenu('product')">생활품</RouterLink>
+                            <RouterLink :to="'/product/생활품'" @click="setActiveMenu('product')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category2" @click="setActiveMenu('product')">주방용품</RouterLink>
+                            <RouterLink :to="'/product/주방용품'" @click="setActiveMenu('product')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category3" @click="setActiveMenu('product')">의류</RouterLink>
+                            <RouterLink :to="'/product/의류'" @click="setActiveMenu('product')">의류</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category4" @click="setActiveMenu('product')">놀이</RouterLink>
+                            <RouterLink :to="'/product/놀이'" @click="setActiveMenu('product')">놀이</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category5" @click="setActiveMenu('product')">전자기기</RouterLink>
+                            <RouterLink :to="'/product/전자기기'" @click="setActiveMenu('product')">전자기기</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/product/category6" @click="setActiveMenu('product')">기타</RouterLink>
+                            <RouterLink :to="'/product/기타'" @click="setActiveMenu('product')">기타</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -78,13 +78,13 @@
                 <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
                 <!-- 프로필 드롭다운 메뉴 -->
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
-                    <li  @click="resetDropdown">
+                    <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/mypage">마이페이지</RouterLink>
                     </li>
-                    <li  @click="resetDropdown">
+                    <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/profile">내 프로필</RouterLink>
                     </li>
-                    <li  @click="resetDropdown">
+                    <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/logout">로그아웃</RouterLink>
                     </li>
                 </ul>
@@ -140,13 +140,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .navigation {
     font-size: 2rem;
-    height: 9rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 8rem;
-    background-color: #ffffff;
-    border-bottom: 0.1rem solid #e0e0e0;
+    height: 6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -168,7 +162,8 @@ onBeforeUnmount(() => {
 }
 
 .menu-list {
-    font-size:2rem;
+    white-space: nowrap;
+    font-size: 3.8rem;
     list-style: none;
     display: flex;
     gap: 1.5rem;
@@ -187,13 +182,13 @@ onBeforeUnmount(() => {
 
 .menu-list li span {
     cursor: pointer;
-    color: #333; 
-    text-decoration: none; 
+    color: #333;
+    text-decoration: none;
 }
 
 .menu-list li a {
-    text-decoration: none; 
-    color: inherit; 
+    text-decoration: none;
+    color: inherit;
 }
 
 .menu-list li a.router-link-exact-active {
@@ -212,8 +207,8 @@ onBeforeUnmount(() => {
 
 .language {
     color: #627086;
-    font-weight: 200;
     cursor: pointer;
+    font-size: 1.5rem;
 }
 
 .profile-container {
@@ -228,14 +223,14 @@ onBeforeUnmount(() => {
 }
 
 .icon-img {
-    width: 25px;
-    height: 25px;
+    width: 2.5rem;
+    height: 2.5rem;
     cursor: pointer;
 }
 
 .dropdown-menu {
     position: absolute;
-    top: 30px;
+    top: 3rem;
     left: 0;
     background-color: white;
     border: 1px solid #e0e0e0;
@@ -243,7 +238,7 @@ onBeforeUnmount(() => {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    min-width: 120px;
+    min-width: 12rem;
     padding: 10px 0;
     z-index: 1000;
 }
@@ -253,22 +248,22 @@ onBeforeUnmount(() => {
     color: inherit;
 }
 
-.dropdown-menu li:hover {
-    background-color: #f0f0f0;
-}
-
 .dropdown-menu li a:hover {
     color: #439AFF !important;
 }
 
 .dropdown-menu li {
-    padding: 10px 20px;
+    padding: 0.4rem 2rem;
 }
 
 .profile-dropdown {
     right: 0;
-    top: 40px;
+    top: 4rem;
     left: auto;
+}
+
+.dropdown-font {
+    font-size: 2.3rem;
 }
 
 .dropdown-font:hover {
@@ -276,6 +271,7 @@ onBeforeUnmount(() => {
 }
 
 .active {
-    color: #6CB1FF; /* 활성화된 메뉴 색상 */
+    color: #6CB1FF;
+    /* 활성화된 메뉴 색상 */
 }
 </style>

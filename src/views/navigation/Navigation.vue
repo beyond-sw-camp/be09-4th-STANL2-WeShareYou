@@ -80,8 +80,8 @@
                     <ul v-show="activeDropdown === 'language'" class="dropdown-language-menu" @click.stop>
                         <li class="dropdown-language" @click="changeLang('EN')">English</li>
                         <li class="dropdown-language" @click="changeLang('KO')">한국어</li>
-                        <li class="dropdown-language" @click="changeLang('JP')">日本語</li>
-                        <li class="dropdown-language1" @click="changeLang('CN')">中文</li>
+                        <li class="dropdown-language" @click="changeLang('JA')">日本語</li>
+                        <li class="dropdown-language1" @click="changeLang('ZH')">中文</li>
                     </ul>
                 </li>
             </ul>

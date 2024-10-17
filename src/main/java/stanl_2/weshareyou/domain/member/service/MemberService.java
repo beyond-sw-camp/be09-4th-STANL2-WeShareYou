@@ -3,6 +3,7 @@ package stanl_2.weshareyou.domain.member.service;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
+import stanl_2.weshareyou.domain.member.aggregate.history.HistoryInput;
 
 import java.util.Optional;
 
@@ -38,6 +39,9 @@ public interface MemberService {
     MemberDTO checkMember(MemberDTO requestMemberDTO);
 
     MemberDTO findProfile(MemberDTO requestMemberDTO);
+  
+    void saveLoginHistory(HistoryInput historyInput);
 
     Boolean findNickname(String username);
+
 }

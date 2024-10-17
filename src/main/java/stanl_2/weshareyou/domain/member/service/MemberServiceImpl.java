@@ -17,10 +17,13 @@ import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.member.aggregate.history.HistoryInput;
+import stanl_2.weshareyou.domain.member.aggregate.history.LoginHistory;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.BoardLikesResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.LikeNoResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
+import stanl_2.weshareyou.domain.member.repository.HistoryRepository;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.exception.CommonException;
@@ -34,7 +37,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,7 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final HistoryRepository historyRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationConstants applicationConstants;
@@ -259,11 +262,26 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public MemberDTO findProfile(MemberDTO requestMemberDTO) {
         MemberDTO responseMemberDTO = getMemberDTO(requestMemberDTO);
 
         return responseMemberDTO;
     }
+
+    @Override
+    @Transactional
+    public void saveLoginHistory(HistoryInput historyInput) {
+        LoginHistory loginHistory = LoginHistory.builder()
+                .loginId(historyInput.getUserId())
+                .loginDate(LocalDateTime.now())
+                .clientIp(historyInput.getClientIp())
+                .userAgent(historyInput.getUserAgent())
+                .build();
+
+        historyRepository.save(loginHistory);
+    }
+
 
 
     @Override
@@ -376,6 +394,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public MemberDTO checkMember(MemberDTO requestMemberDTO) {
 
         Member member = memberRepository.findByPhone(requestMemberDTO.getPhone());

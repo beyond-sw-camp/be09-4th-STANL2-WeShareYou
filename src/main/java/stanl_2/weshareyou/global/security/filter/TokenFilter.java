@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
-import stanl_2.weshareyou.global.common.exception.CommonException;
-import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 
 import javax.crypto.SecretKey;

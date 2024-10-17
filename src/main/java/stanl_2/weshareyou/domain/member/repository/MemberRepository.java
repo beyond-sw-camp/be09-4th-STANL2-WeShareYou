@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

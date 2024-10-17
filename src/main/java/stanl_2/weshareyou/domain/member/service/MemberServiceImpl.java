@@ -257,6 +257,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public MemberDTO findProfile(MemberDTO requestMemberDTO) {
         MemberDTO responseMemberDTO = getMemberDTO(requestMemberDTO);
 
@@ -374,6 +375,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public MemberDTO checkMember(MemberDTO requestMemberDTO) {
 
         Member member = memberRepository.findByPhone(requestMemberDTO.getPhone());

@@ -11,21 +11,19 @@
 
     <!-- 게시물 목록 (Main Content) -->
     <div class="board-container">
+      <div class="actions">
+        <!-- 글 작성 버튼 -->
+        <button class="create-button" @click="goToCreate">글 작성</button>
+      </div>
       <div v-for="item in boards" :key="item.id" class="board-card">
         <div class="user-info">
           <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image">
           <span class="nickname">{{ item.memberNickname }}</span>
         </div>
-        <h3 class="board-title">{{ item.title }}</h3>
         <div class="image-container">
-          <img 
-            v-for="(image, i) in item.imageObj.slice(0, 3)" 
-            :key="i" 
-            :src="image.imageUrl" 
-            :alt="image.fileName" 
-            class="board-image"
-          />
+          <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image"/>
         </div>
+        <h3 class="board-title">{{ item.title }}</h3>
         <p class="board-content" v-if="!item.showFullContent">
           <span v-html="formatContent(getFirstLine(item.content))"></span>
           <span v-if="item.content.includes('\n') || item.content.length > getFirstLine(item.content).length">...</span>
@@ -155,6 +153,9 @@ const goToComments = (item) => {
       router.push(`/detail/${item.id}`); // 댓글 페이지로 이동
     };
 
+const goToCreate = () => {
+      router.push('/board/create'); // 글 작성 페이지로 이동
+};
 
 watch(
     () => route.params.tag,
@@ -190,6 +191,29 @@ body {
   font-family: ABeeZee, sans-serif;
 }
 
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.create-button {
+  border-radius: 6.954px;
+  border: 0.993px solid var(--Main_1, #439AFF);
+  background: var(--White_100, #FFF);
+  color: var(--Main_1, #439AFF);
+  width: 10rem;
+  height: 3.5rem;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 2rem;
+  
+}
+
+.create-button:hover {
+  background-color: #73b3ff;
+}
+
 .layout {
   position: relative;
 }
@@ -198,7 +222,7 @@ body {
   position: fixed;
   width: 15rem;
   height: 16.7rem;
-  overflow-y: auto;
+  margin-top: 12rem;
   transition: top 0.3s ease;
   transform: translateX(7rem);
   border-radius: 7px;
@@ -220,12 +244,12 @@ body {
 .tag-item button {
   width: 100%; /* 부모 요소의 너비에 맞게 설정 */
   height: 3.4rem; /* 버튼 높이 설정 */
-  display: flex;
   align-items: center; /* 수직 가운데 정렬 */
   justify-content: center; /* 수평 가운데 정렬 */
   border: none; /* 기본 테두리 제거 */
   background: var(--White_100, #FFF); /* 기본 배경색: 흰색 */
   color: var(--Black_60, #627086); /* 기본 텍스트 색상 */
+  border-radius: 7px;
   cursor: pointer; /* 커서 변경 */
   font-size: 13px;
   font-style: italic;
@@ -254,28 +278,33 @@ body {
   margin-bottom: 1rem;
 }
 
-
 .board-container {
-  width: 105rem;
+  width: 80rem;
   margin: 27rem ;
-  margin-top: 8rem;
-  margin-bottom: 3rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .board-card {
   background: #FFFFFF;
-  border: 0.0625rem solid #E0E0E0; /* 1px = 0.0625rem */
+  border: 0.07rem solid #E0E0E0; /* 1px = 0.07rem */
   border-radius: 1.5rem; /* 8px = 0.5rem */
-  padding: 1rem; /* 16px = 1rem */
-  margin: 3rem 3rem;
+  padding: 2rem; /* 16px = 1rem */
+  margin-bottom: 3rem; /* 카드 간의 아래 여백 추가 */
+  margin-top: 2rem; /* 카드 간의 아래 여백 추가 */
   box-shadow: 0px 1.5px 4.6px 0px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
 
+.board-card:hover {
+  transform: scale(1.01); /* 호버 시 이미지 확대 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 진하게 */
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 2rem;
 }
 
 .profile-image {
@@ -283,21 +312,16 @@ body {
   height: 5rem; /* 40px = 2.5rem */
   border-radius: 50%;
   margin-right: 0.75rem; /* 12px = 0.75rem */
-
 }
 
 .nickname {
-  font-weight: bold;
-}
-
-.board-title {
-  font-size: 2rem; /* 18px = 1.125rem */
-  margin-bottom: 2rem; /* 12px = 0.75rem */
+  font-size: 3rem;
 }
 
 .board-content {
-  font-size: 2.3rem; /* 16px = 1rem */
+  font-size: 3rem; /* 16px = 1rem */
   margin-bottom: 0; /* 마진 제거 */
+  margin-top: 0;
 }
 
 .image-container {
@@ -316,17 +340,6 @@ body {
   cursor: pointer; /* 마우스 커서 변경 */
 
 }
-
-.board-image:hover {
-  transform: scale(1.05); /* 호버 시 이미지 확대 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 진하게 */
-}
-
-.board-image:active {
-  transform: scale(1.1); /* 클릭 시 더 커짐 */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 클릭 시 그림자 깊게 */
-}
-
 
 .board-footer {
   justify-content: space-between;

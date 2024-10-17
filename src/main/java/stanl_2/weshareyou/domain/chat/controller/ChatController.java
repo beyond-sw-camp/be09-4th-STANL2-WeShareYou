@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
 
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -23,21 +27,9 @@ public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/message/{roomId}")
-//    @SendTo("/sub/{roomId}")
     public void sendMessage(ChatMessage message, @DestinationVariable String roomId) {
-
-        log.info("여기까지 왔냐???? : " + message.getMessage());
-//        // 메시지를 해당 roomId에 추가
-//        chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
-//        // 구독자들에게 메시지 전송
-////        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
-//        messagingTemplate.convertAndSend("/sub/" + message.getRoomId(), message);
         try {
-//            System.out.println("Received message: " + objectMapper.writeValueAsString(message));
-
             chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
-
-//            messagingTemplate.convertAndSend("/sub/" + message.getRoomId(), message);
             messagingTemplate.convertAndSend("/sub/" + roomId, message);
         } catch (Exception e) {
             e.printStackTrace();

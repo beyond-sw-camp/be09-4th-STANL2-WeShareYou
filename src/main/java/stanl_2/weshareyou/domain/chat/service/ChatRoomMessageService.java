@@ -44,8 +44,6 @@ public class ChatRoomMessageService {
     // 특정 채팅방의 메시지 조회
     public ChatRoomMessage getMessagesByRoomId(String roomId) {
 
-//        log.info(String.valueOf(getCurrentTimestamp()));
-
         ChatRoomMessage chatRoomMessage = chatRoomMessageRepository.findByRoomId(roomId);
         if (chatRoomMessage == null) {
             log.warn("No messages found for roomId: " + roomId);
@@ -67,18 +65,12 @@ public class ChatRoomMessageService {
         newMessage.setReadYn(false);
         newMessage.setCreatedAt(currentTimestamp);
 
-        log.info("newMessage: " + newMessage);
-
         // MongoDB 쿼리로 부분 업데이트 수행
         Query query = new Query(Criteria.where("roomId").is(roomId));
         Update update = new Update().push("messages", newMessage);
 
-        log.info("what's in that query: " + query);
-
         // document가 있으면 업데이트, 없으면 생성
         mongoTemplate.upsert(query, update, ChatRoomMessage.class);
-
-        log.info("are you alive?: " + mongoTemplate.count(query, ChatRoomMessage.class));
     }
 
     public void markMessagesAsRead(String roomId, String nickname) {
@@ -90,30 +82,22 @@ public class ChatRoomMessageService {
 // MongoDB 쿼리: roomId에 해당하는 문서 찾기
         Document query = new Document("roomId", roomId);
 
-        log.info("query: " + query);
 
 // 업데이트: sender가 지정된 사용자가 아니고 readYn이 false인 메시지의 readYn을 true로 설정
         Document update = new Document("$set", new Document("messages.$[elem].readYn", true));
 
-        log.info("update: " + update);
 // 배열 필터 정의
         List<Document> arrayFilters = Collections.singletonList(
                 new Document("elem.sender", new Document("$ne", nickname))
                         .append("elem.readYn", false)
         );
 
-        log.info("arrayFilters: " + arrayFilters);
-
-
 // UpdateOptions 설정
         UpdateOptions options = new UpdateOptions().arrayFilters(arrayFilters);
-
-        log.info("updateOptions: " + options);
 
 // MongoDB에서 배열 필드를 업데이트
         UpdateResult result = collection.updateMany(query, update, options);
 
-        log.info("result: " + result);
     }
 
 }

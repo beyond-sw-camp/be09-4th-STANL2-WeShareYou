@@ -18,11 +18,6 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberService memberService;
 
-    public List<ChatRoom> findAllRoom() {
-
-        return chatRoomRepository.findAll();
-    }
-
     public List<ChatRoom> findRoomsByUser(String user) {
 
         return chatRoomRepository.findAll().stream()

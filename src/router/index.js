@@ -34,7 +34,7 @@ const routes = [
     {
         path: '/board/:tag',
         name: 'Board',
-        component: Board,
+        component: () => Board,
     },
     {
         path: '/notice',

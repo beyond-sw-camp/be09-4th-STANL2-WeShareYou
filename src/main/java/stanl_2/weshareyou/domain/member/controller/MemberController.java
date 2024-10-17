@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.member.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import stanl_2.weshareyou.global.common.RequestUtils;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
+import stanl_2.weshareyou.domain.member.aggregate.history.HistoryInput;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.FindLikeListResponseVO;
@@ -112,16 +115,23 @@ public class MemberController {
      * }
      */
     @PostMapping("/login")
-    public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO){
-
-        Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
+    public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO, HttpServletRequest request) {
+        Authentication authentication = UsernamePasswordAuthenticationToken
+                .unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
 
         Authentication authenticationResponse = authenticationManager.authenticate(authentication);
 
         String jwt = memberService.loginMember(authenticationResponse);
-        if("".equals(jwt)){
+        if ("".equals(jwt)) {
             throw new CommonException(ErrorCode.LOGIN_FAILURE);
         }
+
+        // 로그인 이력 저장
+        HistoryInput historyInput = new HistoryInput();
+        historyInput.setUserId(loginRequestVO.getLoginId());
+        historyInput.setClientIp(RequestUtils.getClientIp(request));
+        historyInput.setUserAgent(request.getHeader("User-Agent"));
+        memberService.saveLoginHistory(historyInput);
 
         return ApiResponse.ok(new LoginResponseVO(HttpStatus.OK.getReasonPhrase(), jwt));
     }

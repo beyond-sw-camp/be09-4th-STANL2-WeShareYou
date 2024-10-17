@@ -1,7 +1,7 @@
 <template>
     <div class="container-regist">
         <div class="wrapper-regist">
-            <select v-model="category" class="category-select">
+            <select v-model="category1" class="category-select">
                 <option value="NECESSITIES">생활품</option>
                 <option value="KITCHENWARES">주방용품</option>
                 <option value="CLOTHES">의류</option>
@@ -42,11 +42,14 @@ import PostRegist from '@/components/cud/PostRegist.vue';
 
 // const selectedCategory = ref(parentCategory);
 
+const route = useRoute();
 const router = useRouter();
 const title = ref('');
 const content = ref('');
 const imageFile = ref(null);
-const category = ref('NECESSITIES');
+const category1 = ref('NECESSITIES');
+
+const ProductCategory = ref(route.query.category || '공유 물품');
 
 // 자식 컴포넌트로부터 데이터 수신
 const handleTitleUpdate = (newTitle) => {
@@ -72,9 +75,9 @@ const submitPost = async () => {
 
     console.log("ddd: " + title.value);
     console.log("content: " + content.value);
-    console.log("img: " + category.value); 
-  if (!title.value || !content.value || !imageFile.value || !category.value) {
-    alert('모든 필드를 입력하세요.');
+    console.log("img: " + imageFile.value); 
+  if (!title.value || !content.value || !imageFile.value || !category1.value) {
+    alert('모든 항목을 입력해주세요.');
     return;
   }
 
@@ -87,7 +90,7 @@ const submitPost = async () => {
         JSON.stringify({
           title: title.value,
           content: content.value,
-          category: category.value,
+          category: category1.value,
           status: "RENTAL",
         }),
       ],
@@ -110,12 +113,12 @@ const submitPost = async () => {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
-    alert('등록 성공!');
+    alert('상품이 등록되었습니다.');
     console.log('응답:', response.data.result);
-    router.push(`/product/${selectedCategory.value}`);
+    router.push(`/product/${ProductCategory.value}`);
   } catch (error) {
     console.error('등록 실패:', error);
-    alert('등록 실패!');
+    alert('상품이 등록되지 않았습니다.');
   }
 };
 

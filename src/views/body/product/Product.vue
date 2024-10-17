@@ -31,7 +31,11 @@ const isProductListPage = computed(() => route.name === 'ProductList');
 
 // 상품 등록 페이지로 이동하는 함수
 function goToProductRegist() {
-    router.push('/product/regist'); // 경로 이동
+    // 카테고리 값을 쿼리 파라미터로 함께 전달
+    router.push({
+        path: '/product/regist',
+        query: { category: category.value }
+    });
 }
 
 // 카테고리 설정 및 번역 로직

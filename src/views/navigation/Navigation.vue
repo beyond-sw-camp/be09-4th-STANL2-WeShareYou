@@ -45,16 +45,16 @@
                     <span :class="{ active: activeMenu === 'board' }">게시글</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">가이드</RouterLink>
+                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">가이드</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">프리마켓</RouterLink>
+                            <RouterLink to="/board/event" @click="setActiveMenu('board')">프리마켓</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">동행</RouterLink>
+                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">동행</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">TIP</RouterLink>
+                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">TIP</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -71,15 +71,34 @@
             </ul>
         </div>
 
+        
+
         <div class="nav-right">
-            <span class="language">Language</span>
+            <ul class="language-setting">
+                <li class="dropdown" @click="toggleDropdown('language')">
+                    <span class= "language-font" :class="{ active: activeMenu === 'language' }">Language</span>
+                    <ul v-show="activeDropdown === 'language'" class="dropdown-language-menu" @click.stop>
+                        <li class="dropdown-language">
+                            English
+                        </li>
+                        <li class="dropdown-language">
+                            日本語
+                        </li>
+                        <li class="dropdown-language1">
+                            中文
+                        </li>
+                    </ul>
+                </li> 
+            </ul>
+            
+                
+            <!-- <span class="language">Language</span> -->
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
-
+                <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
                 <!-- 프로필 드롭다운 메뉴 -->
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">
@@ -104,34 +123,25 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import defaultProfileImage from '../../assets/icon/navigation/profile.png';
 
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
 const router = useRouter();
 const isLoggedIn = ref(false);
-const profileImage = ref('');
-
-
 
 // 로그인 여부 확인 함수 (JWT와 userInfo 체크)
 function checkLoginStatus() {
     const token = localStorage.getItem('jwtToken');
     const userInfo = localStorage.getItem('userInfo');
-    if (token && userInfo) {
-        isLoggedIn.value = true;
-        profileImage.value = JSON.parse(userInfo).profile || ''; // 프로필 이미지 설정
-    } else {
-        isLoggedIn.value = false;
-        profileImage.value = ''; // 기본 이미지로 초기화
-    }
+    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
 }
 function logOut() {
+    // activeDropdown.value = null;
+    // activeMenu.value = null;
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userInfo');
     alert('로그아웃되었습니다.');
     isLoggedIn.value = false;
-    profileImage.value = ''; // 이미지 초기화
     router.push(`/`);
 }
 function loGin() {
@@ -316,5 +326,38 @@ onBeforeUnmount(() => {
 .active {
     color: #6CB1FF;
     /* 활성화된 메뉴 색상 */
+}
+.language-setting{
+    margin-top: 6px;
+    font-size: 4rem;
+}
+.dropdown-language-menu{
+    z-index: 1000;
+    position: absolute;
+    top: 4rem;
+    left: 0;
+    background-color: white;
+    border: 0.1rem solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 8rem;
+    padding: 0.5rem 0;
+}
+.dropdown-language{
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size:1.5rem;
+}
+.dropdown-language1{
+    text-align: center;
+    font-size:1.5rem;
+}
+.dropdown-language:hover {
+    color: #439AFF !important;
+}
+.dropdown-language1:hover {
+    color: #439AFF !important;
 }
 </style>

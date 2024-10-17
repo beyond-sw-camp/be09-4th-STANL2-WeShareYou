@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="title-container">
-      <input type="text" placeholder="제목을 작성해주세요." v-model="localTitle" class="title-input" />
+      <input type="text" placeholder="제목을 작성해주세요." v-model="localTitle" class="title-input" @input="emitTitleUpdate"/>
       <button class="image-upload-btn" @click="triggerFileInput">
         <img src="@/assets/icon/Img_box_light.png" alt="이미지 업로드" />
       </button>
@@ -17,43 +17,76 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-const emit = defineEmits(['update:title', 'update:content', 'update:image']);
-
+// 지역 상태 정의
 const localTitle = ref('');
-const localContent = ref('');
-const localImage = ref(null);
-const contentArea = ref(null);
+const content = ref('');
+
+
+const emit = defineEmits(['updateTitle', 'updateContent', 'imageUploaded']);
+
+// 제목 변경 시 부모에게 알림
+const emitTitleUpdate = () => {
+  emit('updateTitle', localTitle.value);
+};
+
+// 내용 변경 시 부모에게 알림
+const updateContent = () => {
+  emit('updateContent', contentArea.value.innerText);
+};
+
+// 파일 선택창 열기
 const fileInput = ref(null);
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
 
-watch(localTitle, (newTitle) => emit('update:title', newTitle));
-watch(localContent, (newContent) => emit('update:content', newContent));
-
-function handleImageUpload(event) {
+// 이미지 업로드 처리
+const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    localImage.value = file;
-    emit('update:image', file); // 부모 컴포넌트로 이미지 전달
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      img.style.maxWidth = '100%';
-      contentArea.value.appendChild(img);
-      updateContent();
-    };
-    reader.readAsDataURL(file);
+    emit('imageUploaded', file);
   }
-}
+};
 
-function triggerFileInput() {
-  fileInput.value.click();
-}
-
-function updateContent() {
-  localContent.value = contentArea.value.innerHTML;
-}
+// 내용 입력 참조
+const contentArea = ref(null);
 </script>
+
+<!-- 
+// const localTitle = ref('');
+// const localContent = ref('');
+// const localImage = ref(null);
+// const contentArea = ref(null);
+// const fileInput = ref(null);
+
+// watch(localTitle, (newTitle) => emit('update:title', newTitle));
+// watch(localContent, (newContent) => emit('update:content', newContent));
+
+// function handleImageUpload(event) {
+//   const file = event.target.files[0];
+//   if (file) {
+//     localImage.value = file;
+//     emit('update:image', file); 
+
+//     const reader = new FileReader();
+//     reader.onload = (e) => {
+//       const img = document.createElement('img');
+//       img.src = e.target.result;
+//       img.style.maxWidth = '100%';
+//       contentArea.value.appendChild(img);
+//       updateContent();
+//     };
+//     reader.readAsDataURL(file);
+//   }
+// }
+
+// function triggerFileInput() {
+//   fileInput.value.click();
+// }
+
+// function updateContent() {
+//   localContent.value = contentArea.value.innerHTML;
+// } -->
 
 <style scoped>
 .container {

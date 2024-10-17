@@ -13,7 +13,9 @@
             <button @click="submitPost" class="submit-btn">등록</button>
         </div>
 
-        <PostRegist v-model:title="title" v-model:content="content" v-model:image="image" />
+        <PostRegist @updateTitle="handleTitleUpdate" 
+      @updateContent="handleContentUpdate" 
+      @imageUploaded="handleImageUpload" />
     </div>
 </template>
 
@@ -23,84 +25,174 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import PostRegist from '@/components/cud/PostRegist.vue';
 
-const title = ref('');
-const content = ref('');
-const image = ref(null); // 이미지 파일
-const category = ref('NECESSITIES');
-const route = useRoute();
-const router = useRouter();
+// const title = ref('');
+// const content = ref('');
+// const image = ref(null); // 이미지 파일
+// const category = ref('NECESSITIES');
+// const route = useRoute();
+// const router = useRouter();
 
 // LocalStorage에서 id 값 가져오기
-const userId = getUserIdFromLocalStorage();
+// const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+// const userId = userInfo.id;
 
-onMounted(() => {
-    if (route.query.category) {
-        category.value = route.query.category;
-    }
-});
+// console.log("id값: " + userId);
 
-async function submitPost() {
-    if (!title.value || !content.value || !image.value || !userId) {
-        alert('모든 필드와 사용자 정보가 필요합니다.');
-        return;
-    }
+// defineProps(['parentCategory']);
 
-    const formData = new FormData();
-    formData.append('file', image.value); // 이미지 파일 추가
-    formData.append(
-        'vo',
-        new Blob(
-            [
-                JSON.stringify({
-                    title: title.value,
-                    content: content.value,
-                    category: category.value,
-                    status: 'RENTAL',
-                }),
-            ],
-            { type: 'application/json' }
-        )
-    );
+// const selectedCategory = ref(parentCategory);
 
-    try {
-        const response = await axios.post('http://localhost:8080/api/v1/product', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'id': userId, // 헤더에 사용자 ID 추가
-            },
-        });
+const router = useRouter();
+const title = ref('');
+const content = ref('');
+const imageFile = ref(null);
+const category = ref('NECESSITIES');
 
-        if (response.status === 201) {
-            alert('상품이 성공적으로 등록되었습니다!');
-            router.push('/product');
-        } else {
-            console.error('응답 상태 코드:', response.status);
-            alert('상품 등록에 실패했습니다.');
-        }
-    } catch (error) {
-        console.error('상품 등록 실패:', error);
-        alert('서버와의 통신 중 오류가 발생했습니다.');
-    }
-}
+// 자식 컴포넌트로부터 데이터 수신
+const handleTitleUpdate = (newTitle) => {
+  title.value = newTitle;
+};
 
-function listPost() {
-    router.push('/product');
-}
+const handleContentUpdate = (newContent) => {
+  content.value = newContent;
+};
 
-// JWT에서 ID 추출 함수
-function getUserIdFromLocalStorage() {
-    const user = localStorage.getItem('id'); // 'user'로 저장된 경우
-    if (user) {
-        try {
-            const parsedUser = JSON.parse(user);
-            return parsedUser.id; // ID 추출
-        } catch (error) {
-            console.error('JWT 파싱 실패:', error);
-            return null;
-        }
-    }
-    return null;
-}
+const handleImageUpload = (file) => {
+  imageFile.value = file;
+};
+
+// 취소 버튼 클릭 시
+const listPost = () => {
+  console.log('취소 버튼 클릭!');
+  // 필요에 따라 다른 로직 추가 가능
+};
+
+// 서버로 데이터 전송
+const submitPost = async () => {
+
+    console.log("ddd: " + title.value);
+    console.log("content: " + content.value);
+    console.log("img: " + category.value); 
+  if (!title.value || !content.value || !imageFile.value || !category.value) {
+    alert('모든 필드를 입력하세요.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', imageFile.value);
+  formData.append(
+    'vo',
+    new Blob(
+      [
+        JSON.stringify({
+          title: title.value,
+          content: content.value,
+          category: category.value,
+          status: "RENTAL",
+        }),
+      ],
+      { type: 'application/json' }
+    )
+  );
+
+  const json = JSON.stringify(formData);
+    console.log("data: " + json);
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    console.log("jwtToken: " + jwtToken);
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/v1/product', 
+    formData, 
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+    alert('등록 성공!');
+    console.log('응답:', response.data.result);
+    router.push(`/product/${selectedCategory.value}`);
+  } catch (error) {
+    console.error('등록 실패:', error);
+    alert('등록 실패!');
+  }
+};
+
+
+// onMounted(() => {
+//     if (route.query.category) {
+//         category.value = route.query.category;
+//     }
+// });
+
+// async function submitPost() {
+//     if (!title.value || !content.value || !image.value || !userId) {
+//         alert('모든 필드와 사용자 정보가 필요합니다.');
+//         return;
+//     }
+
+//     const formData = new FormData();
+//     formData.append('file', image.value); // 이미지 파일 추가
+//     formData.append(
+//         'vo',
+//         new Blob(
+//             [
+//                 JSON.stringify({
+//                     title: title.value,
+//                     content: content.value,
+//                     category: category.value,
+//                     status: 'RENTAL',
+//                 }),
+//             ],
+//             { type: 'application/json' }
+//         )
+//     );
+
+//     const json = JSON.stringify(formData);
+//     console.log("data: " + json);
+
+//     const jwtToken = localStorage.getItem('jwtToken');
+
+//     try {
+//         const response = await axios.post('http://localhost:8080/api/v1/product', formData, {
+//             headers: {
+//                 'Content-Type': 'multipart/form-data',
+//                 Authorization: `Bearer ${jwtToken}`,
+//             },
+//         });
+
+//         if (response.status === 201) {
+//             alert('상품이 성공적으로 등록되었습니다!');
+//             router.push('/product');
+//         } else {
+//             console.error('응답 상태 코드:', response.status);
+//             alert('상품 등록에 실패했습니다.');
+//         }
+//     } catch (error) {
+//         console.error('상품 등록 실패:', error);
+//         alert('서버와의 통신 중 오류가 발생했습니다.');
+//     }
+// }
+
+// function listPost() {
+//     router.push('/product');
+// }
+
+// // JWT에서 ID 추출 함수
+// function getUserIdFromLocalStorage() {
+//     const user = localStorage.getItem('id'); // 'user'로 저장된 경우
+//     if (user) {
+//         try {
+//             const parsedUser = JSON.parse(user);
+//             return parsedUser.id; // ID 추출
+//         } catch (error) {
+//             console.error('JWT 파싱 실패:', error);
+//             return null;
+//         }
+//     }
+//     return null;
+// }
 </script>
 
 <style scoped>
@@ -112,7 +204,7 @@ function getUserIdFromLocalStorage() {
     display: flex;
     justify-content: end;
     align-items: center;
-    margin-right: 14rem;
+    margin-right: 6rem;
     margin-top: 3rem;
 }
 

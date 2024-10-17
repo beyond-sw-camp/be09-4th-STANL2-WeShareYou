@@ -65,7 +65,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return path.equals("/api/v1/member/login") || path.equals("/swagger-ui/**");
-//        return request.getServletPath().equals("/api/v1/member/login");
+        return path.equals("/api/v1/member/login") ||
+                path.equals("/api/v1/member/register") ||
+                path.startsWith("/api/v1/member/sms") ||  // 와일드카드 경로 포함
+                path.startsWith("/api/v1/member/mail") ||
+                path.equals("/api/v1/member/password");
     }
 }

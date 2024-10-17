@@ -3,6 +3,8 @@ package stanl_2.weshareyou.domain.board.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
+import stanl_2.weshareyou.domain.board_image.aggregate.dto.BoardImageDTO;
+import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 
 import java.util.List;
 
@@ -19,12 +21,8 @@ public class BoardCreateResponseVO {
     @NotNull
     private String content;
 
-    private List<String> imageUrl;
+    private List<BoardImageDTO> imageObj;
 
     @NotNull
     private TAG tag;
-
-    @NotNull
-    private Long memberId;
-
 }

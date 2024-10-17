@@ -1,21 +1,17 @@
 package stanl_2.weshareyou.domain.board_image.aggregate.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.*;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name="BOARD_IMAGE")
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Getter
 @Setter
 public class BoardImage {
@@ -25,15 +21,27 @@ public class BoardImage {
     @Column(name="BOARD_IMAGE_ID")
     private Long id;
 
-    @ElementCollection
-    @Column(name = "BOARD_IMAGE_URL123123")
-    private List<String> imageUrl;
+    @Column(nullable = false)
+    private String imageUrl;
 
-//    @Column(name = "BOARD_IMAGE_NAME")
-//    private String imageName;
+    @Column(name="BOARD_IMAGE_NAME")
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "BOARD_ID")
+    @NotNull
     private Board board;
 
+    public void setBoard(Board board) {
+        this.board = board;
+
+        // board의 imageList가 null이 아닌지 확인하고 추가
+        if (board.getImageList() == null) {
+            board.setImageList(new ArrayList<>());
+        }
+
+        if (!board.getImageList().contains(this)) {
+            board.getImageList().add(this);
+        }
+    }
 }

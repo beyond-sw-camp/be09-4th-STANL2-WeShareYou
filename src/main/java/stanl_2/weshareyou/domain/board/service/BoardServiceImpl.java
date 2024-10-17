@@ -15,8 +15,10 @@ import stanl_2.weshareyou.domain.board.repository.BoardRepository;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
 import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
 import stanl_2.weshareyou.domain.board_comment.repository.BoardCommentRepository;
+import stanl_2.weshareyou.domain.board_image.aggregate.dto.BoardImageDTO;
 import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
+import stanl_2.weshareyou.domain.board_image.service.BoardImageService;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.s3.S3uploader;
@@ -28,6 +30,8 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +45,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardCommentRepository boardCommentRepository;
     private final S3uploader s3uploader;
     private final BoardImageRepository boardImageRepository;
+    private final BoardImageService boardImageService;
     private Timestamp getCurrentTimestamp() {
         ZonedDateTime nowKst = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Timestamp.from(nowKst.toInstant());
@@ -49,28 +54,27 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     public BoardServiceImpl(BoardRepository boardRepository, ModelMapper modelMapper,
                             MemberRepository memberRepository, BoardCommentRepository boardCommentRepository,
-                            S3uploader s3uploader, BoardImageRepository boardImageRepository) {
+                            S3uploader s3uploader, BoardImageRepository boardImageRepository,
+                            BoardImageService boardImageService) {
         this.boardRepository = boardRepository;
         this.modelMapper = modelMapper;
         this.memberRepository = memberRepository;
         this.boardCommentRepository = boardCommentRepository;
         this.s3uploader = s3uploader;
         this.boardImageRepository = boardImageRepository;
+        this.boardImageService = boardImageService;
     }
 
     @Override
     @Transactional
     public BoardDTO createBoard(BoardDTO boardDTO) {
-        Board board =new Board();
-        List<String> images =new ArrayList<>();
         Timestamp currentTimestamp = getCurrentTimestamp();
         Long memberId = boardDTO.getMemberId();
-        List<MultipartFile> files = boardDTO.getFile();
-
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
+        Board board = new Board();
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
         board.setTag(boardDTO.getTag());
@@ -80,21 +84,31 @@ public class BoardServiceImpl implements BoardService{
         board.setUpdatedAt(currentTimestamp);
         board.setActive(true);
         board.setMember(member);
+
         boardRepository.save(board);
 
-        List<String> imageList = s3uploader.uploadImg(boardDTO.getFile());
-        BoardImage boardImage = new BoardImage();
-        if(files != null){
-            for (String imageUrl : imageList) {
-                images.add(imageUrl);
-                boardImage.setBoard(board);  // board와 관계 설정
-            }
+        List<BoardImage> images = s3uploader.uploadImg(boardDTO.getFile());
+
+        for(BoardImage image: images){
+            image.setBoard(board);
+            boardImageRepository.save(image);
         }
-        boardImage.setImageUrl(images);
-        boardImageRepository.save(boardImage);  // DB에 저장
-        BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
-        boardResponseDTO.setMemberId(member.getId());
-        boardResponseDTO.setImageUrl(images);
+
+        List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+
+        List<BoardImageDTO> imageObj = new ArrayList<>();
+
+        for (BoardImage image : savedImages) {
+            BoardImageDTO imageDTO = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+            imageObj.add(imageDTO);
+        }
+
+        BoardDTO boardResponseDTO = new BoardDTO();
+        boardResponseDTO.setImageObj(imageObj);
+        boardResponseDTO.setTitle(board.getTitle());
+        boardResponseDTO.setContent(board.getContent());
+        boardResponseDTO.setTag(board.getTag());
+
         return boardResponseDTO;
     }
 
@@ -103,18 +117,48 @@ public class BoardServiceImpl implements BoardService{
     public BoardDTO updateBoard(BoardDTO boardDTO) {
 
         Timestamp currentTimestamp = getCurrentTimestamp();
+
+        List<Long> deletedFileIds = boardDTO.getDeleteIds();
+
+        // 삭제할 이미지 처리 (여러 개 삭제 가능)
+        if (deletedFileIds != null && !deletedFileIds.isEmpty()) {
+            boardImageService.updateImages(deletedFileIds);
+        }
+
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
         board.setTitle(boardDTO.getTitle());
         board.setContent(boardDTO.getContent());
-//        board.setImageUrl(boardDTO.getImageUrl());
         board.setTag(boardDTO.getTag());
         board.setUpdatedAt(currentTimestamp);
 
         boardRepository.save(board);
 
+        List<MultipartFile> files = boardDTO.getFile();
+
+        List<BoardImageDTO> imageObj = new ArrayList<>();
+
+        // 추가할 이미지 처리 (여러 개 추가 기능)
+        if(files != null && !files.isEmpty()) {
+
+            List<BoardImage> images = s3uploader.uploadImg(files);
+
+            for(BoardImage image: images){
+                image.setBoard(board);
+                boardImageRepository.save(image);
+            }
+
+            List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+
+            for (BoardImage image : savedImages) {
+                BoardImageDTO imageDTO = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+                imageObj.add(imageDTO);
+            }
+        }
+
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
+        boardResponseDTO.setImageObj(imageObj);
 
         return boardResponseDTO;
     }
@@ -133,6 +177,8 @@ public class BoardServiceImpl implements BoardService{
 
         boardRepository.save(board);
 
+        boardImageService.deleteImages(board);
+
         BoardDTO boardResponseDTO = modelMapper.map(board, BoardDTO.class);
 
         return boardResponseDTO;
@@ -145,6 +191,15 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardDTO.getId())
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
 
+        List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+        List<BoardImageDTO> imageObj = new ArrayList<>();
+
+        for (BoardImage image : savedImages) {
+            BoardImageDTO imageDTO
+                    = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+            imageObj.add(imageDTO);
+        }
+
         List<BoardComment> boardComments = boardCommentRepository.findByBoardId(board.getId());
 
         List<BoardCommentDto> boardCommentDTOs = boardComments.stream()
@@ -152,7 +207,7 @@ public class BoardServiceImpl implements BoardService{
                 .collect(Collectors.toList());
 
         BoardDTO boardResponseDTO = new BoardDTO();
-//        boardResponseDTO.setImageUrl(board.getImageUrl());
+        boardResponseDTO.setImageObj(imageObj);
         boardResponseDTO.setContent(board.getContent());
         boardResponseDTO.setLikesCount(board.getLikesCount());
         boardResponseDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
@@ -179,12 +234,24 @@ public class BoardServiceImpl implements BoardService{
         Long lastBoardId = boardList.getContent().isEmpty() ? null :
                 boardList.getContent().get(boardList.getNumberOfElements() - 1).getId();
 
+
+
         List<BoardDTO> boardDTOList = boardList.getContent().stream()
                 .map(board -> {
+
+                    List<BoardImage> savedImages = boardImageRepository.findAllByBoardId(board.getId());
+                    List<BoardImageDTO> imageObj = new ArrayList<>();
+
+                    for (BoardImage image : savedImages) {
+                        BoardImageDTO imageDTO
+                                = new BoardImageDTO(image.getId(), image.getImageUrl(), image.getName());
+                        imageObj.add(imageDTO);
+                    }
+
                     BoardDTO boardDTO = new BoardDTO();
                     boardDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
                     boardDTO.setMemberNickname(board.getMember().getNickname());
-//                    boardDTO.setImageUrl(board.getImageUrl());
+                    boardDTO.setImageObj(imageObj);
                     boardDTO.setTitle(board.getTitle());
                     boardDTO.setLikesCount(board.getLikesCount());
                     boardDTO.setCommentCount(board.getCommentCount());

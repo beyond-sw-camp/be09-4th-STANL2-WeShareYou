@@ -100,12 +100,23 @@ public class BoardController {
      */
     @PutMapping("")
     public ApiResponse<?> updateBoard(@RequestAttribute("id") Long memberId,
-                                      @RequestBody @Valid BoardUpdateRequestVO boardUpdateRequestVO) {
+                                      @RequestPart("vo") BoardUpdateRequestVO boardUpdateRequestVO,
+                                      @RequestPart("newFiles") List<MultipartFile> files,
+                                      @RequestPart("deletedFileIds") List<Long> deleteIds) {
 
         BoardDTO boardDTO = modelMapper.map(boardUpdateRequestVO, BoardDTO.class);
+
         boardDTO.setMemberId(memberId);
 
-        log.info("값 확인1: {}", boardDTO.toString());
+        if(files != null) {
+            List<MultipartFile> fileList = new ArrayList<>(files);
+            boardDTO.setFile(fileList);
+        }
+
+        if(deleteIds != null){
+            List<Long> deleteId = new ArrayList<>(deleteIds);
+            boardDTO.setDeleteIds(deleteId);
+        }
 
         BoardDTO boardResponseDTO = boardService.updateBoard(boardDTO);
 
@@ -133,12 +144,10 @@ public class BoardController {
      */
     @DeleteMapping("")
     public ApiResponse<?> deleteBoard(@RequestAttribute("id") Long memberId,
-                                      @RequestBody @Valid BoardDeleteRequestVO boardDeleteRequestVO){
+                                      @RequestBody BoardDeleteRequestVO boardDeleteRequestVO){
 
         BoardDTO boardDTO = modelMapper.map(boardDeleteRequestVO, BoardDTO.class);
         boardDTO.setMemberId(memberId);
-
-        log.info("값 확인2: {}", boardDTO.toString());
 
         BoardDTO boardResponseDTO = boardService.deleteBoard(boardDTO);
 

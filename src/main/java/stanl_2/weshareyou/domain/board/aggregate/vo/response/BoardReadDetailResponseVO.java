@@ -3,6 +3,7 @@ package stanl_2.weshareyou.domain.board.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
+import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class BoardReadDetailResponseVO {
 
     @NotNull
-    private String imageUrl;
+    private List<BoardImage> imageObj;
 
     @NotNull
     private String content;

@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.product.aggregate.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductStatus;
 

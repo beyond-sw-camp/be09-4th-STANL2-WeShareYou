@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS NOTICE;
 DROP TABLE IF EXISTS PRODUCT;
 DROP TABLE IF EXISTS BOARD;
 DROP TABLE IF EXISTS MEMBER;
+DROP TABLE IF EXISTS BOARD_IMAGE;
 
 -- 테이블 생성
 CREATE TABLE member (
@@ -51,6 +52,13 @@ CREATE TABLE board (
                        board_active BOOLEAN NOT NULL DEFAULT true,
                        member_id BIGINT NOT NULL
 );
+
+CREATE TABLE board_image (
+                             board_image_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                             image_url TEXT NOT NULL COMMENT 'S3에 저장된 이미지 URL',
+                             board_id BIGINT NOT NULL
+);
+
 
 CREATE TABLE product (
                          product_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -128,6 +136,8 @@ ALTER TABLE sub_comment ADD CONSTRAINT fk_sub_comment_comment FOREIGN KEY (comme
 ALTER TABLE comment ADD CONSTRAINT fk_comment_member FOREIGN KEY (member_id) REFERENCES member (member_id);
 ALTER TABLE comment ADD CONSTRAINT fk_comment_board FOREIGN KEY (board_id) REFERENCES board (board_id);
 
+ALTER TABLE board_image ADD CONSTRAINT  fk_board_image_board FOREIGN KEY (board_id) REFERENCES board (board_id);
+
 -- 더미 데이터 삽입
 INSERT INTO member (member_login_id, member_password, member_name, member_age, member_nationality, member_sex, member_phone, member_point, member_role, member_nickname, member_profile_url, member_introduction, member_language, member_created_at, member_updated_at, member_active) VALUES
                                                                                                                                                                                                                                                                                             ('user1@example.com', 'password1', 'User One', 25, 'USA', 'FEMALE', '123-456-7890', 0, 'ROLE_MEMBER', 'userone', NULL, 'Hello, I am User One', 'English', '2024-10-08', '2024-10-08', TRUE),
@@ -163,3 +173,8 @@ INSERT INTO notice (notice_title, notice_content, notice_created_at, notice_upda
                                                                                                                      ('Service Maintenance', 'The service will be down for maintenance on October 10th.', '2024-10-08T12:00:00', '2024-10-08T12:00:00', TRUE, 1),
                                                                                                                      ('New Features Released', 'We have added new features to improve your experience.', '2024-10-08T12:00:00', '2024-10-08T12:00:00', TRUE, 1),
                                                                                                                      ('Community Guidelines Update', 'Please review the updated community guidelines.', '2024-10-08T12:00:00', '2024-10-08T12:00:00', TRUE, 1);
+
+INSERT INTO board_image (image_url, board_id) VALUES
+                                                  ('https://s3.amazonaws.com/bucket-name/image1.jpg', 1),
+                                                  ('https://s3.amazonaws.com/bucket-name/image2.jpg', 1),
+                                                  ('https://s3.amazonaws.com/bucket-name/image3.jpg', 2);

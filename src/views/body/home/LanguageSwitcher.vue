@@ -12,8 +12,9 @@ import { translateFAQ } from './Faq.vue';  // FAQ 컴포넌트의 번역 함수 
 <style scoped>
 .language-switcher {
   margin: 2rem;
+  display: flex;
+  justify-content: center;
 }
-
 button {
   margin: 0.5rem;
   padding: 0.5rem 1rem;

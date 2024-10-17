@@ -76,23 +76,18 @@
         <div class="nav-right">
             <ul class="language-setting">
                 <li class="dropdown" @click="toggleDropdown('language')">
-                    <span class= "language-font" :class="{ active: activeMenu === 'language' }">Language</span>
+                    <span class="language-font" :class="{ active: activeMenu === 'language' }">Language</span>
                     <ul v-show="activeDropdown === 'language'" class="dropdown-language-menu" @click.stop>
-                        <li class="dropdown-language">
-                            English
-                        </li>
-                        <li class="dropdown-language">
-                            日本語
-                        </li>
-                        <li class="dropdown-language1">
-                            中文
-                        </li>
+                        <li class="dropdown-language" @click="changeLang('EN')">English</li>
+                        <li class="dropdown-language" @click="changeLang('KO')">한국어</li>
+                        <li class="dropdown-language" @click="changeLang('JP')">日本語</li>
+                        <li class="dropdown-language1" @click="changeLang('CN')">中文</li>
                     </ul>
-                </li> 
+                </li>
             </ul>
             
                 
-            <!-- <span class="language">Language</span> -->
+
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
@@ -113,7 +108,6 @@
                     <li v-else @click="loGin" class="dropdown-font">
                         <RouterLink to="/">로그인</RouterLink>
                     </li>
-
                 </ul>
             </div>
         </div>
@@ -121,8 +115,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useRouter } from 'vue-router';
+
+// inject로 전역 언어 상태와 변경 함수 받아오기
+const currentLang = inject('currentLang');
+const changeLanguage = inject('changeLanguage');
 
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
@@ -149,8 +147,17 @@ function loGin() {
 }
 
 // 드롭다운 열고 닫기
+const changeLang = (lang) => {
+  changeLanguage(lang); // 전역 언어 상태 변경
+};
+
 const toggleDropdown = (menu) => {
-    activeDropdown.value = activeDropdown.value === menu ? null : menu;
+  activeDropdown.value = activeDropdown.value === menu ? null : menu;
+};
+
+const resetDropdown = () => {
+  activeDropdown.value = null;
+  activeMenu.value = null;
 };
 
 // 메뉴 클릭 시 처리
@@ -163,12 +170,6 @@ const handleCategoryClick = (menu, category) => {
 // 메뉴 활성화
 const setActiveMenu = (menu) => {
     activeMenu.value = menu;
-};
-
-// 드롭다운 및 메뉴 초기화
-const resetDropdown = () => {
-    activeDropdown.value = null;
-    activeMenu.value = null;
 };
 
 // 외부 클릭 감지

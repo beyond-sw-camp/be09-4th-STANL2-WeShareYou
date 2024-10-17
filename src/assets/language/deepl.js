@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API_URL = 'https://api-free.deepl.com/v2/translate';
-const API_KEY = '814b4be3-5c9e-4b60-ae71-bc04e133e3c5:fx';  // DeepL API 키
+const API_KEY = '814b4be3-5c9e-4b60-ae71-bc04e133e3c5:fx';
 
 export const translateText = async (text, targetLang) => {
   try {

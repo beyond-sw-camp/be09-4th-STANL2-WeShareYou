@@ -1,10 +1,5 @@
 <template>
   <div class="Landing">
-    <div class="language-switcher">
-      <button @click="translateContent('EN')">English</button>
-      <button @click="translateContent('KO')">한국어</button>
-    </div>
-
     <div class="page">
       <img src="@/assets/image/home/banner1.png" alt="Banner" class="banner-1" />
       <div class="text-1">
@@ -22,10 +17,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, inject, watch  } from 'vue';
 import { translateText } from '@/assets/language/deepl'; // DeepL API 모듈
 
-// 원본 텍스트
+const currentLang = inject('currentLang');
+const setLanguage = inject('changeLanguage');
+
+
 const originalText1 = '완벽한 여행을 즐기는 방법';
 const originalText2 = '지금 바로 WSU(We Share You)에서 만나보세요!';
 
@@ -38,6 +36,14 @@ const translateContent = async (targetLang) => {
   translatedText1.value = await translateText(originalText1, targetLang);
   translatedText2.value = await translateText(originalText2, targetLang);
 };
+
+// 전역 언어 상태를 감시하고, 변경될 때마다 번역 실행
+watch(currentLang, (newLang) => {
+  translateContent(newLang);
+});
+
+// 페이지 초기 로딩 시 현재 언어로 번역 실행
+translateContent(currentLang.value);
 </script>
 
 <style scoped>

@@ -58,7 +58,8 @@ const fetchBoardItems = async (reset = false) => {
 
         let data = response.data;
         let newContents = [];
-
+        
+        console.log("Parsed Data:", data);
         if (typeof data === 'string') {
             const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
             if (jsonParts.length > 0) {
@@ -133,17 +134,18 @@ onUnmounted(() => {
 
 <style scoped>
 .board-container {
-  max-width: 600px;
+  max-width: 65rem;
   margin: 0 auto;
+  margin-top: 8rem;
 }
 
 .board-card {
   background: #FFFFFF;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 15px;
-  margin-top: 15px;
+  border: 0.0625rem solid #E0E0E0; /* 1px = 0.0625rem */
+  border-radius: 1.5rem; /* 8px = 0.5rem */
+  padding: 1rem; /* 16px = 1rem */
+  margin-bottom: 1.5rem; /* 15px = 0.9375rem */
+  margin-top: 1.5rem; /* 15px = 0.9375rem */
 }
 
 .user-info {

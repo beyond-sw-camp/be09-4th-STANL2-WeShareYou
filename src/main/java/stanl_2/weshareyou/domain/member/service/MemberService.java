@@ -27,4 +27,6 @@ public interface MemberService {
     MemberDTO findMypage(MemberDTO requestMemberDTO);
 
     MemberDTO findPoint(MemberDTO requestMemberDTO);
+
+    Boolean findNickname(String username);
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoom;
 import stanl_2.weshareyou.domain.chat.repository.ChatRoomRepository;
+import stanl_2.weshareyou.domain.member.service.MemberService;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberService memberService;
 
     public List<ChatRoom> findAllRoom() {
 
@@ -34,6 +36,16 @@ public class ChatRoomService {
     }
 
     public ChatRoom createChatRoom(String sender, String receiver) {
+
+//        /* 설명. 존재하는 아이디인지 검사 */
+//        if(memberService.findNickname(receiver)) {
+//            ChatRoom chatRoom = ChatRoom.create(sender, receiver);
+//            chatRoomRepository.save(chatRoom); // DB에 저장
+//            return chatRoom;
+//        }
+//
+//        return null;
+
         ChatRoom chatRoom = ChatRoom.create(sender, receiver);
         chatRoomRepository.save(chatRoom); // DB에 저장
         return chatRoom;

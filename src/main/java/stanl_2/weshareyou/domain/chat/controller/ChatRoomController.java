@@ -17,10 +17,8 @@ import stanl_2.weshareyou.global.common.response.ApiResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-//@Controller
 @RestController
 @Slf4j
 @RequestMapping("api/v1/chat")
@@ -33,18 +31,8 @@ public class ChatRoomController {
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("")
     @Operation(summary="채팅방 조회하기")
-//    public String showRooms(Model model, @RequestAttribute("nickname") String nickname) {
-//
-//        List<ChatRoom> rooms = chatRoomService.findRoomsByUser(nickname);
-//        model.addAttribute("rooms", rooms);
-//        model.addAttribute("user", nickname);
-//
-//        return "/chat/room_list";
-//    }
     public Map<String, Object> showRooms(@RequestAttribute("nickname") String nickname) {
         List<ChatRoom> rooms = chatRoomService.findRoomsByUser(nickname);
-
-
 
         Map<String, Object> response = new HashMap<>();
         response.put("rooms", rooms);
@@ -54,7 +42,6 @@ public class ChatRoomController {
     }
     @GetMapping("/{roomId}")
     public Map<String, Object> roomDetail(@PathVariable String roomId
-//                            ,Model model
                             ,@RequestAttribute("nickname") String nickname) {
         ChatRoom room = chatRoomService.findRoomById(roomId);
 
@@ -64,29 +51,24 @@ public class ChatRoomController {
 
         log.info("에러?" + messages);
 
-//        chatRoomMessageService.markMessagesAsRead(roomId, nickname);
+        chatRoomMessageService.markMessagesAsRead(roomId, nickname);
 
         log.info("에러임?");
 
         Map<String, Object> response = new HashMap<>();
-//        response.put("user", nickname);
         response.put("room", room);
         response.put("messages", messages.getMessages());
-//        model.addAttribute("user", nickname);
-//        model.addAttribute("room", room);
-//        model.addAttribute("messages", messages.getMessages());
 
         log.info("message가 뭐 들었나: " + messages.getMessages());
 
         return response;
-//        return "chat/room_detail";
     }
 
-    // 모든 채팅방 목록 조회
-    @GetMapping("/rooms")
-    public List<ChatRoom> getAllRooms() {
-        return chatRoomService.findAllRoom();
-    }
+//    // 모든 채팅방 목록 조회
+//    @GetMapping("/rooms")
+//    public List<ChatRoom> getAllRooms() {
+//        return chatRoomService.findAllRoom();
+//    }
 
     // 새로운 채팅방 생성
     @PostMapping("")
@@ -110,8 +92,8 @@ public class ChatRoomController {
         return ApiResponse.ok("delete fail");
     }
     // 채팅방 세부 정보 조회
-    @GetMapping("/room/{roomId}")
-    public ChatRoom roomDetail(@PathVariable String roomId) {
-        return chatRoomService.findRoomById(roomId);
-    }
+//    @GetMapping("/room/{roomId}")
+//    public ChatRoom roomDetail(@PathVariable String roomId) {
+//        return chatRoomService.findRoomById(roomId);
+//    }
 }

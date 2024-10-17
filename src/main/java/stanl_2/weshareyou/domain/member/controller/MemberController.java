@@ -409,7 +409,7 @@ public class MemberController {
      *      "point": 10
      * }
      */
-    @GetMapping("point")
+    @GetMapping("/point")
     public ApiResponse<?> findPoint(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -452,7 +452,7 @@ public class MemberController {
      *              ]
      *     }
      */
-    @GetMapping("myboard")
+    @GetMapping("/myboard")
     public ApiResponse<?> findMyBoard(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -507,7 +507,7 @@ public class MemberController {
      *                   ]
      *     }
      */
-    @GetMapping("likeboard")
+    @GetMapping("/likeboard")
     public ApiResponse<?> findLikeBoard(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
         requestMemberDTO.setId(id);
@@ -545,7 +545,7 @@ public class MemberController {
      *         ]
      *     }
      */
-    @GetMapping("mycomment")
+    @GetMapping("/mycomment")
     public ApiResponse<?> findMyComment(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
         requestMemberDTO.setId(id);

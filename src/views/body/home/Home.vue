@@ -18,10 +18,11 @@
 
 <script setup>
 import { ref, inject, watch  } from 'vue';
+import { useRouter } from 'vue-router';
 import { translateText } from '@/assets/language/deepl'; // DeepL API 모듈
 
 const currentLang = inject('currentLang');
-const setLanguage = inject('changeLanguage');
+// const setLanguage = inject('changeLanguage');
 
 
 const originalText1 = '완벽한 여행을 즐기는 방법';
@@ -30,11 +31,12 @@ const originalText2 = '지금 바로 WSU(We Share You)에서 만나보세요!';
 // 번역된 텍스트 상태
 const translatedText1 = ref(originalText1);
 const translatedText2 = ref(originalText2);
+// const router = useRouter();
 
 // 언어 변경 시 텍스트를 번역하는 함수
-const translateContent = async (targetLang) => {
-  translatedText1.value = await translateText(originalText1, targetLang);
-  translatedText2.value = await translateText(originalText2, targetLang);
+const translateContent = async (lang) => {
+  translatedText1.value = await translateText(originalText1, lang);
+  translatedText2.value = await translateText(originalText2, lang);
 };
 
 // 전역 언어 상태를 감시하고, 변경될 때마다 번역 실행

@@ -147,9 +147,7 @@ const translateMenu = async (lang) => {
   translatedCategories.value.etc = await translateText('기타', lang);
 };
 // 전역 언어 상태를 감시하고 언어에 따라 메뉴를 DeepL로 번역
-watch(currentLang, (newLang) => {
-  translateMenu(newLang);
-});
+
 
 
 const activeDropdown = ref(null);
@@ -175,6 +173,10 @@ function logOut() {
 function loGin() {
     router.push(`/login`);
 }
+
+watch(currentLang, (newLang) => {
+  translateMenu(newLang);
+});
 
 // 드롭다운 열고 닫기
 const changeLang = (lang) => {

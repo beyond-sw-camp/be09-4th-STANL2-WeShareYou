@@ -1,6 +1,6 @@
 <script setup>
 import { ref, provide } from 'vue';
-import { RouterView } from 'vue-router';
+// import { RouterView } from 'vue-router';
 import Header from './views/header/Header.vue';
 import Footer from './views/footer/Footer.vue';
 import Navigation from './views/navigation/Navigation.vue';

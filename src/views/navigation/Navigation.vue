@@ -6,34 +6,33 @@
                 <img src="../../assets/icon/navigation/logo.png" alt="Project Logo" class="project-logo" />
             </RouterLink>
 
-            <!-- 메뉴 리스트 -->
             <ul class="menu-list">
-                <!-- 공유 물품 드롭다운 -->
+                <!-- 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('product')">
-                    <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
+                    <span :class="{ active: activeMenu === 'product' }">{{ translatedMenu.product }}</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/NECESSITIES'"
-                                @click="handleCategoryClick('product', 'NECESSITIES')">생활품</RouterLink>
+                                @click="handleCategoryClick('product', 'NECESSITIES')">{{ translatedCategories.necessities }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/KITCHENWARES'"
-                                @click="handleCategoryClick('product', 'KITCHENWARES')">주방용품</RouterLink>
+                                @click="handleCategoryClick('product', 'KITCHENWARES')">{{ translatedCategories.kitchenwares }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">의류
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{ translatedCategories.clothes }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">놀이
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{ translatedCategories.toy }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">전자기기
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{ translatedCategories.device }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">기타
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{ translatedCategories.etc }}
                             </RouterLink>
                         </li>
                     </ul>
@@ -42,31 +41,31 @@
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
-                    <span :class="{ active: activeMenu === 'board' }">게시글</span>
+                    <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">가이드</RouterLink>
+                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">{{ translatedMenu.guide }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/event" @click="setActiveMenu('board')">프리마켓</RouterLink>
+                            <RouterLink to="/board/event" @click="setActiveMenu('board')">{{ translatedMenu.freemarket }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">동행</RouterLink>
+                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">{{ translatedMenu.companion }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">TIP</RouterLink>
+                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">{{ translatedMenu.tip }}</RouterLink>
                         </li>
                     </ul>
                 </li>
 
                 <li>
-                    <RouterLink to="/notice" @click="resetDropdown">공지사항</RouterLink>
+                    <RouterLink to="/notice" @click="resetDropdown">{{ translatedMenu.notice }}</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/faq" @click="resetDropdown">자주 묻는 질문</RouterLink>
+                    <RouterLink to="/faq" @click="resetDropdown">{{ translatedMenu.faq }}</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/direction" @click="resetDropdown">오시는 길</RouterLink>
+                    <RouterLink to="/direction" @click="resetDropdown">{{ translatedMenu.direction }}</RouterLink>
                 </li>
             </ul>
         </div>
@@ -94,34 +93,64 @@
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
                 <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
-                <!-- 프로필 드롭다운 메뉴 -->
-                <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
-                    <li @click="resetDropdown" class="dropdown-font">
-                        <RouterLink to="/mypage">마이페이지</RouterLink>
-                    </li>
-                    <li @click="resetDropdown" class="dropdown-font">
-                        <RouterLink to="/profile">내 프로필</RouterLink>
-                    </li>
-                    <li v-if="isLoggedIn" @click="logOut" class="dropdown-font">
-                        <RouterLink to="/login">로그아웃</RouterLink>
-                    </li>
-                    <li v-else @click="loGin" class="dropdown-font">
-                        <RouterLink to="/">로그인</RouterLink>
-                    </li>
-
-                </ul>
             </div>
         </div>
     </nav>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, inject } from 'vue';
+import { ref, onMounted, onBeforeUnmount, inject, watch} from 'vue';
 import { useRouter } from 'vue-router';
+import { translateText } from '@/assets/language/deepl';
 
 // inject로 전역 언어 상태와 변경 함수 받아오기
 const currentLang = inject('currentLang');
 const changeLanguage = inject('changeLanguage');
+
+const translatedMenu = ref({
+  product: '공유 물품',
+  board: '게시글',
+  guide: '가이드',
+  freemarket: '프리마켓',
+  companion: '동행',
+  tip: 'TIP',
+  notice: '공지사항',
+  faq: '자주 묻는 질문',
+  direction: '오시는 길',
+});
+
+const translatedCategories = ref({
+  necessities: '생활품',
+  kitchenwares: '주방용품',
+  clothes: '의류',
+  toy: '놀이',
+  device: '전자기기',
+  etc: '기타',
+});
+
+const translateMenu = async (lang) => {
+  translatedMenu.value.product = await translateText('공유 물품', lang);
+  translatedMenu.value.board = await translateText('게시글', lang);
+  translatedMenu.value.guide = await translateText('가이드', lang);
+  translatedMenu.value.freemarket = await translateText('프리마켓', lang);
+  translatedMenu.value.companion = await translateText('동행', lang);
+  translatedMenu.value.tip = await translateText('TIP', lang);
+  translatedMenu.value.notice = await translateText('공지사항', lang);
+  translatedMenu.value.faq = await translateText('자주 묻는 질문', lang);
+  translatedMenu.value.direction = await translateText('오시는 길', lang);
+
+  translatedCategories.value.necessities = await translateText('생활품', lang);
+  translatedCategories.value.kitchenwares = await translateText('주방용품', lang);
+  translatedCategories.value.clothes = await translateText('의류', lang);
+  translatedCategories.value.toy = await translateText('놀이', lang);
+  translatedCategories.value.device = await translateText('전자기기', lang);
+  translatedCategories.value.etc = await translateText('기타', lang);
+};
+// 전역 언어 상태를 감시하고 언어에 따라 메뉴를 DeepL로 번역
+watch(currentLang, (newLang) => {
+  translateMenu(newLang);
+});
+
 
 const activeDropdown = ref(null);
 const activeMenu = ref(null);

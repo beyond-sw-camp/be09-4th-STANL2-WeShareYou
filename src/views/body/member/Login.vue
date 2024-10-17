@@ -5,25 +5,13 @@
       <form @submit.prevent="login">
         <div class="input-group">
           <label for="loginId">아이디</label>
-          <input 
-            v-model="loginId" 
-            id="loginId" 
-            placeholder="아이디를 입력해 주세요." 
-            autocomplete="username" 
-            required 
-          />
+          <input v-model="loginId" id="loginId" placeholder="아이디를 입력해 주세요." autocomplete="username" required />
         </div>
-        
+
         <div class="input-group">
           <label for="password">비밀번호</label>
-          <input 
-            v-model="password" 
-            id="password" 
-            type="password" 
-            placeholder="비밀번호를 입력해 주세요." 
-            autocomplete="current-password" 
-            required 
-          />
+          <input v-model="password" id="password" type="password" placeholder="비밀번호를 입력해 주세요."
+            autocomplete="current-password" required />
         </div>
 
         <button type="submit" class="login-button">로그인</button>
@@ -53,6 +41,8 @@ const router = useRouter();
 const loginId = ref('');
 const password = ref('');
 
+const isLoggedIn = ref(false);
+
 // userInfo를 computed로 가져오기
 const userInfo = computed(() => authStore.userInfo);
 
@@ -78,6 +68,11 @@ const login = async () => {
 
     alert('로그인 성공!');
     router.push('/'); // 로그인 후 페이지 이동
+
+    // 페이지가 이동한 후 새로고침
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   } catch (error) {
     console.error('Login failed:', error);
     alert(error.message || '로그인 실패! 아이디와 비밀번호를 확인해주세요.');
@@ -162,7 +157,8 @@ input {
   text-decoration: none;
   color: #627086;
 }
-.login-options :hover{
+
+.login-options :hover {
   text-decoration: none;
   color: #94C7FF;
 }

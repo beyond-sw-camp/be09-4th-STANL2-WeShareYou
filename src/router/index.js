@@ -9,11 +9,12 @@ import SignUp from "../views/body/member/SignUp.vue";
 import Login from "../views/body/member/Login.vue";
 import FindId from "../views/body/member/FindId.vue";
 import FindPwd from "../views/body/member/FindPwd.vue";
-import Mypage from "@/views/body/member/Mypage.vue";
+import Mypage from "../views/body/member/Mypage.vue";
 import ModifyMypage from "../views/body/member/ModifyMypage.vue";
+import Profile from "../views/body/member/Profile.vue";
+import ModifyProfile from "../views/body/member/ModifyProfile.vue";
 
-
-
+import Chat from "../views/body/chat/Chat.vue";
 
 const routes = [
     {
@@ -30,12 +31,12 @@ const routes = [
     {
         path: '/product/:category',
         name: 'Product',
-        component: Product,
+        component: () => Product,
     },
     {
-        path: '/board',
+        path: '/board/:tag',
         name: 'Board',
-        component: Board,
+        component: () => Board,
     },
     {
         path: '/notice',
@@ -76,7 +77,22 @@ const routes = [
         path: '/modifyMypage',
         name: 'ModifyMypage',
         component: ModifyMypage
-    }
+    },
+    {
+        path: '/modifyProfile',
+        name: 'ModifyProfile',
+        component: ModifyProfile
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: Profile
+    },
+    {
+        path: '/chat',
+        name: 'Chat',
+        component: Chat
+    },
 ];
 
 const router = createRouter({

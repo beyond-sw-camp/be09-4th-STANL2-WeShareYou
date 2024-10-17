@@ -13,25 +13,32 @@
                     <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/NECESSITIES'" @click="setActiveMenu('product')">생활품</RouterLink>
+                            <RouterLink :to="'/product/NECESSITIES'"
+                                @click="handleCategoryClick('product', 'NECESSITIES')">생활품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/KITCHENWARES'" @click="setActiveMenu('product')">주방용품</RouterLink>
+                            <RouterLink :to="'/product/KITCHENWARES'"
+                                @click="handleCategoryClick('product', 'KITCHENWARES')">주방용품</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="setActiveMenu('product')">의류</RouterLink>
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">의류
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="setActiveMenu('product')">놀이</RouterLink>
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">놀이
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="setActiveMenu('product')">전자기기</RouterLink>
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">전자기기
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="setActiveMenu('product')">기타</RouterLink>
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">기타
+                            </RouterLink>
                         </li>
                     </ul>
                 </li>
+
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
@@ -64,8 +71,28 @@
             </ul>
         </div>
 
+        
+
         <div class="nav-right">
-            <span class="language">Language</span>
+            <ul class="language-setting">
+                <li class="dropdown" @click="toggleDropdown('language')">
+                    <span class= "language-font" :class="{ active: activeMenu === 'language' }">Language</span>
+                    <ul v-show="activeDropdown === 'language'" class="dropdown-language-menu" @click.stop>
+                        <li class="dropdown-language">
+                            English
+                        </li>
+                        <li class="dropdown-language">
+                            日本語
+                        </li>
+                        <li class="dropdown-language1">
+                            中文
+                        </li>
+                    </ul>
+                </li> 
+            </ul>
+            
+                
+            <!-- <span class="language">Language</span> -->
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
@@ -80,9 +107,13 @@
                     <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/profile">내 프로필</RouterLink>
                     </li>
-                    <li @click="resetDropdown" class="dropdown-font">
-                        <RouterLink to="/logout">로그아웃</RouterLink>
+                    <li v-if="isLoggedIn" @click="logOut" class="dropdown-font">
+                        <RouterLink to="/login">로그아웃</RouterLink>
                     </li>
+                    <li v-else @click="loGin" class="dropdown-font">
+                        <RouterLink to="/">로그인</RouterLink>
+                    </li>
+
                 </ul>
             </div>
         </div>
@@ -90,47 +121,76 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
 
-const activeDropdown = ref(null)
-const activeMenu = ref(null)
+const activeDropdown = ref(null);
+const activeMenu = ref(null);
+const router = useRouter();
+const isLoggedIn = ref(false);
+
+// 로그인 여부 확인 함수 (JWT와 userInfo 체크)
+function checkLoginStatus() {
+    const token = localStorage.getItem('jwtToken');
+    const userInfo = localStorage.getItem('userInfo');
+    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
+}
+function logOut() {
+    // activeDropdown.value = null;
+    // activeMenu.value = null;
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userInfo');
+    alert('로그아웃되었습니다.');
+    isLoggedIn.value = false;
+    router.push(`/`);
+}
+function loGin() {
+    router.push(`/login`);
+}
 
 // 드롭다운 열고 닫기
 const toggleDropdown = (menu) => {
-    activeDropdown.value = activeDropdown.value === menu ? null : menu
-}
+    activeDropdown.value = activeDropdown.value === menu ? null : menu;
+};
+
+// 메뉴 클릭 시 처리
+const handleCategoryClick = (menu, category) => {
+    setActiveMenu(menu); // 메뉴 활성화
+    activeDropdown.value = null; // 드롭다운 닫기
+    router.push(`/product/${category}`); // 선택된 카테고리로 이동
+};
 
 // 메뉴 활성화
 const setActiveMenu = (menu) => {
-    activeMenu.value = menu
-    activeDropdown.value = null // 드롭다운 닫기
-}
+    activeMenu.value = menu;
+};
 
 // 드롭다운 및 메뉴 초기화
 const resetDropdown = () => {
-    activeDropdown.value = null
-    activeMenu.value = null
-}
+    activeDropdown.value = null;
+    activeMenu.value = null;
+};
 
 // 외부 클릭 감지
 const handleClickOutside = (event) => {
-    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span')
-    const isClickInside = [...dropdowns].some(dropdown =>
+    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span');
+    const isClickInside = [...dropdowns].some((dropdown) =>
         dropdown.contains(event.target)
-    )
+    );
     if (!isClickInside) {
-        activeDropdown.value = null
+        activeDropdown.value = null;
     }
-}
+};
 
 // 이벤트 등록 및 해제
 onMounted(() => {
-    window.addEventListener('click', handleClickOutside)
-})
+    window.addEventListener('click', handleClickOutside);
+    checkLoginStatus();
+});
 
 onBeforeUnmount(() => {
-    window.removeEventListener('click', handleClickOutside)
-})
+    window.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -167,7 +227,7 @@ onBeforeUnmount(() => {
 }
 
 .menu-list li {
-    font-size: 5vh;
+    font-size: 2.8rem;
     color: #090F16;
     display: inline;
     position: relative;
@@ -202,7 +262,7 @@ onBeforeUnmount(() => {
 .language {
     color: #627086;
     cursor: pointer;
-    font-size: 3vh;
+    font-size: 1.8rem;
 }
 
 .profile-container {
@@ -211,15 +271,13 @@ onBeforeUnmount(() => {
 }
 
 .profile-image {
-    width: 5.4vw;
-    height: 7.8vh;
+    width: 3vw;
     border-radius: 50%;
     margin-bottom: -0.5vh;
 }
 
 .icon-img {
-    width: 4vw;
-    height: 6.5vh;
+    width: 2.3vw;
     cursor: pointer;
 }
 
@@ -268,5 +326,38 @@ onBeforeUnmount(() => {
 .active {
     color: #6CB1FF;
     /* 활성화된 메뉴 색상 */
+}
+.language-setting{
+    margin-top: 6px;
+    font-size: 4rem;
+}
+.dropdown-language-menu{
+    z-index: 1000;
+    position: absolute;
+    top: 4rem;
+    left: 0;
+    background-color: white;
+    border: 0.1rem solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 8rem;
+    padding: 0.5rem 0;
+}
+.dropdown-language{
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size:1.5rem;
+}
+.dropdown-language1{
+    text-align: center;
+    font-size:1.5rem;
+}
+.dropdown-language:hover {
+    color: #439AFF !important;
+}
+.dropdown-language1:hover {
+    color: #439AFF !important;
 }
 </style>

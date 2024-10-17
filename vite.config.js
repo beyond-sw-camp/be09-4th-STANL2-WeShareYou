@@ -12,5 +12,11 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  define: {
+    global: 'window', // global을 window로 정의
+  },
+  optimizeDeps: {
+    include: ['sockjs-client']
+  },
 })

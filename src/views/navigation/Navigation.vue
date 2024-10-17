@@ -78,11 +78,7 @@
 
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <!-- <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" /> -->
-
                 <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
-
-
 
                 <!-- 프로필 드롭다운 메뉴 -->
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
@@ -122,7 +118,6 @@ const profileImage = ref('');
 function checkLoginStatus() {
     const token = localStorage.getItem('jwtToken');
     const userInfo = localStorage.getItem('userInfo');
-    // isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
     if (token && userInfo) {
         isLoggedIn.value = true;
         profileImage.value = JSON.parse(userInfo).profile || ''; // 프로필 이미지 설정

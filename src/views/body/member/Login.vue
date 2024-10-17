@@ -68,7 +68,11 @@ const login = async () => {
 
     alert('로그인 성공!');
     router.push('/'); // 로그인 후 페이지 이동
-    isLoggedIn.value = true;
+
+    // 페이지가 이동한 후 새로고침
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   } catch (error) {
     console.error('Login failed:', error);
     alert(error.message || '로그인 실패! 아이디와 비밀번호를 확인해주세요.');

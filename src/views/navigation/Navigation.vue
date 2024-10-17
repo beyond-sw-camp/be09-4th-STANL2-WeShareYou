@@ -87,9 +87,13 @@
                     <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/profile">내 프로필</RouterLink>
                     </li>
-                    <li @click="resetDropdown" class="dropdown-font">
-                        <RouterLink to="/logout">로그아웃</RouterLink>
+                    <li v-if="isLoggedIn" @click="logOut" class="dropdown-font">
+                        <RouterLink to="/login">로그아웃</RouterLink>
                     </li>
+                    <li v-else @click="loGin" class="dropdown-font">
+                        <RouterLink to="/">로그인</RouterLink>
+                    </li>
+
                 </ul>
             </div>
         </div>
@@ -103,6 +107,26 @@ import { useRouter } from 'vue-router';
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
 const router = useRouter();
+const isLoggedIn = ref(false);
+
+// 로그인 여부 확인 함수 (JWT와 userInfo 체크)
+function checkLoginStatus() {
+    const token = localStorage.getItem('jwtToken');
+    const userInfo = localStorage.getItem('userInfo');
+    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
+}
+function logOut() {
+    // activeDropdown.value = null;
+    // activeMenu.value = null;
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userInfo');
+    alert('로그아웃되었습니다.');
+    isLoggedIn.value = false;
+    router.push(`/`);
+}
+function loGin() {
+    router.push(`/login`);
+}
 
 // 드롭다운 열고 닫기
 const toggleDropdown = (menu) => {
@@ -141,6 +165,7 @@ const handleClickOutside = (event) => {
 // 이벤트 등록 및 해제
 onMounted(() => {
     window.addEventListener('click', handleClickOutside);
+    checkLoginStatus();
 });
 
 onBeforeUnmount(() => {

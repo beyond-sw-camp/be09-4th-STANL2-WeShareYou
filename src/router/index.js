@@ -13,8 +13,8 @@ import Mypage from "../views/body/member/Mypage.vue";
 import ModifyMypage from "../views/body/member/ModifyMypage.vue";
 import Profile from "../views/body/member/Profile.vue";
 import ModifyProfile from "../views/body/member/ModifyProfile.vue";
-import Chat from "../views/body/chat/Chat.vue";
 
+import Chat from "../views/body/chat/Chat.vue";
 
 const routes = [
     {
@@ -44,9 +44,9 @@ const routes = [
         ],
     },
     {
-        path: '/board',
+        path: '/board/:tag',
         name: 'Board',
-        component: Board,
+        component: () => Board,
     },
     {
         path: '/notice',

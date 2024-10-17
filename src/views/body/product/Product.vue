@@ -7,6 +7,17 @@
             <button v-if="isAdmin && isProductListPage" class="btn" @click="goToProductRegist">
                 상품 등록
             </button>
+            <div v-if="isAdmin && isProductDetailPage" class="update-wrapper">
+                <button class="btn" @click="goToProductModify">
+                    수정
+                </button>
+                <button class="btn" @click="goToProductRegist">
+                    삭제
+                </button>
+                <button class="btn" @click="goToProductRegist">
+                    목록
+                </button>
+            </div>
         </div>
         <RouterView :category="category" :key="$route.fullPath" />
     </div>
@@ -14,7 +25,7 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router'; // useRouter 추가
+import { useRoute, useRouter } from 'vue-router';
 
 // Vue Router에서 현재 경로 정보 가져오기
 const route = useRoute();
@@ -28,6 +39,7 @@ const isAdmin = computed(() => userInfo.authorities === 'ROLE_ADMIN');
 
 // 현재 페이지가 ProductList인지 확인하는 computed 속성
 const isProductListPage = computed(() => route.name === 'ProductList');
+const isProductDetailPage = computed(() => route.name === 'ProductDetail');
 
 // 상품 등록 페이지로 이동하는 함수
 function goToProductRegist() {
@@ -35,6 +47,15 @@ function goToProductRegist() {
     router.push({
         path: '/product/regist',
         query: { category: category.value }
+    });
+}
+
+function goToProductModify() {
+    const productId = route.params.id; // URL에서 ID 가져오기
+
+    // 수정 페이지로 이동
+    router.push({
+        path: `/product/${category.value}/${productId}/modify`, // 수정 페이지로 이동
     });
 }
 
@@ -60,6 +81,7 @@ watch(
 );
 </script>
 
+
 <style scoped>
 .container {
     padding: 2rem;
@@ -84,4 +106,9 @@ watch(
     font-size: 1.6rem;
 }
 
+.update-wrapper {
+    display: flex;
+    justify-content: end;
+    margin-right: 14rem;
+}
 </style>

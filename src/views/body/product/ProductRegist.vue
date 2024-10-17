@@ -25,23 +25,6 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import PostRegist from '@/components/cud/PostRegist.vue';
 
-// const title = ref('');
-// const content = ref('');
-// const image = ref(null); // 이미지 파일
-// const category = ref('NECESSITIES');
-// const route = useRoute();
-// const router = useRouter();
-
-// LocalStorage에서 id 값 가져오기
-// const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-// const userId = userInfo.id;
-
-// console.log("id값: " + userId);
-
-// defineProps(['parentCategory']);
-
-// const selectedCategory = ref(parentCategory);
-
 const route = useRoute();
 const router = useRouter();
 const title = ref('');

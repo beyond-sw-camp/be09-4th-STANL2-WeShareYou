@@ -41,14 +41,20 @@ const routes = [
             },
             {
                 path: ':category/:id', // :category 뒤에 :id 추가
+                name: 'ProductDetail',
                 component: () => import('@/views/body/product/ProductDetail.vue'),
-            }
+            },
         ],
     },
     {
         path: '/product/regist', // 상품 등록 페이지
         name: 'ProductRegist',
         component: () => import('@/views/body/product/ProductRegist.vue'),
+    },
+    {
+        path: '/product/:category/:id/modify',
+        name: 'ProductModify',
+        component: () => import('@/views/body/product/ProductModify.vue'),
     },
     {
         path: '/board/:tag',

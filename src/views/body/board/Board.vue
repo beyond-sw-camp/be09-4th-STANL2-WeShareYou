@@ -1,5 +1,15 @@
 <template>
-  <div>
+  <div class="layout">
+    <!-- 태그판 (Sidebar) -->
+    <div class="sidebar">
+      <ul class="tag-list">
+        <li v-for="(tag, index) in tags" :key="index" class="tag-item">
+          <button @click="selectTag(tag)">{{ tag }}</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 게시물 목록 (Main Content) -->
     <div class="board-container">
       <div v-for="item in boards" :key="item.id" class="board-card">
         <div class="user-info">
@@ -8,31 +18,34 @@
         </div>
         <h3 class="board-title">{{ item.title }}</h3>
         <div class="image-container">
-          <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image">
+          <img 
+            v-for="(image, i) in item.imageObj.slice(0, 3)" 
+            :key="i" 
+            :src="image.imageUrl" 
+            :alt="image.fileName" 
+            class="board-image"
+          />
         </div>
-        <!-- Content Display Logic -->
-        <div>
-          <p class="board-content" v-if="!item.showFullContent">
-            <span v-html="formatContent(getFirstLine(item.content))"></span>
-            <span v-if="item.content.includes('\n') || item.content.length > getFirstLine(item.content).length">...</span>
-          </p>
-          <p class="board-content" v-else>
-            <span v-html="formatContent(item.content)"></span>
-          </p>
-        </div>
+        <p class="board-content" v-if="!item.showFullContent">
+          <span v-html="formatContent(getFirstLine(item.content))"></span>
+          <span v-if="item.content.includes('\n') || item.content.length > getFirstLine(item.content).length">...</span>
+        </p>
+        <p class="board-content" v-else>
+          <span v-html="formatContent(item.content)"></span>
+        </p>
         <button v-if="item.content.length > 30" @click="toggleContent(item)" class="more-button">
           {{ item.showFullContent ? '닫기' : '더보기' }}
         </button>
-
-
         <div class="board-footer">
           <span class="interaction-count">❤️</span>
-          <span class="interaction-count">💬</span>
+          <span class="interaction-count" @click="goToComments(item)">💬</span>
         </div>
       </div>
+      <!-- 무한 스크롤을 위한 sentinel -->
+      <div ref="sentinel" class="sentinel"></div>
     </div>
+
     <div v-if="loading" class="loading">Loading...</div>
-    <div ref="sentinel" style="height: 1px;"></div>
   </div>
 </template>
 
@@ -46,6 +59,7 @@ const cursorId = ref('');
 const hasNext = ref(true);
 const loading = ref(false);
 const sentinel = ref(null);
+const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']); // 태그 목록
 
 const router = useRouter();
 const route = useRoute();
@@ -103,6 +117,12 @@ const fetchBoardItems = async (reset = false) => {
         loading.value = false;
     }
 };
+
+const selectTag = (selectedTag) => {
+  tag.value = selectedTag;
+  fetchBoardItems(true);
+};
+
 // "더보기" 버튼 클릭 시 전체 내용 토글 함수
 const toggleContent = (item) => {
     item.showFullContent = !item.showFullContent;
@@ -159,14 +179,87 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 스타일은 이전과 동일 */
-</style>
+:root {
+  --main-blue: #94C7FF;
+  --white: #FFF;
+  --black-60: #627086;
+  --shadow-color: rgba(19, 24, 48, 0.15);
+}
 
-<style scoped>
+body {
+  font-family: ABeeZee, sans-serif;
+}
+
+.layout {
+  position: relative;
+}
+
+.sidebar {
+  position: fixed;
+  width: 15rem;
+  height: 16.7rem;
+  overflow-y: auto;
+  transition: top 0.3s ease;
+  transform: translateX(7rem);
+  border-radius: 7px;
+  border: 0.5px solid var(--Main_-3, #94C7FF);
+  background: var(--White_100, #FFF);
+  box-shadow: 0px 4px 8px 0px rgba(19, 24, 48, 0.15);
+}
+
+.tag-list {
+  list-style: none;
+  padding: 0; /* 리스트 패딩 제거 */
+  margin: 0; /* 리스트 마진 제거 */
+}
+
+.tag-item {
+  margin: 0; /* 태그 항목 간격 제거 */
+}
+
+.tag-item button {
+  width: 100%; /* 부모 요소의 너비에 맞게 설정 */
+  height: 3.4rem; /* 버튼 높이 설정 */
+  display: flex;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  border: none; /* 기본 테두리 제거 */
+  background: var(--White_100, #FFF); /* 기본 배경색: 흰색 */
+  color: var(--Black_60, #627086); /* 기본 텍스트 색상 */
+  cursor: pointer; /* 커서 변경 */
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 400;
+  transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
+  box-shadow: none; /* 기본 그림자 제거 */
+}
+
+.tag-item button:hover {
+  background-color: var(--Main_-3, #94C7FF); /* 호버 시 활성화된 배경색 */
+  color: var(--White_100, #FFF); /* 호버 시 텍스트 색상 변경 */
+}
+
+.tag-item button.active {
+  background-color: var(--Main_-3, #94C7FF); /* 활성화된 배경색 */
+  color: var(--White_100, #FFF); /* 활성화된 텍스트 색상 */
+}
+
+
+.tag-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.tag-item {
+  margin-bottom: 1rem;
+}
+
+
 .board-container {
-  width: 100rem;
-  margin: 30rem;
+  width: 105rem;
+  margin: 27rem ;
   margin-top: 8rem;
+  margin-bottom: 3rem;
 }
 
 .board-card {
@@ -174,8 +267,7 @@ onUnmounted(() => {
   border: 0.0625rem solid #E0E0E0; /* 1px = 0.0625rem */
   border-radius: 1.5rem; /* 8px = 0.5rem */
   padding: 1rem; /* 16px = 1rem */
-  margin-bottom: 1.5rem; /* 15px = 0.9375rem */
-  margin-top: 1.5rem; /* 15px = 0.9375rem */
+  margin: 3rem 3rem;
   box-shadow: 0px 1.5px 4.6px 0px rgba(0, 0, 0, 0.25);
 
 }
@@ -206,8 +298,6 @@ onUnmounted(() => {
 .board-content {
   font-size: 2.3rem; /* 16px = 1rem */
   margin-bottom: 0; /* 마진 제거 */
-  padding-bottom: 0; /* 필요시 패딩도 제거 */
-
 }
 
 .image-container {
@@ -220,7 +310,7 @@ onUnmounted(() => {
 .board-image {
   width: 30rem;
   height: 30rem;
-  border-radius: 0.25rem; /* 모서리 둥글게 */
+  border-radius: 0.8rem; /* 모서리 둥글게 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* 애니메이션 */
   cursor: pointer; /* 마우스 커서 변경 */
@@ -251,7 +341,7 @@ onUnmounted(() => {
   background: none;
   border: none;
   color: #999; /* Grey color similar to Instagram UI */
-  font-size: 1.0rem; /* Adjusted size to fit the style */
+  font-size: 1.5rem; /* Adjusted size to fit the style */
   cursor: pointer;
   padding: 0;
   margin-left: 0.25rem; /* Slight margin for alignment */
@@ -270,4 +360,6 @@ onUnmounted(() => {
   font-size: 1.125rem; /* 18px = 1.125rem */
   color: #666;
 }
+
+/* -- */
 </style>

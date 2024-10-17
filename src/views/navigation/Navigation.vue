@@ -1,5 +1,6 @@
 <template>
-    <nav class="navigation">
+    <!-- <nav class="navigation"> -->
+    <nav :class="['navigation', { 'hidden-nav': isHidden }]">
         <div class="nav-left">
             <!-- 프로젝트 대표이미지 -->
             <RouterLink to="/" @click="resetDropdown">
@@ -108,11 +109,13 @@ import defaultProfileImage from '../../assets/icon/navigation/profile.png';
 
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
+// 
+const isHidden = ref(false);
 const router = useRouter();
 const isLoggedIn = ref(false);
 const profileImage = ref('');
-
-
+// 
+let lastScrollY = window.scrollY;
 
 // 로그인 여부 확인 함수 (JWT와 userInfo 체크)
 function checkLoginStatus() {
@@ -172,13 +175,25 @@ const handleClickOutside = (event) => {
     }
 };
 
+// 
+const handleScroll = () => {
+  if (window.scrollY < lastScrollY) {
+    isHidden.value = false; // 스크롤 위로 시 헤더 표시
+  } else if (window.scrollY > 50) {
+    isHidden.value = true; // 스크롤 아래로 시 헤더 숨김
+  }
+  lastScrollY = window.scrollY;
+};
+
 // 이벤트 등록 및 해제
 onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
     window.addEventListener('click', handleClickOutside);
     checkLoginStatus();
 });
 
 onBeforeUnmount(() => {
+    window.removeEventListener('scroll', handleScroll);
     window.removeEventListener('click', handleClickOutside);
 });
 </script>
@@ -192,6 +207,10 @@ onBeforeUnmount(() => {
     align-items: center;
     background-color: #ffffff;
     border-bottom: 0.1rem solid #e0e0e0;
+}
+
+.hidden-nav {
+  transform: translateY(-100%);
 }
 
 .nav-left {

@@ -34,15 +34,15 @@
         <div id="messageArea" class="message-area">
           <template v-for="(message, index) in messages" :key="index">
             <!-- 날짜 변경 시 날짜 표시 -->
-            <!-- <div v-if="shouldDisplayDate(index)" class="message-date">
+            <div v-if="shouldDisplayDate(index)" class="message-date">
               {{ formatDate(message.createdAt) }}
-            </div> -->
+            </div>
   
             <!-- 메시지 내용 -->
             <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
               <div class="message-sender">{{ message.sender }}</div>
               <div class="message-content">
-                {{ message.message }}
+                <span class="message-time">{{ message.message }}</span>
                 <span class="message-time">{{ formatTimeStamp(message.createdAt) }}</span>
               </div>
             </div>
@@ -70,7 +70,7 @@
     import {useRouter} from 'vue-router';
     import SockJS from 'sockjs-client';
     import Stomp from 'stompjs';
-    import { Client } from '@stomp/stompjs'
+    // import { Client } from '@stomp/stompjs'
     export default {
       setup() {
           /* chatRoomList */
@@ -87,16 +87,20 @@
           const selectedUser = reactive({sender: ''}, {receiver: ''}); // 선택된 
    
         // 로그인한 사용자의 JWT token
-        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkwNzc3NTUsImV4cCI6MTcyOTEwNzc1NX0.uT5R0Z52DqWZ4owF9rWLdU0qUr2J3mmTMDu4SbWpnOQ';  
+        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkxMjk1NDIsImV4cCI6MTcyOTE1OTU0Mn0.Cgd1u9tVNumEUy9oHZk0jjP370NEmldXtonfhucRIlI';  
         // 서버에서 데이터를 가져오는 함수
         const fetchChatRooms = async () => {
           try {
               console.log("Fetching chat rooms...");
-              const response = await axios.get('http://localhost:8080/api/v1/chat', {
+              const response = await axios.get('http://localhost:8080/api/v1/chat'
+              , {
               headers: {
                   Authorization: `Bearer ${token}`,
               }
-          });
+          }
+        );
+          console.log(response.data);
+
           rooms.splice(0, rooms.length, ...response.data.rooms);
           user.name = response.data.user;    // 사용자 이름 저장
           console.log(user.name);
@@ -115,11 +119,13 @@
               const response = await axios.post('http://localhost:8080/api/v1/chat', {
               sender: user.name,   // 로그인한 사용자 (채팅방 생성자)
               receiver: receiver.value  // 입력된 상대방 이름
-              }, {
+              }
+              , {
               headers: {
                   Authorization: `Bearer ${token}`,
               }
-              });
+              }
+            );
               alert(`${receiver.value}와의 채팅방이 생성되었습니다.`);
               fetchChatRooms();  // 채팅방 목록을 다시 가져와서 업데이트
           } catch (error) {
@@ -171,11 +177,13 @@
           try {
               console.log("Fetching message rooms...");
               console.log("Fetching에서의 roomId: " + room.roomId);
-              const response = await axios.get(`http://localhost:8080/api/v1/chat/${room.roomId}`, {
+              const response = await axios.get(`http://localhost:8080/api/v1/chat/${room.roomId}`
+              , {
                   headers: {
                   Authorization: `Bearer ${token}`,
                   } 
-              });
+              }
+            );
   
               
               // user.name = response.data.user;    // 사용자 이름 저장

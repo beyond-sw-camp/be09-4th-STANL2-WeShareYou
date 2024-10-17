@@ -27,14 +27,9 @@ public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/message/{roomId}")
-//    @SendTo("/sub/{roomId}")
     public void sendMessage(ChatMessage message, @DestinationVariable String roomId) {
         try {
-//            System.out.println("Received message: " + objectMapper.writeValueAsString(message));
-
             chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
-
-//            messagingTemplate.convertAndSend("/sub/" + message.getRoomId(), message);
             messagingTemplate.convertAndSend("/sub/" + roomId, message);
         } catch (Exception e) {
             e.printStackTrace();

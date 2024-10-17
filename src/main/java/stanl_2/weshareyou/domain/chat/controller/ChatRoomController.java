@@ -45,30 +45,17 @@ public class ChatRoomController {
                             ,@RequestAttribute("nickname") String nickname) {
         ChatRoom room = chatRoomService.findRoomById(roomId);
 
-        log.info("어디서?" + room);
-
         ChatRoomMessage messages = chatRoomMessageService.getMessagesByRoomId(roomId);
-
-        log.info("에러?" + messages);
 
         chatRoomMessageService.markMessagesAsRead(roomId, nickname);
 
-        log.info("에러임?");
 
         Map<String, Object> response = new HashMap<>();
         response.put("room", room);
         response.put("messages", messages.getMessages());
 
-        log.info("message가 뭐 들었나: " + messages.getMessages());
-
         return response;
     }
-
-//    // 모든 채팅방 목록 조회
-//    @GetMapping("/rooms")
-//    public List<ChatRoom> getAllRooms() {
-//        return chatRoomService.findAllRoom();
-//    }
 
     // 새로운 채팅방 생성
     @PostMapping("")
@@ -82,19 +69,11 @@ public class ChatRoomController {
     /* 설명. 선택 채팅방 삭제 시 sender, receiver 각각에 delete가 있어야한다*/
     @DeleteMapping("/{roomId}")
     public ApiResponse<?> deleteRoom(@PathVariable String roomId
-//            @RequestBody Map<String, String> requestBody
                               , @RequestAttribute("nickname") String nickname) {
-
-//        String roomId = requestBody.get("roomId");
 
         if(chatRoomService.deleteChatRoom(roomId, nickname)){
             return ApiResponse.ok("delete success");
         }
         return ApiResponse.ok("delete fail");
     }
-    // 채팅방 세부 정보 조회
-//    @GetMapping("/room/{roomId}")
-//    public ChatRoom roomDetail(@PathVariable String roomId) {
-//        return chatRoomService.findRoomById(roomId);
-//    }
 }

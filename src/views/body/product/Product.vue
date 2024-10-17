@@ -1,21 +1,41 @@
 <template>
     <div class="container">
-        <span class="title">{{ translatedCategory }}</span>
-        <RouterView :category="category" />
+        <div class="title">
+            <span class="title">{{ translatedCategory }}</span>
+
+            <!-- ProductList.vue 페이지 && ROLE_ADMIN일 때만 버튼 렌더링 -->
+            <button v-if="isAdmin && isProductListPage" class="btn" @click="goToProductRegist">
+                상품 등록
+            </button>
+        </div>
+        <RouterView :category="category" :key="$route.fullPath" />
     </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, watch, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router'; // useRouter 추가
 
 // Vue Router에서 현재 경로 정보 가져오기
 const route = useRoute();
+const router = useRouter(); // router 사용 선언
 
-// 카테고리 ref로 설정
+// 로컬 스토리지에서 userInfo 가져오기
+const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+
+// ROLE_ADMIN인지 확인하는 computed 속성
+const isAdmin = computed(() => userInfo.authorities === 'ROLE_ADMIN');
+
+// 현재 페이지가 ProductList인지 확인하는 computed 속성
+const isProductListPage = computed(() => route.name === 'ProductList');
+
+// 상품 등록 페이지로 이동하는 함수
+function goToProductRegist() {
+    router.push('/product/regist'); // 경로 이동
+}
+
+// 카테고리 설정 및 번역 로직
 const category = ref(route.params.category || '공유 물품');
-
-// 카테고리 한글 변환 객체
 const categoryTranslations = {
     NECESSITIES: '생활품',
     KITCHENWARES: '주방용품',
@@ -24,21 +44,17 @@ const categoryTranslations = {
     DEVICE: '전자기기',
     ETC: '기타',
 };
-
-// 한글로 변환된 카테고리 초기화
 const translatedCategory = ref(categoryTranslations[category.value] || '공유 물품');
 
-// 경로의 'category' 값이 변경될 때마다 반응하여 업데이트
 watch(
     () => route.params.category,
     (newCategory) => {
-        category.value = newCategory || '공유 물품'; // 카테고리가 없으면 디폴트 설정
-        translatedCategory.value = categoryTranslations[newCategory] || '공유 물품'; // 번역 적용
+        category.value = newCategory || '공유 물품';
+        translatedCategory.value = categoryTranslations[newCategory] || '공유 물품';
     },
-    { immediate: true } // 초기 로딩 시에도 값 적용
+    { immediate: true }
 );
 </script>
-
 
 <style scoped>
 .container {
@@ -48,6 +64,20 @@ watch(
 .title {
     font-size: 2.4rem;
     font-weight: 600;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
 }
+
+.btn {
+    background-color: #439aff;
+    color: white;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-align: center;
+    width: 7%;
+    height: 4rem;
+    font-size: 1.6rem;
+}
+
 </style>

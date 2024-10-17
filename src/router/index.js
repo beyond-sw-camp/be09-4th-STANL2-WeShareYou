@@ -32,16 +32,23 @@ const routes = [
         path: '/product',
         name: 'Product',
         component: () => import('@/views/body/product/Product.vue'),
+        redirect: {path:"/product/:category"},
         children: [
             {
                 path: ':category',
+                name: 'ProductList',
                 component: () => import('@/views/body/product/ProductList.vue'),
             },
             {
                 path: ':category/:id', // :category 뒤에 :id 추가
                 component: () => import('@/views/body/product/ProductDetail.vue'),
-            },
+            }
         ],
+    },
+    {
+        path: '/product/regist', // 상품 등록 페이지
+        name: 'ProductRegist',
+        component: () => import('@/views/body/product/ProductRegist.vue'),
     },
     {
         path: '/board/:tag',

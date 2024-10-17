@@ -1,21 +1,24 @@
 <template>
-    <div class="product-grid" ref="gridElement">
-        <div v-for="item in products" :key="item.id" class="product-card" @click="goToProductDetail(item.id, category)">
-            <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
-            <div class="product-info">
-                <div style="margin-bottom: 1rem;">
-                    <span class="available">{{ getStatusText(item.status) }}</span>
-                    <span class="available1" style="margin-left: 0.5rem;">{{ getIsRentalText(item.rental) }}</span>
+    <div class="container">
+        <div class="product-grid" ref="gridElement">
+            <div v-for="item in products" :key="item.id" class="product-card"
+                @click="goToProductDetail(item.id, category)">
+                <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
+                <div class="product-info">
+                    <div style="margin-bottom: 1rem;">
+                        <span class="available">{{ getStatusText(item.status) }}</span>
+                        <span class="available1" style="margin-left: 0.5rem;">{{ getIsRentalText(item.rental) }}</span>
+                    </div>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.content }}</p>
                 </div>
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.content }}</p>
             </div>
-        </div>
 
-        <p v-if="products.length === 0" class="no-products">
-            No products available.
-        </p>
-        <p v-if="loading" class="loading">Loading more products...</p>
+            <p v-if="products.length === 0" class="no-products">
+                No products available.
+            </p>
+            <p v-if="loading" class="loading">Loading more products...</p>
+        </div>
     </div>
 </template>
 
@@ -146,13 +149,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.container {
+    padding: 2rem;
+
+    overflow-y: auto;
+}
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
-    height: 80vh; /* 전체 화면 높이 */
-    overflow-y: auto; /* 스크롤 가능 */
 }
 
 @media (min-width: 1200px) {
@@ -226,4 +233,5 @@ p {
     font-size: 1.8rem;
     color: #888;
 }
+
 </style>

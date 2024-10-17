@@ -28,5 +28,13 @@ public interface MemberService {
 
     MemberDTO findPoint(MemberDTO requestMemberDTO);
 
+    MemberDTO findMyBoard(MemberDTO requestMemberDTO);
+
+    MemberDTO findLikeBoard(MemberDTO requestMemberDTO);
+
+    MemberDTO findMyComment(MemberDTO requestMemberDTO);
+
+    MemberDTO checkMember(MemberDTO requestMemberDTO);
+
     Boolean findNickname(String username);
 }

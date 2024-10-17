@@ -1,5 +1,6 @@
 package stanl_2.weshareyou.global.security.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,11 +15,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 import stanl_2.weshareyou.global.security.filter.CsrfCookieFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenGeneratorFilter;
 import stanl_2.weshareyou.global.security.filter.JWTTokenValidatorFilter;
 import stanl_2.weshareyou.global.security.filter.TokenFilter;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -37,7 +43,19 @@ public class SecurityConfig {
         //CSRF 토큰 요청 속성을 사용하여 토큰 값을 헤더나 매개변수 값으로 해결하는 로직을 포함
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
         http.csrf(csrfConfig -> csrfConfig.disable());
-        http
+        http.cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
+                        config.setAllowedMethods(Collections.singletonList("*"));   // 모든 유형의 http 메소드 트래픽 허용
+                        config.setAllowCredentials(true);   // UI에서 백엔드로 user 자격 증명이나 기타 적용 가능한 쿠키 수락
+                        config.setAllowedHeaders(Collections.singletonList("*"));   // 모든 종류의 헤더를 수락해도 괜찮다.
+                        config.setExposedHeaders(Arrays.asList("Authorization"));   // 헤터를 사용하여 JWT 토큰값 전송
+                        config.setMaxAge(3600L);    // 1시간
+                        return config;
+                    }
+                }))
                 // 로그인 시 사용(jwt 생성)2
                 .addFilterAfter(new JWTTokenGeneratorFilter(applicationConstants), BasicAuthenticationFilter.class)
                 // 다른 api 접근시 사용(인증)1

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.w3c.dom.Text;
 import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 
 @Getter
@@ -28,7 +27,4 @@ public class BoardUpdateRequestVO {
 
     @NotNull(message = "태그를 선택하여 주세요.")
     private TAG tag;
-
-    @NotNull
-    private Long memberId;
 }

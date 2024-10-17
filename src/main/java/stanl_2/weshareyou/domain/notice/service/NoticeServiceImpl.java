@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
@@ -11,6 +14,7 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.notice.aggregate.dto.NoticeDTO;
 import stanl_2.weshareyou.domain.notice.aggregate.entity.Notice;
 import stanl_2.weshareyou.domain.notice.repository.NoticeRepository;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
@@ -40,25 +44,43 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     @Transactional
-    public List<NoticeDTO> readAllNotices() {
-        List<Notice> noticeList = noticeRepository.findAll();
+    public CursorDTO readNotices(CursorDTO cursorDTO) {
+        Pageable pageable = PageRequest.of(0, cursorDTO.getSize());
+        Slice<Notice> noticeList;
 
-        if(noticeList.isEmpty()) {
-            throw new CommonException(ErrorCode.NOTICE_NOT_FOUND);
+        if(cursorDTO.getCursorId() == null){
+            noticeList = noticeRepository.findAllByOrderByCreatedAtDesc(pageable);
+        } else {
+            noticeList = noticeRepository.findByIdLessThanOrderByCreatedAtDesc(cursorDTO.getCursorId(), pageable);
+
         }
 
-        List<NoticeDTO> noticeDTOList = noticeList.stream()
-                .map(notice -> {
-                    NoticeDTO noticeDTO = new NoticeDTO();
-                    noticeDTO.setId(notice.getId());
-                    noticeDTO.setTitle(notice.getTitle());
-                    noticeDTO.setCreatedAt(notice.getCreatedAt());
-                    noticeDTO.setAdminId(notice.getMember().getId());
-                    return noticeDTO;
-                })
-                .toList();
+        Long lastNoticeId = noticeList.getContent().isEmpty() ? null :
+                noticeList.getContent().get(noticeList.getNumberOfElements() - 1).getId();
 
-        return noticeDTOList;
+        if(noticeList.isEmpty()){
+            throw new CommonException(ErrorCode.NOTICE_NOT_FOUND);
+        }
+        else {
+            List<NoticeDTO> noticeDTOList = noticeList.getContent().stream()
+                    .map(notice -> {
+                        NoticeDTO noticeDTO = new NoticeDTO();
+                        noticeDTO.setId(notice.getId());
+                        noticeDTO.setTitle(notice.getTitle());
+                        noticeDTO.setCreatedAt(notice.getCreatedAt());
+                        noticeDTO.setAdminId(notice.getMember().getId());
+                        return noticeDTO;
+                    })
+                    .toList();
+
+            CursorDTO cursorResponseDTO = new CursorDTO();
+            cursorResponseDTO.setCursorId(lastNoticeId);
+            cursorResponseDTO.setHasNext(noticeList.hasNext());
+            /* 설명. 반환형 */
+            cursorResponseDTO.setComment(noticeDTOList);
+
+            return cursorResponseDTO;
+        }
     }
 
     @Override

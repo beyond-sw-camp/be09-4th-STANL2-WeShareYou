@@ -12,6 +12,12 @@ spring:
       port: ${REDIS_PORT}
       timeout: 30000
 
+  sms:
+    api-key: ${API_KEY}
+    api-secret: ${API_SECRET}
+    provider: ${PROVIDER}
+    sender: ${SENDER}
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://${DATABASE_HOST}:${MARIA_DATABASE_PORT}/${MARIA_DATABASE_NAME}
@@ -43,9 +49,13 @@ spring:
         properties:
           mail.smtp.auth: true
           mail.smtp.ssl.enable: true
-          mail.smtp.ssl.trust: smtp.naver.com
+          mail.smtp.ssl.trust: ${EMAIL_HOST}
           mail.smtp.ssl.protocols: TLSv1.2
           mail.debug: true
+
+server:
+  forward-headers-strategy: native
+
 test:
   project:
     topic: dev-topic

@@ -4,8 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board_comment.aggregate.entity.BoardComment;
+import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -75,13 +82,22 @@ public class Member {
 
     @Column(name="MEMBER_CREATED_AT")
     @NotNull
-    private String createdAt;
+    private Timestamp createdAt;
 
     @Column(name="MEMBER_UPDATED_AT")
     @NotNull
-    private String updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name="MEMBER_ACTIVE")
     @NotNull
     private Boolean active = true;
+
+    @OneToMany(mappedBy = "member")
+    private List<Board> board;
+
+    @OneToMany(mappedBy = "member")
+    private List<BoardLike> boardlike;
+
+    @OneToMany(mappedBy = "member")
+    private List<BoardComment> boardComment;
 }

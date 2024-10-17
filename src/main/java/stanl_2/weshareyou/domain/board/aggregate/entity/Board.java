@@ -3,10 +3,10 @@ package stanl_2.weshareyou.domain.board.aggregate.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 
-import javax.xml.stream.events.Comment;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString
 @Table(name = "BOARD")
 public class Board {
 
@@ -31,9 +32,6 @@ public class Board {
     @Column(name = "BOARD_CONTENT", columnDefinition = "TEXT")
     @NotNull
     private String content;
-
-    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
-    private String imageUrl;
 
     @Column(name = "BOARD_TAG")
     @Enumerated(EnumType.STRING)
@@ -60,11 +58,13 @@ public class Board {
     @NotNull
     private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     @NotNull
     private Member member;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BoardLike> boardLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "BOARD_IMAGE_URL", columnDefinition = "TEXT")
+    private List<BoardImage> imageList = new ArrayList<>();
 }

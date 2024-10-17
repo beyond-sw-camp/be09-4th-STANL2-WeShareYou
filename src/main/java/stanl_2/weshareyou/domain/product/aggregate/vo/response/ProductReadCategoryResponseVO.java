@@ -3,6 +3,8 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -11,18 +13,12 @@ import lombok.*;
 public class ProductReadCategoryResponseVO {
 
     @NotNull
-    private Long id;
+    private Long cursorId;
 
     @NotNull
-    private String title;
+    private List<ProductSummaryVO> contents;
 
     @NotNull
-    private String imageUrl;
-
-    @NotNull
-    private String category;
-
-    @NotNull
-    private Boolean rental;
+    private Boolean hasNext;
 
 }

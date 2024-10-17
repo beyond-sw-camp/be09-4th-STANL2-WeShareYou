@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.product.service;
 
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 
 import java.util.List;
 
@@ -11,11 +12,11 @@ public interface ProductService {
 
     ProductDTO deleteProduct(ProductDTO productRequestDTO);
 
-    List<ProductDTO> readAllProductList();
+//    CursorDTO readAllProductList(CursorDTO cursorDTO);
 
     ProductDTO readProduct(Long productId);
 
-    List<ProductDTO> readProductByCategory(String category);
+    CursorDTO readProductByCategory(CursorDTO cursorDTO);
 
     ProductDTO updateRentalProduct(ProductDTO productDTO);
 

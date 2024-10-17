@@ -11,6 +11,7 @@ import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class NoticeCreateResponseVO {
+
     @NotNull
     private Long id;
 

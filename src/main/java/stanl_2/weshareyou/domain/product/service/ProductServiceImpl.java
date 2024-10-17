@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
@@ -12,6 +15,7 @@ import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.repository.ProductRepository;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
@@ -56,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
         productResponseDTO.setUpdatedAt(product.getUpdatedAt());
         productResponseDTO.setAdminId(product.getAdminId().getId());
         productResponseDTO.setRental(product.isRental());
+        productResponseDTO.setStatus(product.getStatus());
 
         return productResponseDTO;
     }
@@ -74,9 +79,11 @@ public class ProductServiceImpl implements ProductService {
         product.setStartAt(productDTO.getStartAt());
         product.setEndAt(productDTO.getEndAt());
         product.setImageUrl(productDTO.getImageUrl());
+        product.setStatus(productDTO.getStatus());
         product.setAdminId(member);
         product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
+        product.setStatus(productDTO.getStatus());
 
         productRepository.save(product);
 
@@ -96,6 +103,14 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByIdAndAdminId(productDTO.getId(), member)
                 .orElseThrow(() -> new CommonException(ErrorCode.PRODUCT_AUTHOR_NOT_FOUND));
 
+        product.setTitle(productDTO.getTitle());
+        product.setContent(productDTO.getContent());
+        product.setCategory(productDTO.getCategory());
+        product.setStartAt(productDTO.getStartAt());
+        product.setEndAt(productDTO.getEndAt());
+        product.setImageUrl(productDTO.getImageUrl());
+        product.setStatus(productDTO.getStatus());
+        product.setCreatedAt(currentTimestamp);
         product.setUpdatedAt(currentTimestamp);
         product.setAdminId(member);
         productRepository.save(product);
@@ -125,22 +140,38 @@ public class ProductServiceImpl implements ProductService {
         return productResponseDTO;
     }
 
-    @Override
-    @Transactional
-    public List<ProductDTO> readAllProductList() {
-
-        List<Product> productList = productRepository.findAll();
-
-        if (productList.isEmpty()) {
-            throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
-        } else {
-            List<ProductDTO> productDTOList = productList.stream()
-                    .map(this::toProductDTO)
-                    .collect(Collectors.toList());
-
-            return productDTOList;
-        }
-    }
+    // 나중에 삭제예정
+//    @Override
+//    @Transactional
+//    public CursorDTO readAllProductList(CursorDTO cursorDTO) {
+//
+//        Pageable pageable = PageRequest.of(0, cursorDTO.getSize());
+//        Slice<Product> productList;
+//
+//        if (cursorDTO.getCursorId() == null) {
+//            productList = productRepository.findAllProductsOrderedByCreatedAt(pageable);
+//        } else {
+//            productList = productRepository.findByIdLessThanOrderByCreatedAtDesc(cursorDTO.getCursorId(), pageable);
+//        }
+//
+//        Long lastProductId = productList.getContent().isEmpty() ? null :
+//                productList.getContent().get(productList.getNumberOfElements() - 1).getId();
+//
+//        if (productList.isEmpty()) {
+//            throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
+//        } else {
+//            List<ProductDTO> productDTOList = productList.stream()
+//                    .map(this::toProductDTO)
+//                    .collect(Collectors.toList());
+//
+//            CursorDTO cursorResponseDTO = new CursorDTO();
+//            cursorResponseDTO.setCursorId(lastProductId);
+//            cursorResponseDTO.setHasNext(productList.hasNext());
+//            cursorResponseDTO.setComment(productDTOList);
+//
+//            return cursorResponseDTO;
+//        }
+//    }
 
     @Override
     @Transactional
@@ -156,25 +187,36 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public List<ProductDTO> readProductByCategory(String category) {
-        ProductCategory enumCategory = ProductCategory.valueOf(category.toUpperCase());
-        List<Product> productList = productRepository.findByCategory(enumCategory);
+    public CursorDTO readProductByCategory(CursorDTO cursorDTO) {
+
+        Pageable pageable = PageRequest.of(0, cursorDTO.getSize());
+        Slice<Product> productList;
+
+        if (cursorDTO.getCursorId() == null) {
+            productList = productRepository.findByCategoryOrderByCreatedAtDesc(cursorDTO.getCategory(), pageable);
+        } else {
+            productList = productRepository.findByCategoryAndIdLessThanOrderByCreatedAtDesc(
+                    cursorDTO.getCategory(), cursorDTO.getCursorId(), pageable
+            );
+        }
+
+        Long lastProductId = productList.getContent().isEmpty() ? null :
+                productList.getContent().get(productList.getNumberOfElements() - 1).getId();
 
         if (productList.isEmpty()) {
             throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
         } else {
-            List<ProductDTO> productDTOList = new ArrayList<>();
-            for (Product product : productList) {
-                ProductDTO productDTO = new ProductDTO();
-                productDTO.setId(product.getId());
-                productDTO.setTitle(product.getTitle());
-                productDTO.setImageUrl(product.getImageUrl());
-                productDTO.setCategory(product.getCategory());
-                productDTO.setRental(product.isRental());
+            List<ProductDTO> productDTOList = productList.stream()
+                    .map(this::toProductDTO)
+                    .collect(Collectors.toList());
 
-                productDTOList.add(productDTO);
-            }
-            return productDTOList;
+            CursorDTO cursorResponseDTO = new CursorDTO();
+            cursorResponseDTO.setCursorId(lastProductId);
+            cursorResponseDTO.setHasNext(productList.hasNext());
+            cursorResponseDTO.setCategory(cursorDTO.getCategory());
+            cursorResponseDTO.setComment(productDTOList);
+
+            return cursorResponseDTO;
         }
     }
 

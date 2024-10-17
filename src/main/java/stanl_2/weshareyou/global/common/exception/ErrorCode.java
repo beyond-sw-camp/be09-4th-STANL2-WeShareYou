@@ -27,7 +27,8 @@ public enum ErrorCode {
     PRODUCT_IS_RETURN(40011, HttpStatus.BAD_REQUEST, "이미 반납된 물품입니다."),
     PRODUCT_IS_NOT_RETURN(40012, HttpStatus.BAD_REQUEST, "물품 반납에 실패하였습니다."),
     VALIDATION_FAIL(40013, HttpStatus.BAD_REQUEST, "유효성 검사 실패"),
-
+    SMS_SEND_FAILURE(40014, HttpStatus.BAD_REQUEST, "문자 전송 실패"),
+    BAD_REQUEST_IMAGE(40015, HttpStatus.BAD_REQUEST, "잘못된 JSON 형식입니다."),
 
 
     /**
@@ -39,6 +40,7 @@ public enum ErrorCode {
     LOGIN_FAILURE(40100, HttpStatus.UNAUTHORIZED, "로그인에 실패했습니다"),
     INVALID_TOKEN_ERROR(40101, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EMAIL_VERIFY_FAIL(40102, HttpStatus.UNAUTHORIZED, "이메일 인증 실패하셨습니다."),
+    SMS_VERIFY_FAIL(40203, HttpStatus.UNAUTHORIZED, "SMS 인증 실패하셨습니다."),
 
     /**
      * 403(Forbidden)

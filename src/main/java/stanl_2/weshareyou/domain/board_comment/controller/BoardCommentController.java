@@ -1,5 +1,6 @@
 package stanl_2.weshareyou.domain.board_comment.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import stanl_2.weshareyou.domain.board_comment.aggregate.vo.request.BoardComment
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentCreateResponseVO;
 
 import stanl_2.weshareyou.domain.board_comment.aggregate.dto.BoardCommentDto;
-import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentReadAllResponseVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentReadResponseVO;
 import stanl_2.weshareyou.domain.board_comment.aggregate.vo.response.BoardCommentUpdateResponseVO;
 import stanl_2.weshareyou.domain.board_comment.service.BoardCommentService;
@@ -86,11 +86,9 @@ public class BoardCommentController {
 
 
     @GetMapping
+    @Operation(summary = "좋아요 누른 회원ID 조회")
     public ApiResponse<?> getAllBoardComments() {
         List<BoardCommentDto> boardCommentDtos = boardCommentService.readComments();
-        List<BoardCommentReadAllResponseVO> boardCommentReadResponseVOs = boardCommentDtos.stream()
-                .map(boardCommentDto -> modelMappper.map(boardCommentDto, BoardCommentReadAllResponseVO.class))
-                .collect(Collectors.toList());
-        return ApiResponse.ok(boardCommentReadResponseVOs);
+        return ApiResponse.ok(boardCommentDtos);
     }
 }

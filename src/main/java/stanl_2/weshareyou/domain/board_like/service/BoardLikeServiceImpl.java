@@ -34,9 +34,9 @@ public class BoardLikeServiceImpl implements BoardLikeService {
     @Override
     public BoardLikeDto BoardLike(BoardLikeDto boardLikeDto) {
         Long boardId = boardLikeDto.getBoardId();
-        Long memberId = boardLikeDto.getMemberId();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        Long memberId = boardLikeDto.getMemberId();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
         boolean existingLike
@@ -50,8 +50,6 @@ public class BoardLikeServiceImpl implements BoardLikeService {
             newBoardLike.setBoard(board);
             board.setLikesCount(board.getLikesCount() + 1);
             boardLikeRepository.save(newBoardLike);
-
-
             return boardLikeDto;
         }
     }
@@ -60,9 +58,9 @@ public class BoardLikeServiceImpl implements BoardLikeService {
     @Override
     public BoardLikeDto BoardUnLike(BoardLikeDto boardUnLikeDto) {
         Long boardId = boardUnLikeDto.getBoardId();
-        Long memberId = boardUnLikeDto.getMemberId();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        Long memberId = boardUnLikeDto.getMemberId();
         BoardLike existingLike =
                 boardLikeRepository.findById(new BoardLikeId(memberId,boardId))
                         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_LIKE));

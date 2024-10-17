@@ -2,6 +2,9 @@ package stanl_2.weshareyou.domain.product.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -11,17 +14,15 @@ import lombok.*;
 public class ProductReadAllResponseVO {
 
     @NotNull
-    private Long id;
+    private ProductCategory category;
 
     @NotNull
-    private String title;
+    private Long cursorId;
 
     @NotNull
-    private String imageUrl;
+    private List<ProductSummaryVO> contents;
 
     @NotNull
-    private String category;
+    private boolean hasNext;
 
-    @NotNull
-    private Boolean rental;
 }

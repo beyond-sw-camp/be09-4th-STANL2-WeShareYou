@@ -33,20 +33,19 @@
   
         <div id="messageArea" class="message-area">
           <template v-for="(message, index) in messages" :key="index">
-            <!-- 날짜 변경 시 날짜 표시 -->
-            <!-- <div v-if="shouldDisplayDate(index)" class="message-date">
-              {{ formatDate(message.createdAt) }}
-            </div> -->
-
             <div v-if="shouldDisplayDate(message.createdAt)" class="message-date">
               {{  formatDate(message.createdAt) }}  
             </div>
+
             <!-- 메시지 내용 -->
             <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
               <div class="message-sender">{{ message.sender }}</div>
               <div class="message-content">
                 <span class="message-time">{{ message.message }}</span>
                 <span class="message-time">{{ formatTime(message.createdAt) }}</span>
+              </div>
+              <div v-if="index = messages.length && message.sender === user.name && message.readYn == true">
+                <span class="message-time">읽음</span>
               </div>
             </div>
           </template>

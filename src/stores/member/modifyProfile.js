@@ -31,7 +31,6 @@ export async function modifyProfile(nickname, introduction, language, file) {
             }
         );
 
-        console.log('프로필 수정 성공:', response.data);
         alert('프로필이 성공적으로 수정되었습니다!');
         return response.data.result;
     } catch (error) {

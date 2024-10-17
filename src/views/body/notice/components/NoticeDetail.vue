@@ -27,7 +27,7 @@
     const noticeId = ref('');
     const noticeValues = ref({});
 
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkwNDAzMDYsImV4cCI6MTcyOTA3MDMwNn0.sWxz3QLqqLt97uemUyPl3uVNwnuA8XcpHpYt8AoSwfs'
+    const token = localStorage.getItem("jwtToken");
 
     const formatTimeStamp = (timestamp) => {
       const date = new Date(timestamp);

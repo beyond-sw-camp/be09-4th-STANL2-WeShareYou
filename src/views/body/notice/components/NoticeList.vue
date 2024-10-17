@@ -1,4 +1,8 @@
 <template>
+  <div class="button-container">
+    <button @click="goToCreatenotice" class="register-button" v-if="isAdmin">등록</button>
+  </div>
+
   <div class="notice-grid" ref="gridElement">
       <div v-for="item in notices" :key="item.id" class="notice-card" @click="goTonoticeDetail(item.id)">
         <h3>{{ item.title }}</h3>
@@ -24,9 +28,22 @@ const cursorId = ref(''); // cursorId를 빈 문자열로 초기화
 const hasNext = ref(true); // 다음 페이지 여부를 서버 응답으로 관리
 const loading = ref(false); // 로딩 중인지 여부를 관리
 const sentinel = ref(null);
+const isAdmin = ref(false);
 // Vue Router 사용
 const router = useRouter();
 const route = useRoute(); // 현재 경로 정보 가져오기
+
+const token = localStorage.getItem("jwtToken");
+
+const checkRole = () => {
+    const roleString = localStorage.getItem('Roles');   
+    if(roleString){
+      const roles = roleString.split(',');
+      isAdmin.value = roles.includes('ADMIN');
+    }else{
+      isAdmin.value = false;
+    }
+  }
 
 // API에서 제품 아이템을 가져오는 함수
 const fetchnoticeItems = async (reset = false) => {
@@ -48,6 +65,9 @@ const fetchnoticeItems = async (reset = false) => {
               params: {
                   cursor: cursorId.value || '', // cursorId가 없으면 빈 문자열로 전송
                   size: 8 // 페이지 당 가져올 아이템 수
+              },
+              headers: {
+                  Authorization: `Bearer ${token}`,
               }
           }
       );
@@ -123,8 +143,9 @@ const goTonoticeDetail = (id) => {
 };
 
 // 컴포넌트가 마운트될 때 첫 페이지 데이터 가져오기
-onMounted(() => {
+onMounted(() => {  
   fetchnoticeItems();
+  checkRole();
   if (sentinel.value) {
         intersectionObserver.observe(sentinel.value);
     }
@@ -204,4 +225,24 @@ p {
   font-size: 1.8rem;
   color: #888;
 }
+
+.button-container {
+  display:flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.register-button {
+    display:flex;
+    justify-content: center;
+    align-items:end;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+    padding: 1rem 2rem;
+    border: 1px solid #439aff;
+    color: #439aff;
+    background-color: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 </style>

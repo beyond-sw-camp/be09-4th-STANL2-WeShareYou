@@ -39,6 +39,9 @@ public interface MemberService {
     MemberDTO checkMember(MemberDTO requestMemberDTO);
 
     MemberDTO findProfile(MemberDTO requestMemberDTO);
-
+  
     void saveLoginHistory(HistoryInput historyInput);
+
+    Boolean findNickname(String username);
+
 }

@@ -34,19 +34,23 @@
         <div id="messageArea" class="message-area">
           <template v-for="(message, index) in messages" :key="index">
             <!-- 날짜 변경 시 날짜 표시 -->
-            <div v-if="shouldDisplayDate(index)" class="message-date">
+            <!-- <div v-if="shouldDisplayDate(index)" class="message-date">
               {{ formatDate(message.createdAt) }}
+            </div> -->
+
+            <div v-if="shouldDisplayDate(message.createdAt)" class="message-date">
+              {{  formatDate(message.createdAt) }}  
             </div>
-  
             <!-- 메시지 내용 -->
             <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
               <div class="message-sender">{{ message.sender }}</div>
               <div class="message-content">
                 <span class="message-time">{{ message.message }}</span>
-                <span class="message-time">{{ formatTimeStamp(message.createdAt) }}</span>
+                <span class="message-time">{{ formatTime(message.createdAt) }}</span>
               </div>
             </div>
           </template>
+
         </div>
   
         <div class="message-input">
@@ -78,14 +82,16 @@
           const user = reactive({name: ''}); 
           const receiver = ref('');  // 채팅방 상대방 입력 필드
           const sender = ref('');
-  
+        
           /* chatRoomDetail */
           const stompClient = ref(null);
           const roomId = ref('');
           const messages = reactive([]);  // 메시지 목록
           const messageInput = ref('');  // 메시지 입력 필드
           const selectedUser = reactive({sender: ''}, {receiver: ''}); // 선택된 
-   
+          // const isDayChange = ref(true);
+          const saveDate = ref('');
+
         // 로그인한 사용자의 JWT token
         const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkxMjk1NDIsImV4cCI6MTcyOTE1OTU0Mn0.Cgd1u9tVNumEUy9oHZk0jjP370NEmldXtonfhucRIlI';  
         // 서버에서 데이터를 가져오는 함수
@@ -144,6 +150,7 @@
           }
           fetchChatRoomDetail(room); // 선택한 채팅방의 상세 내용을 불러오는 함수 호출
           connect(room);
+          roomName.value = room;
           roomId.value = room.roomId;
       };
   
@@ -197,7 +204,6 @@
                   message.createdAt = new Date(message.createdAt.$date).toISOString();
                 }
               });
-   
               }
               else{
                 messages.splice(0, messages.length);
@@ -232,6 +238,11 @@
           // await stompClient.value.send('/pub/message', {}, JSON.stringify(message));
           await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(message));
           messageInput.value = '';
+
+          console.log("roomName.value : " + roomName.value);
+          console.log("roomName.value : " + roomName);
+
+          fetchChatRoomDetail(roomName.value);
         } catch (error) {
           console.error('메시지 전송 실패:', error);
           alert('메시지 전송에 실패했습니다. 다시 시도해주세요.');
@@ -260,7 +271,7 @@
       });
   
         /* timestamp 바꾸기 */
-        const formatTimeStamp = (timestamp) => {
+        const formatTime = (timestamp) => {
             console.log(timestamp);
             const date = new Date(timestamp);
             /* 한국에 맞춘 지역 시간 */
@@ -282,11 +293,17 @@
   
   
       /* 날짜 변경 시 날짜 표시 */
-      const shouldDisplayDate = (index) => {
-        if (index === 0) return true;
-        const currentMessageDate = new Date(this.messages[index].createdAt).toDateString();
-        const previousMessageDate = new Date(this.messages[index - 1].createdAt).toDateString();
-        return currentMessageDate !== previousMessageDate;
+      const shouldDisplayDate = (timestamp) => {
+        const date = new Date(timestamp);
+
+        // 저장된 값과 입력 된 값이 일치하지 않을 때
+        if(String(date.getDate()).padStart(2, '0') != saveDate.value) {
+          saveDate.value = String(date.getDate()).padStart(2, '0');
+          // isDayChange = true;
+          return true;
+        }
+        // isDayChange = false;
+        return false;
       }
   
   
@@ -300,9 +317,10 @@
           sendMessage,
           selectedUser,
           setSelectedRoom,
-          formatTimeStamp,
+          formatTime,
           formatDate,
-          shouldDisplayDate
+          shouldDisplayDate,
+          // isDayChange
           // message
         };
       }

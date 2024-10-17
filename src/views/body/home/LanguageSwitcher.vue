@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="language-switcher">
     <button @click="translateFAQ('EN')">English</button>
     <button @click="translateFAQ('KO')">한국어</button>
@@ -21,4 +21,4 @@ button {
   font-size: 1.2rem;
   cursor: pointer;
 }
-</style>
+</style> -->

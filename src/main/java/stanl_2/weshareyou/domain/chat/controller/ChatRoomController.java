@@ -80,11 +80,12 @@ public class ChatRoomController {
 
     // 선택 채팅방 삭제
     /* 설명. 선택 채팅방 삭제 시 sender, receiver 각각에 delete가 있어야한다*/
-    @DeleteMapping("")
-    public ApiResponse<?> deleteRoom(@RequestBody Map<String, String> requestBody
+    @DeleteMapping("/{roomId}")
+    public ApiResponse<?> deleteRoom(@PathVariable String roomId
+//            @RequestBody Map<String, String> requestBody
                               , @RequestAttribute("nickname") String nickname) {
 
-        String roomId = requestBody.get("roomId");
+//        String roomId = requestBody.get("roomId");
 
         if(chatRoomService.deleteChatRoom(roomId, nickname)){
             return ApiResponse.ok("delete success");

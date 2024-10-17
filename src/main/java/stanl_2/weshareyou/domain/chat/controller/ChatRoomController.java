@@ -3,13 +3,9 @@ package stanl_2.weshareyou.domain.chat.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoom;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoomMessage;
-import stanl_2.weshareyou.domain.chat.service.ChatMessageService;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomService;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
@@ -25,7 +21,6 @@ import java.util.Map;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final ChatMessageService chatMessageService;
     private final ChatRoomMessageService chatRoomMessageService;
 
     @CrossOrigin(origins = "http://localhost:5173")

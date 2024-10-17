@@ -38,4 +38,6 @@ public interface MemberService {
     MemberDTO checkMember(MemberDTO requestMemberDTO);
 
     MemberDTO findProfile(MemberDTO requestMemberDTO);
+
+    Boolean findNickname(String username);
 }

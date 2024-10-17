@@ -15,7 +15,6 @@ import Profile from "../views/body/member/Profile.vue";
 import ModifyProfile from "../views/body/member/ModifyProfile.vue";
 import Chat from "../views/body/chat/Chat.vue";
 
-
 const routes = [
     {
         path: '/login',
@@ -93,6 +92,7 @@ const routes = [
         name: 'Chat',
         component: Chat
     },
+
 ];
 
 const router = createRouter({

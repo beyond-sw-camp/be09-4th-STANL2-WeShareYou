@@ -71,8 +71,28 @@
             </ul>
         </div>
 
+        
+
         <div class="nav-right">
-            <span class="language">Language</span>
+            <ul class="language-setting">
+                <li class="dropdown" @click="toggleDropdown('language')">
+                    <span class= "language-font" :class="{ active: activeMenu === 'language' }">Language</span>
+                    <ul v-show="activeDropdown === 'language'" class="dropdown-language-menu" @click.stop>
+                        <li class="dropdown-language">
+                            English
+                        </li>
+                        <li class="dropdown-language">
+                            日本語
+                        </li>
+                        <li class="dropdown-language1">
+                            中文
+                        </li>
+                    </ul>
+                </li> 
+            </ul>
+            
+                
+            <!-- <span class="language">Language</span> -->
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
@@ -306,5 +326,38 @@ onBeforeUnmount(() => {
 .active {
     color: #6CB1FF;
     /* 활성화된 메뉴 색상 */
+}
+.language-setting{
+    margin-top: 6px;
+    font-size: 4rem;
+}
+.dropdown-language-menu{
+    z-index: 1000;
+    position: absolute;
+    top: 4rem;
+    left: 0;
+    background-color: white;
+    border: 0.1rem solid #e0e0e0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 8rem;
+    padding: 0.5rem 0;
+}
+.dropdown-language{
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size:1.5rem;
+}
+.dropdown-language1{
+    text-align: center;
+    font-size:1.5rem;
+}
+.dropdown-language:hover {
+    color: #439AFF !important;
+}
+.dropdown-language1:hover {
+    color: #439AFF !important;
 }
 </style>

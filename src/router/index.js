@@ -13,7 +13,10 @@ import Mypage from "../views/body/member/Mypage.vue";
 import ModifyMypage from "../views/body/member/ModifyMypage.vue";
 import Profile from "../views/body/member/Profile.vue";
 import ModifyProfile from "../views/body/member/ModifyProfile.vue";
+import MemberIP from "../views/body/admin/MemberIP.vue";
+import OtherProfile from "../views/body/member/OtherProfile.vue";
 import Chat from "../views/body/chat/Chat.vue";
+
 
 const routes = [
     {
@@ -92,7 +95,17 @@ const routes = [
         name: 'Chat',
         component: Chat
     },
-
+    {
+        path: '/admin/memberIp',
+        name: 'MemberIP',
+        component: MemberIP
+    },
+    {
+        path: '/otherprofile/:nickname', 
+        name: 'OtherProfile',
+        component: OtherProfile,
+        props: true 
+    }
 ];
 
 const router = createRouter({

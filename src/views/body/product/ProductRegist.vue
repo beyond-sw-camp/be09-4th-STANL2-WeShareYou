@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import PostRegister from "@/components/cud/PostRegister.vue";
+import PostRegister from "@/components/cud/PostRegist.vue";
 
 </script>
 

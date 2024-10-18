@@ -1,39 +1,38 @@
 <template>
-  <div class="page-wrapper">
-    <!-- 등록 버튼 -->
-    <!-- <button class="back-button">뒤로가기</button> -->
-    <div class="buttons">
-      <button @click="noticeModify" class="modify-button" v-if="isAdmin">수정</button>
-      <button @click="noticeDelete" class="delete-button" v-if="isAdmin">삭제</button>
+<div class="page-wrapper">
+  <div class = "buttons" v-if="isAdmin">
+    <button @click = "goBack" class="back-button">뒤로가기</button>
+    <div class="button-inner">
+      <button @click ="noticeModify" class="modify-button">수정</button>
+      <button @click="noticeDelete" class="delete-button">삭제</button>
     </div>
-
-    <!-- 공지사항 상세 컨테이너 -->
-    <div class="container">
-      <h1 class="title">공지사항 제목</h1>
-      <p class="date">2024-10-15</p>
-      <div class="content">
-        <p>
-          공지사항의 상세 내용을 여기에 표시합니다. 여러 줄의 텍스트가 포함될 수 있으며, 
-          공지사항의 중요 정보가 깔끔하게 정리됩니다.
-        </p>
-      </div>
-    </div>
-    <button class="back-button">뒤로가기</button>
-
   </div>
+
+  <div class="container">
+    <h1 class="title">{{noticeValues.title}}</h1>
+    <p class="date">{{formatTimeStamp(noticeValues.createdAt)}}</p>
+    <div class="content">
+        {{ noticeValues.content }}
+    </div>
+  </div>
+</div>
 </template>
 
 <script setup>
     import { ref, onMounted} from 'vue'
     import { useRoute, useRouter } from 'vue-router'
+    import axios from 'axios';
 
     const route = useRoute();
     const router = useRouter();
 
     const noticeId = ref('');
-  
+    const id = route.params.id;
     const noticeValues = ref({});
     const isAdmin = ref(false);
+
+    const loading = ref(true);
+    const error = ref(null);
 
     const checkRole = () => {
       const roleString = localStorage.getItem('Roles');   
@@ -56,23 +55,51 @@
     }
 
     const fetchNoticeData = async () => {
-        const response = await fetch(`https://localhost:8080/api/v1/notice/${noticeId.value}`, {
-                      headers: {
-                Authorization: `Bearer ${token}`,
-              }
-        });
-        const data = await response.json();
+      loading.value = true; // 로딩 시작
+    error.value = null; // 이전 에러 초기화
 
-        noticeValues.value = {
-            id: data.id,
-            title: data.title,
-            content: data.content,
-            createdAt: formatTimeStamp(data.createdAt),
-            updatedAt: formatTimeStamp(data.updatedAt),
-            active: data.active,
+    try {
+        const response = await axios.get(`http://localhost:8080/api/v1/notice/detail/${id}`, 
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              }
+          }
+        );
+        console.log("noticeValues.detail response:", response.data);
+
+        let data = response.data;
+        let newContents = '';
+
+        if (typeof data === 'string') {
+            console.log("Received JSON as String. Attempting to parse...");
+            const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
+
+            if (jsonParts.length > 0) {
+                try {
+                    const parsed = JSON.parse(jsonParts[0]);
+                    console.log("Parsed JSON:", parsed.result);
+                    newContents = parsed.result || [];
+                } catch (error) {
+                    console.error("JSON 파싱 실패:", error);
+                }
+            }
+        } else {
+            console.log("Parsed Data:", data);
+            newContents = data.result || [];
         }
+
+        noticeValues.value = newContents;
+    } catch (err) {
+        error.value = '제품 정보를 불러오는 데 실패했습니다.'; // 에러 처리
+        console.error('API 호출 에러:', err);
+    } finally {
+        loading.value = false; // 로딩 종료
     }
+    };
+
     
+    console.log("value: " + noticeValues.value);
 
     const goBack = () => {
         router.push('/notice');
@@ -89,8 +116,7 @@
 <style scoped>
 /* 전체 페이지 래퍼 */
 .page-wrapper {
-  display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
   width: 100%;
   padding-top: 2rem;
@@ -108,6 +134,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  margin-bottom: 20rem;
 }
 
 /* 제목 스타일 */
@@ -130,16 +157,20 @@
 /* 내용 스타일 */
 .content {
   font-size: 2rem; /* 20px */
-  line-height: 1.5; /* 텍스트 가독성을 위한 줄 간격 */
 }
 
 
-/* 뒤로가기 버튼 */
+.buttons {
+  line-height: 1.5; /* 텍스트 가독성을 위한 줄 간격 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2vh 15vw; /* 위아래는 vh, 좌우는 vw로 여백 설정 */
+}
+
 .back-button {
-  align-self: flex-start;
-  margin-left: 15%; /* 왼쪽 여백 */
   padding: 0.75rem 1.5rem;
-  border: 1px solid #439aff;
+  border: 0.1rem solid #439aff;
   background-color: transparent;
   color: #439aff;
   font-size: 1rem;
@@ -147,31 +178,28 @@
   cursor: pointer;
 }
 
-  .buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .modify-button {
-    margin-right: 10px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: 1px solid #439aff;
-    color: #439aff;
-    background-color: transparent;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .delete-button {
-    font-size: 1rem;
-    padding: 10px 20px;
-    border: 1px solid #ff414c;
-    color: #ff414c;
-    background-color: transparent;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+.button-inner {
+  display: flex;
+  gap: 1vw; /* 버튼 간 간격 설정 */
+}
+
+.modify-button,
+.delete-button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.modify-button {
+  border: 0.1rem solid #439aff;
+  color: #439aff;
+}
+
+.delete-button {
+  border: 0.1rem solid #ff414c;
+  color: #ff414c;
+}
 
 </style>

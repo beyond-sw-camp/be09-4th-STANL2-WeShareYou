@@ -1,6 +1,6 @@
 <template>
   <div class="button-container">
-    <button @click="goToCreatenotice" class="register-button" v-if="isAdmin">등록</button>
+    <button @click="goToCreateNotice" class="register-button" v-if="isAdmin">등록</button>
   </div>
 
   <div class="notice-grid" ref="gridElement">
@@ -64,7 +64,7 @@ const fetchnoticeItems = async (reset = false) => {
           {
               params: {
                   cursor: cursorId.value || '', // cursorId가 없으면 빈 문자열로 전송
-                  size: 8 // 페이지 당 가져올 아이템 수
+                  size: 7 // 페이지 당 가져올 아이템 수
               },
               headers: {
                   Authorization: `Bearer ${token}`,
@@ -139,7 +139,11 @@ const intersectionObserver = new IntersectionObserver((entries) => {
 
 // 제품 상세 페이지로 이동하는 함수
 const goTonoticeDetail = (id) => {
-  router.push(`/${id}`);
+  router.push(`/notice/${id}`);
+};
+
+const goToCreateNotice = () => {
+  router.push('/notice/post');
 };
 
 // 컴포넌트가 마운트될 때 첫 페이지 데이터 가져오기
@@ -161,34 +165,32 @@ onUnmounted(() => {
 <style scoped>
 .notice-grid {
   display: grid;
-  /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
   grid-template-columns: 1fr;
   gap: 2rem;
   margin-top: 2rem;
-  height: 80vh; /* 전체 화면 높이 */
+  height: calc(100vh - 170px); /* 상단과 하단 요소를 제외한 높이 설정 */
   overflow-y: auto; /* 스크롤 가능 */
 }
 
 @media (min-width: 1200px) {
   .notice-grid {
-      grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
 .notice-card {
   background-color: #fff;
-  border-bottom: 1px solid #e0e0e0; /* 리스트 구분선 */
+  border-bottom: 1px solid #e0e0e0;
   padding: 10px 15px;
   text-align: left;
   cursor: pointer;
-  height: auto; /* 높이를 자동으로 맞춤 */
+  height: auto;
   display: flex;
   align-items: center;
-  gap: 1rem; /* 제목과 아이콘 같은 요소 간의 간격 */
+  gap: 1rem;
   transition: background-color 0.3s ease;
 }
 
-/* 마우스 호버 시 배경 색상 변경 */
 .notice-card:hover {
   background-color: #f5f5f5;
 }
@@ -213,36 +215,30 @@ p {
   margin: 0;
 }
 
-.loading {
+.loading, .no-notices {
   text-align: center;
   margin-top: 1rem;
   color: #666;
 }
 
-.no-notices {
-  text-align: center;
-  margin-top: 2rem;
-  font-size: 1.8rem;
-  color: #888;
-}
-
 .button-container {
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: end;
 }
 
 .register-button {
-    display:flex;
-    justify-content: center;
-    align-items:end;
-    font-size: 1.25rem;
-    margin-right: 1rem;
-    padding: 1rem 2rem;
-    border: 1px solid #439aff;
-    color: #439aff;
-    background-color: transparent;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  font-size: 1.25rem;
+  margin-right: 1rem;
+  padding: 1rem 2rem;
+  border: 1px solid #439aff;
+  color: #439aff;
+  background-color: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 </style>

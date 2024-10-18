@@ -92,7 +92,8 @@
 
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
+                <!-- <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" /> -->
+                <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/mypage">마이페이지</RouterLink>
@@ -117,6 +118,7 @@
 import { ref, onMounted, onBeforeUnmount, inject, watch} from 'vue';
 import { useRouter } from 'vue-router';
 import { translateText } from '@/assets/language/deepl';
+import defaultProfileImage from '../../assets/icon/navigation/profile.png';
 
 // inject로 전역 언어 상태와 변경 함수 받아오기
 const currentLang = inject('currentLang');
@@ -169,20 +171,27 @@ const activeDropdown = ref(null);
 const activeMenu = ref(null);
 const router = useRouter();
 const isLoggedIn = ref(false);
+const profileImage = ref('');
 
 // 로그인 여부 확인 함수 (JWT와 userInfo 체크)
 function checkLoginStatus() {
     const token = localStorage.getItem('jwtToken');
     const userInfo = localStorage.getItem('userInfo');
-    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
+
+    if (token && userInfo) {
+        isLoggedIn.value = true;
+        profileImage.value = JSON.parse(userInfo).profile || ''; // 프로필 이미지 설정
+    } else {
+        isLoggedIn.value = false;
+        profileImage.value = ''; // 기본 이미지로 초기화
+    }
 }
 function logOut() {
-    // activeDropdown.value = null;
-    // activeMenu.value = null;
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userInfo');
     alert('로그아웃되었습니다.');
     isLoggedIn.value = false;
+    profileImage.value = ''; // 이미지 초기화
     router.push(`/`);
 }
 function loGin() {

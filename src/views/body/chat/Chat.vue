@@ -35,10 +35,12 @@
     </div>
   
       <!-- 오른쪽 채팅방 내용 -->
-      <div class="chat-room">
+      <div class="chat-room"  v-if="selectedRoom">
         <h3 class="chat-room-title">
-          <img :src= "profile.name || 'default-image-url'" alt="Profile Image" class="profile" />
-          {{ (selectedUser.sender === user.name ? selectedUser.receiver : selectedUser.sender) }}
+          <!-- <img :src= "profile.name || 'default-image-url'" alt="Profile Image" class="profile" />
+          {{ (selectedUser.sender === user.name ? selectedUser.receiver : selectedUser.sender) }} -->
+          <img :src="selectedRoom.sender === user.name ? selectedRoom.receiverProfileUrl : selectedRoom.senderProfileUrl" alt="Profile Image" class="profile" />
+          {{ selectedRoom.sender === user.name ? selectedRoom.receiver : selectedRoom.sender }}
         </h3>
   
         <div id="messageArea" class="message-area">
@@ -90,7 +92,7 @@
           const user = reactive({name: ''}); 
           const profile = reactive({name: ''}); 
           const receiver = ref('');  // 채팅방 상대방 입력 필드
-        
+          const selectedRoom = ref(null);
           /* chatRoomDetail */
           const stompClient = ref(null);
           const roomId = ref('');
@@ -110,16 +112,14 @@
               console.log("Fetching chat rooms...");
               const response = await axios.get('http://localhost:8080/api/v1/chat', {
               headers: {
-                  Authorization: `Bearer ${token}`,
-              }
-          }
-        );
+                  Authorization: `Bearer ${token}`,}
+          });
           rooms.splice(0, rooms.length, ...response.data.rooms);
           user.name = response.data.user; 
-          profile.name =response.data.rooms[2].receiverProfileUrl; // 사용자 이름 저장
-          console.log(response.data);
-          console.log(user.name);
-          console.log("이미지 url: "+profile.name);
+          // profile.name =response.data.rooms[2].receiverProfileUrl; // 사용자 이름 저장
+          // console.log(response.data);
+          // console.log(user.name);
+          // console.log("이미지 url: "+profile.name);
           } catch (error) {
             console.error("Error fetching chat rooms:", error);
           }
@@ -158,11 +158,12 @@
               stompClient.value.disconnect();
               console.log('Disconnected');
           }
+          selectedRoom.value = room;
           roomName.value = room;
           roomId.value = room.roomId;
 
           profile.name = room.sender === user.name ? room.receiverProfileUrl : room.senderProfileUrl;
-          
+
           connect(room);
           fetchChatRoomDetail(room).catch((error) => console.error(error));
       };
@@ -323,7 +324,6 @@
 
       // 모달~
       const showModal = ref(false); // 모달 표시 여부
-      const selectedRoom = ref(null); // 선택된 방
 
       // 모달 열기
       const openDeleteModal = (room) => {
@@ -371,6 +371,7 @@
           sendMessage,
           selectedUser,
           setSelectedRoom,
+          fetchChatRooms,
           formatTime,
           formatDate,
           shouldDisplayDate,

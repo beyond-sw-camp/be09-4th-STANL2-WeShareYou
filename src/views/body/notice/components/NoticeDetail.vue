@@ -2,8 +2,7 @@
   <div class="page-wrapper">
     <!-- 등록 버튼 -->
     <!-- <button class="back-button">뒤로가기</button> -->
-    <div class="button-container">
-      <button class="back-button">뒤로가기</button>
+    <div class="buttons">
       <button @click="noticeModify" class="modify-button" v-if="isAdmin">수정</button>
       <button @click="noticeDelete" class="delete-button" v-if="isAdmin">삭제</button>
     </div>
@@ -19,6 +18,8 @@
         </p>
       </div>
     </div>
+    <button class="back-button">뒤로가기</button>
+
   </div>
 </template>
 
@@ -96,18 +97,6 @@
   gap: 2rem; /* 상단 버튼과 컨테이너 간격 */
 }
 
-/* 뒤로가기 버튼 */
-.back-button {
-  align-self: flex-start;
-  margin-left: 15%; /* 왼쪽 여백 */
-  padding: 0.75rem 1.5rem;
-  border: 1px solid #439aff;
-  background-color: transparent;
-  color: #439aff;
-  font-size: 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
 
 /* 공지사항 상세 컨테이너 */
 .container {
@@ -140,40 +129,46 @@
 
 /* 내용 스타일 */
 .content {
-  font-size: 1.25rem; /* 20px */
+  font-size: 2rem; /* 20px */
   line-height: 1.5; /* 텍스트 가독성을 위한 줄 간격 */
 }
 
 
-.button-container {
-  display:flex;
-  align-items: center;
-  justify-content: end;
+/* 뒤로가기 버튼 */
+.back-button {
+  align-self: flex-start;
+  margin-left: 15%; /* 왼쪽 여백 */
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #439aff;
+  background-color: transparent;
+  color: #439aff;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 
-.modify-button {
-    display:flex;
-    justify-content: center;
-    align-items:end;
-    font-size: 1.25rem;
-    margin-right: 1rem;
-    padding: 1rem 2rem;
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .modify-button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
     border: 1px solid #439aff;
     color: #439aff;
     background-color: transparent;
     border-radius: 4px;
     cursor: pointer;
   }
-
+  
   .delete-button {
-    display:flex;
-    justify-content: center;
-    align-items:end;
-    font-size: 1.25rem;
-    margin-right: 1rem;
-    padding: 1rem 2rem;
-    border: 1px solid #439aff;
-    color: #439aff;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: 1px solid #ff414c;
+    color: #ff414c;
     background-color: transparent;
     border-radius: 4px;
     cursor: pointer;

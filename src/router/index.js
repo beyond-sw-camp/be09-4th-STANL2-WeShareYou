@@ -142,7 +142,7 @@ const routes = [
         name: 'OtherProfile',
         component: OtherProfile,
         props: true 
-    }
+    },
     {
         path: '/notice/:id',
         name: 'NoitceDetail',

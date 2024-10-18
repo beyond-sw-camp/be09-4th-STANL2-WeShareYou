@@ -23,6 +23,11 @@
         <div class="image-container">
           <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image"/>
         </div>
+        <div class="board-footer">
+          <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.likesCount)"/>
+          <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="goToComments(item)" />
+          <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
+        </div> 
         <h3 class="board-title">{{ item.title }}</h3>
         <p class="board-content" v-if="!item.showFullContent">
           <span v-html="formatContent(getFirstLine(item.content))"></span>
@@ -34,10 +39,6 @@
         <button v-if="item.content.length > 30" @click="toggleContent(item)" class="more-button">
           {{ item.showFullContent ? '닫기' : '더보기' }}
         </button>
-        <div class="board-footer">
-          <span class="interaction-count">❤️</span>
-          <span class="interaction-count" @click="goToComments(item)">💬</span>
-        </div>
       </div>
       <!-- 무한 스크롤을 위한 sentinel -->
       <div ref="sentinel" class="sentinel"></div>
@@ -146,15 +147,19 @@ const formatContent = (text) => {
 }
 
 const getFirstLine = (text) => {
-      return text.split('\n')[0]; // \n 기준으로 첫 번째 줄 반환
+  return text.split('\n')[0]; // \n 기준으로 첫 번째 줄 반환
 }
 
 const goToComments = (item) => {
-      router.push(`/detail/${item.id}`); // 댓글 페이지로 이동
+  router.push(`/detail/${item.id}`); // 댓글 페이지로 이동
     };
 
 const goToCreate = () => {
-      router.push('/board/create'); // 글 작성 페이지로 이동
+  router.push('/board/create'); // 글 작성 페이지로 이동
+};
+
+const goToChat = () => {
+  router.push('/chat');
 };
 
 watch(
@@ -279,7 +284,7 @@ body {
 }
 
 .board-container {
-  width: 80rem;
+  width: 90rem;
   margin: 27rem ;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
@@ -304,7 +309,6 @@ body {
 .user-info {
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
 }
 
 .profile-image {
@@ -318,17 +322,35 @@ body {
   font-size: 3rem;
 }
 
-.board-content {
-  font-size: 3rem; /* 16px = 1rem */
-  margin-bottom: 0; /* 마진 제거 */
+/* .board-content {
+  font-size: 3rem; 
+  margin-bottom: 0; 
   margin-top: 0;
+} */
+
+.board-title {
+  font-weight: bold;
+  font-size: 1.6rem; /* Adjust as needed */
+  margin-bottom: 0; /* Remove margin below title */
+  margin-left: 1rem;
+}
+
+.board-content {
+  font-size: 2.2rem;
+  margin-top: 0; 
+  margin-bottom: 0; 
+  white-space: pre-wrap; /* Ensure text formatting with line breaks is preserved */
+  margin-left: 1rem;
+  color: #666;
+  line-height: 1.2; /* 줄 간 간격을 줄임 */
 }
 
 .image-container {
   display: flex;
   gap: 1.5rem; /* 8px = 0.5rem */
   margin-bottom: 0.75rem; /* 12px = 0.75rem */
-
+  padding: 1rem;
+  box-sizing: border-box; /* Ensure padding is included in the total size */
 }
 
 .board-image {
@@ -338,18 +360,23 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* 애니메이션 */
   cursor: pointer; /* 마우스 커서 변경 */
-
 }
 
 .board-footer {
-  justify-content: space-between;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  display: flex;
+  margin-left: 1rem;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .interaction-count {
   font-size: 0.875rem; /* 14px = 0.875rem */
-  color: #666
-  ;
+  color: #666;
 }
+
 .more-button {
   background: none;
   border: none;
@@ -357,9 +384,10 @@ body {
   font-size: 1.5rem; /* Adjusted size to fit the style */
   cursor: pointer;
   padding: 0;
-  margin-left: 0.25rem; /* Slight margin for alignment */
+  margin-left: 1rem; /* Slight margin for alignment */
   text-decoration: none;
   transition: color 0.2s;
+  
 }
 
 .more-button:hover {

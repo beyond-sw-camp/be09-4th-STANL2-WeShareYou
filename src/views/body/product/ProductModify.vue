@@ -1,26 +1,21 @@
 <template>
-  <div class="container-regist">
-      <div class="wrapper-regist">
-          <select v-model="category1" class="category-select">
-              <option value="NECESSITIES">생활품</option>
-              <option value="KITCHENWARES">주방용품</option>
-              <option value="CLOTHES">의류</option>
-              <option value="TOY">놀이</option>
-              <option value="DEVICE">전자기기</option>
-              <option value="ETC">기타</option>
-          </select>
-          <button @click="listPost" class="list-btn">취소</button>
-          <button @click="submitPost" class="submit-btn">수정</button>
-      </div>
+    <div class="container-regist">
+        <div class="wrapper-regist">
+            <select v-model="category1" class="category-select">
+                <option value="NECESSITIES">생활품</option>
+                <option value="KITCHENWARES">주방용품</option>
+                <option value="CLOTHES">의류</option>
+                <option value="TOY">놀이</option>
+                <option value="DEVICE">전자기기</option>
+                <option value="ETC">기타</option>
+            </select>
+            <button @click="listPost" class="list-btn">취소</button>
+            <button @click="submitPost" class="submit-btn">수정</button>
+        </div>
 
-      <PostModify 
-          :initialTitle="product.title" 
-          :initialContent="product.content" 
-          :initialImageUrl="product.imageUrl" 
-          @updateTitle="handleTitleUpdate" 
-          @updateContent="handleContentUpdate" 
-          @imageUploaded="handleImageUpload" />
-  </div>
+        <PostModify :initialTitle="product.title" :initialContent="product.content" :initialImageUrl="product.imageUrl"
+            @updateTitle="handleTitleUpdate" @updateContent="handleContentUpdate" @imageUploaded="handleImageUpload" />
+    </div>
 </template>
 
 <script setup>
@@ -31,8 +26,6 @@ import PostModify from '@/components/cud/PostModify.vue';
 
 const route = useRoute();
 const router = useRouter();
-const title = ref('');
-const content = ref('');
 const imageFile = ref(null);
 const category1 = ref('NECESSITIES');
 const product = ref({});
@@ -81,20 +74,28 @@ onMounted(() => {
 
 // 자식 컴포넌트로부터 데이터 수신
 const handleTitleUpdate = (newTitle) => {
-  title.value = newTitle;
+    // 자식으로부터 받은 값이 null이면 기존 값을 유지
+    console.log("부모에서 받은 제목:", newTitle);
+    product.value.title = newTitle !== null ? newTitle : product.value.title;
+    console.log("product.value.title:", product.value.title);
 };
 
 const handleContentUpdate = (newContent) => {
-  content.value = newContent;
+    // 자식으로부터 받은 값이 null이면 기존 값을 유지
+    product.value.content = newContent !== null ? newContent : product.value.content;
+    console.log("product.value.title:", product.value.content);
 };
 
 const handleImageUpload = (file) => {
-  imageFile.value = file;
+    // 파일이 없으면 기존 이미지 URL 유지
+    if (file) {
+        imageFile.value = file;
+        console.log("이미지ㅣ짖11111: " + product.imageUrl);
+    } else {
+        imageFile.value = product.imageUrl;
+        console.log("이미지ㅣ짖: " + product.imageUrl);
+    }
 };
-
-console.log("title: " + title.value);
-console.log("content: " + content.value);
-console.log("imageFile: " + imageFile.value);
 
 // 취소 버튼 클릭 시
 const listPost = () => {
@@ -104,7 +105,11 @@ const listPost = () => {
 
 // 서버로 데이터 전송
 const submitPost = async () => {
-    if (!title.value || !content.value || !imageFile.value || !category1.value) {
+    console.log("title: " + product.value.title);
+    console.log("content: " + product.value.content);
+    console.log("imageFile: " + imageFile.value);
+    console.log("id: " + id.value);
+    if (!product.value.title || !product.value.content || !imageFile.value || !category1.value) {
         alert('모든 항목을 입력해주세요.');
         return;
     }
@@ -116,8 +121,9 @@ const submitPost = async () => {
         new Blob(
             [
                 JSON.stringify({
-                    title: title.value,
-                    content: content.value,
+                    id: id.value,
+                    title: product.value.title,
+                    content: product.value.content,
                     category: category1.value,
                     status: "RENTAL",
                 }),
@@ -129,14 +135,14 @@ const submitPost = async () => {
     const jwtToken = localStorage.getItem('jwtToken');
 
     try {
-        const response = await axios.put('http://localhost:8080/api/v1/product', 
-        formData, 
-        {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${jwtToken}`,
-            },
-        });
+        const response = await axios.put(`http://localhost:8080/api/v1/product`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            });
         alert('상품이 수정되었습니다.');
         console.log('응답:', response.data.result);
         router.push(`/product/${category1.value}`);
@@ -146,7 +152,6 @@ const submitPost = async () => {
     }
 };
 </script>
-
 
 
 <style scoped>

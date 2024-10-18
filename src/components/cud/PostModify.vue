@@ -13,6 +13,11 @@
       </button>
     </div>
 
+    <!-- 이미지 미리보기 -->
+    <div v-if="previewImageUrl" class="image-preview">
+      <img :src="previewImageUrl" alt="이미지 미리보기" />
+    </div>
+
     <div
       class="content-area"
       contenteditable="true"
@@ -20,7 +25,7 @@
       @input="updateContent"
       placeholder="내용을 입력하세요."
     >
-      {{ localContent }} <!-- v-model을 localContent로 바꿉니다. -->
+      {{ localContent }}
     </div>
 
     <input
@@ -38,7 +43,8 @@ import { ref, watch } from 'vue';
 
 // 지역 상태 정의
 const localTitle = ref('');
-const localContent = ref(''); // 내용을 저장하는 ref
+const localContent = ref('');
+const previewImageUrl = ref(''); // 이미지 미리보기 URL
 
 // props로 받아온 초기값을 설정합니다.
 const props = defineProps({
@@ -56,16 +62,24 @@ watch(() => props.initialContent, (newContent) => {
   localContent.value = newContent;
 });
 
+// 이미지 URL을 미리보기로 설정
+watch(() => props.initialImageUrl, (newImageUrl) => {
+  previewImageUrl.value = newImageUrl;
+});
+
 // 부모에게 이벤트를 발생시키기 위해 정의
 const emit = defineEmits(['updateTitle', 'updateContent', 'imageUploaded']);
 
 // 제목 변경 시 부모에게 알림
 const emitTitleUpdate = () => {
+  console.log("localContent: " +localTitle.value);
   emit('updateTitle', localTitle.value);
 };
 
 // 내용 변경 시 부모에게 알림
 const updateContent = () => {
+  localContent.value = contentArea.value.innerHTML; // contenteditable의 내용을 가져옴
+  console.log("localContent: " + localContent.value);
   emit('updateContent', localContent.value);
 };
 
@@ -79,7 +93,10 @@ const triggerFileInput = () => {
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    emit('imageUploaded', file);
+    previewImageUrl.value = URL.createObjectURL(file); // 미리보기 이미지 변경
+    
+    console.log("아아아: " +file);
+    emit('imageUploaded', file); // 부모에게 파일 업로드 알림
   }
 };
 

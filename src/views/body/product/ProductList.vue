@@ -180,7 +180,7 @@ onMounted(() => {
 
 .product-image {
     max-width: 100%;
-    height: auto;
+    height: 70%;
     border-radius: 8px;
     margin-bottom: 1.5rem;
 }

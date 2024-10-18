@@ -8,13 +8,13 @@
                 상품 등록
             </button>
             <div v-if="isAdmin && isProductDetailPage" class="update-wrapper">
-                <button class="btn" @click="goToProductModify">
+                <button class="btn-u" @click="goToProductModify">
                     수정
                 </button>
-                <button class="btn" @click="goToProductRegist">
+                <button class="btn-d" @click="goToProductDelete">
                     삭제
                 </button>
-                <button class="btn" @click="goToProductRegist">
+                <button class="btn-u" @click="goToProductList">
                     목록
                 </button>
             </div>
@@ -56,6 +56,12 @@ function goToProductModify() {
     // 수정 페이지로 이동
     router.push({
         path: `/product/${category.value}/${productId}/modify`, // 수정 페이지로 이동
+    });
+}
+
+function goToProductList() {
+    router.push({
+        path: `/product/${category.value}`,
     });
 }
 
@@ -104,6 +110,32 @@ watch(
     width: 7%;
     height: 4rem;
     font-size: 1.6rem;
+}
+
+.btn-d {
+    background-color: white;
+    color: #FF414C;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-align: center;
+    height: 3.5rem;
+    font-size: 1.3rem;
+    border: 1px solid #FF414C;
+    padding: 0 2rem 0 2rem;
+    margin-left: 1rem;
+}
+
+.btn-u {
+    background-color: white;
+    color: #439aff;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-align: center;
+    height: 3.5rem;
+    font-size: 1.3rem;
+    border: 1px solid #439aff;
+    padding: 0 2rem 0 2rem;
+    margin-left: 1rem;
 }
 
 .update-wrapper {

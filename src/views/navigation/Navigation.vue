@@ -20,24 +20,19 @@
                                 @click="handleCategoryClick('product', 'KITCHENWARES')">{{ translatedCategories.kitchenwares }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{ translatedCategories.clothes }}
-                            </RouterLink>
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{ translatedCategories.clothes }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{ translatedCategories.toy }}
-                            </RouterLink>
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{ translatedCategories.toy }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{ translatedCategories.device }}
-                            </RouterLink>
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{ translatedCategories.device }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{ translatedCategories.etc }}
-                            </RouterLink>
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{ translatedCategories.etc }}</RouterLink>
                         </li>
                     </ul>
                 </li>
-
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
@@ -70,8 +65,6 @@
             </ul>
         </div>
 
-        
-
         <div class="nav-right">
             <ul class="language-setting">
                 <li class="dropdown" @click="toggleDropdown('language')">
@@ -84,8 +77,6 @@
                     </ul>
                 </li>
             </ul>
-            
-                
 
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
@@ -93,32 +84,17 @@
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
                 <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
-                <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
-                    <li @click="resetDropdown" class="dropdown-font">
-                        <RouterLink to="/mypage">마이페이지</RouterLink>
-                    </li>
-                    <li @click="resetDropdown" class="dropdown-font">
-                        <RouterLink to="/profile">내 프로필</RouterLink>
-                    </li>
-                    <li v-if="isLoggedIn" @click="logOut" class="dropdown-font">
-                        <RouterLink to="/login">로그아웃</RouterLink>
-                    </li>
-                    <li v-else @click="loGin" class="dropdown-font">
-                        <RouterLink to="/">로그인</RouterLink>
-                    </li>
-
-                </ul>
             </div>
         </div>
     </nav>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, inject, watch} from 'vue';
+import { ref, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { translateText } from '@/assets/language/deepl';
+import { translateText } from '@/assets/language/deepl'; // 번역 함수
 
-// inject로 전역 언어 상태와 변경 함수 받아오기
+// 전역 상태로부터 언어 상태와 변경 함수 inject
 const currentLang = inject('currentLang');
 const changeLanguage = inject('changeLanguage');
 
@@ -143,6 +119,7 @@ const translatedCategories = ref({
   etc: '기타',
 });
 
+// 메뉴를 번역하는 함수
 const translateMenu = async (lang) => {
   translatedMenu.value.product = await translateText('공유 물품', lang);
   translatedMenu.value.board = await translateText('게시글', lang);
@@ -161,87 +138,43 @@ const translateMenu = async (lang) => {
   translatedCategories.value.device = await translateText('전자기기', lang);
   translatedCategories.value.etc = await translateText('기타', lang);
 };
-// 전역 언어 상태를 감시하고 언어에 따라 메뉴를 DeepL로 번역
 
+// 언어 변경 시 메뉴 번역 업데이트
+watch(currentLang, (newLang) => {
+  translateMenu(newLang); // 언어가 변경될 때마다 번역
+});
 
-
+// 드롭다운을 열고 닫는 함수
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
 const router = useRouter();
-const isLoggedIn = ref(false);
 
-// 로그인 여부 확인 함수 (JWT와 userInfo 체크)
-function checkLoginStatus() {
-    const token = localStorage.getItem('jwtToken');
-    const userInfo = localStorage.getItem('userInfo');
-    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
-}
-function logOut() {
-    // activeDropdown.value = null;
-    // activeMenu.value = null;
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('userInfo');
-    alert('로그아웃되었습니다.');
-    isLoggedIn.value = false;
-    router.push(`/`);
-}
-function loGin() {
-    router.push(`/login`);
-}
-
-watch(currentLang, (newLang) => {
-  translateMenu(newLang);
-});
-
-// 드롭다운 열고 닫기
+// 언어 변경 함수
 const changeLang = (lang) => {
-  changeLanguage(lang); // 전역 언어 상태 변경
+  changeLanguage(lang); // 전역 상태의 언어를 변경
 };
 
+// 드롭다운을 토글하는 함수
 const toggleDropdown = (menu) => {
   activeDropdown.value = activeDropdown.value === menu ? null : menu;
 };
 
+// 드롭다운 초기화 함수
 const resetDropdown = () => {
   activeDropdown.value = null;
   activeMenu.value = null;
 };
 
-// 메뉴 클릭 시 처리
+// 메뉴 클릭 시 처리 함수
 const handleCategoryClick = (menu, category) => {
-    setActiveMenu(menu); // 메뉴 활성화
-    activeDropdown.value = null; // 드롭다운 닫기
-    router.push(`/product/${category}`); // 선택된 카테고리로 이동
+  activeMenu.value = menu; // 활성화된 메뉴 설정
+  activeDropdown.value = null; // 드롭다운 닫기
+  router.push(`/product/${category}`); // 해당 카테고리로 이동
 };
-
-// 메뉴 활성화
-const setActiveMenu = (menu) => {
-    activeMenu.value = menu;
-};
-
-// 외부 클릭 감지
-const handleClickOutside = (event) => {
-    const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span');
-    const isClickInside = [...dropdowns].some((dropdown) =>
-        dropdown.contains(event.target)
-    );
-    if (!isClickInside) {
-        activeDropdown.value = null;
-    }
-};
-
-// 이벤트 등록 및 해제
-onMounted(() => {
-    window.addEventListener('click', handleClickOutside);
-    checkLoginStatus();
-});
-
-onBeforeUnmount(() => {
-    window.removeEventListener('click', handleClickOutside);
-});
 </script>
 
 <style scoped>
+/* 스타일 코드는 기존 유지 */
 .navigation {
     font-size: 2rem;
     height: 10vh;
@@ -375,11 +308,13 @@ onBeforeUnmount(() => {
     color: #6CB1FF;
     /* 활성화된 메뉴 색상 */
 }
-.language-setting{
+
+.language-setting {
     margin-top: 6px;
     font-size: 4rem;
 }
-.dropdown-language-menu{
+
+.dropdown-language-menu {
     z-index: 1000;
     position: absolute;
     top: 4rem;
@@ -393,18 +328,22 @@ onBeforeUnmount(() => {
     min-width: 8rem;
     padding: 0.5rem 0;
 }
-.dropdown-language{
+
+.dropdown-language {
     text-align: center;
     margin-bottom: 1rem;
-    font-size:1.5rem;
+    font-size: 1.5rem;
 }
-.dropdown-language1{
+
+.dropdown-language1 {
     text-align: center;
-    font-size:1.5rem;
+    font-size: 1.5rem;
 }
+
 .dropdown-language:hover {
     color: #439AFF !important;
 }
+
 .dropdown-language1:hover {
     color: #439AFF !important;
 }

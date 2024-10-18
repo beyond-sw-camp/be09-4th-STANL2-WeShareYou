@@ -1,4 +1,4 @@
-package stanl_2.weshareyou.domain.s3;
+package stanl_2.weshareyou.global.security.service.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;

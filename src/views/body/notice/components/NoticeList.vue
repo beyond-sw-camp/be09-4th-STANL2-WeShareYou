@@ -64,7 +64,7 @@ const fetchnoticeItems = async (reset = false) => {
           {
               params: {
                   cursor: cursorId.value || '', // cursorId가 없으면 빈 문자열로 전송
-                  size: 7 // 페이지 당 가져올 아이템 수
+                  size: 8 // 페이지 당 가져올 아이템 수
               },
               headers: {
                   Authorization: `Bearer ${token}`,

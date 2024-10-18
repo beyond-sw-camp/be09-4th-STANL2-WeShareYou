@@ -15,12 +15,12 @@
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/NECESSITIES'"
                                 @click="handleCategoryClick('product', 'NECESSITIES')">{{
-                                translatedCategories.necessities }}</RouterLink>
+                                    translatedCategories.necessities }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/KITCHENWARES'"
                                 @click="handleCategoryClick('product', 'KITCHENWARES')">{{
-                                translatedCategories.kitchenwares }}</RouterLink>
+                                    translatedCategories.kitchenwares }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{
@@ -98,12 +98,18 @@
 
 
 
-            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
+            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" @click="toggleModal" />
             <div v-show="isModalVisible" class="alarm-modal">
-                <div v-for="item in alarms" class="alarm-item">
-                    {{ item.message }}
+                <div v-if="alarms.length === 0" class="alarm-item">
+                    알림이 없습니다.
+                </div>
+                <div v-else>
+                    <div v-for="(item, index) in alarms" :key="index" class="alarm-item">
+                        {{ item.message }}
+                    </div>
                 </div>
             </div>
+
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
@@ -198,18 +204,21 @@ const profileImage = ref('');
 
 const isModalVisible = ref(false);
 
-const toggleModal = () => {
-    isModalVisible.value = !isModalVisible.value;
+const toggleModal = async () => {
+    if (!isModalVisible.value) {
+        await fetchAlarmItems(true); // 알림 모달을 열 때 API 호출 (초기화)
+    }
+    isModalVisible.value = !isModalVisible.value; // 모달 열기/닫기
 };
 
 const fetchAlarmItems = async (reset = false) => {
-    if (loading.value || (!reset && !hasNext.value)) return;
+    if (loading.value || (!reset && !hasNext.value)) return; // 로딩 중이거나 더 불러올 데이터가 없으면 중단
 
     loading.value = true;
 
     if (reset) {
-        alarms.value = [];
-        cursorId.value = '';
+        alarms.value = []; // 알림 초기화
+        cursorId.value = ''; // 커서 초기화
         hasNext.value = true;
     }
 
@@ -219,54 +228,22 @@ const fetchAlarmItems = async (reset = false) => {
         const response = await axios.get(
             `http://localhost:8080/api/v1/alarm`,
             {
-                headers: {
-                    Authorization: `Bearer ${jwtToken}`,
-                },
-                params: {
-                    cursor: cursorId.value || '',
-                    size: 5
-                }
+                headers: { Authorization: `Bearer ${jwtToken}` },
+                params: { cursor: cursorId.value || '', size: 5 }
             }
         );
 
         console.log("API Response:", response.data);
 
         let data = response.data;
-        let newContents = [];
+        let newContents = data.result?.contents || [];
 
-        // 1. 응답이 문자열인 경우 처리
-        if (typeof data === 'string') {
-            console.log("Received JSON as String. Attempting to parse...");
-            const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
-
-            if (jsonParts.length > 0) {
-                try {
-                    const parsed = JSON.parse(jsonParts[0]);
-                    console.log("Parsed JSON:", parsed.result.contents);
-
-                    newContents = parsed.result?.contents || [];
-                    cursorId.value = parsed.result?.cursorId || ''; // cursorId 업데이트
-                    hasNext.value = parsed.result?.hasNext; // hasNext 상태 업데이트
-                } catch (error) {
-                    console.error("JSON 파싱 실패:", error);
-                }
-            }
-        } else {
-            console.log("Parsed Data:", data);
-
-            // 2. 데이터가 이미 객체일 경우 바로 처리
-            newContents = data.result?.contents || [];
-            cursorId.value = data.result?.cursorId || ''; // cursorId 업데이트
-            hasNext.value = data.result?.hasNext; // hasNext 상태 업데이트
-        }
-
-        // 3. 기존 제품 목록에 새 데이터를 추가
+        // 새로운 알림 추가
         alarms.value = [...alarms.value, ...newContents];
-        console.log("alarms after assignment:", alarms.value);
+        cursorId.value = data.result?.cursorId || ''; // 다음 커서 업데이트
+        hasNext.value = data.result?.hasNext; // 다음 페이지 여부 업데이트
 
-        if (alarms.value.length === 0) {
-            console.warn("No alarms found.");
-        }
+        console.log("Alarms after assignment:", alarms.value);
     } catch (error) {
         console.error("API 호출 에러:", error.response?.data || error.message);
     } finally {

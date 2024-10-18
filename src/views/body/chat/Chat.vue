@@ -15,8 +15,9 @@
         <ul v-if="rooms && rooms.length > 0">
           <li v-for="room in rooms" :key="room.roomId" class="room-item-container">
             <p class="room-item"@click="setSelectedRoom(room)" >
-             {{ getOtherUser(room) }}
+              {{ room.sender === user.name ? room.receiver : room.sender }}
             </p>
+            <!-- 버튼을 마우스 오버 시 표시 -->
             <button class="delete-button" @click="openDeleteModal(room)">삭제</button>
           </li>
         </ul>
@@ -36,7 +37,8 @@
       <!-- 오른쪽 채팅방 내용 -->
       <div class="chat-room">
         <h3 class="chat-room-title">
-          {{ '채팅방: ' + (selectedUser.sender === user.name ? selectedUser.receiver : selectedUser.sender) }}
+          <img :src= "profile.name || 'default-image-url'" alt="Profile Image" class="profile" />
+          {{ (selectedUser.sender === user.name ? selectedUser.receiver : selectedUser.sender) }}
         </h3>
   
         <div id="messageArea" class="message-area">
@@ -78,7 +80,6 @@
     <script>
     import { ref, onMounted, reactive, onBeforeUnmount } from 'vue';
     import axios from 'axios';
-    import {useRouter} from 'vue-router';
     import SockJS from 'sockjs-client';
     import Stomp from 'stompjs';
     import { nextTick } from 'vue';
@@ -87,44 +88,38 @@
           /* chatRoomList */
           const rooms = reactive([]);  // 반응형 상태로 채팅방 리스트 저장
           const user = reactive({name: ''}); 
+          const profile = reactive({name: ''}); 
           const receiver = ref('');  // 채팅방 상대방 입력 필드
-          const sender = ref('');
         
           /* chatRoomDetail */
           const stompClient = ref(null);
           const roomId = ref('');
           const messages = reactive([]);  // 메시지 목록
           const messageInput = ref('');  // 메시지 입력 필드
-          // const selectedUser = reactive({ sender: '', receiver: '' });
 
           const selectedUser = reactive({sender: ''}, {receiver: ''}); // 선택된 
-          // const isDayChange = ref(true);
           const saveDate = ref('');
           const roomName = ref('');
 
         // 로그인한 사용자의 JWT token
-        // const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkxMjk1NDIsImV4cCI6MTcyOTE1OTU0Mn0.Cgd1u9tVNumEUy9oHZk0jjP370NEmldXtonfhucRIlI';  
         const token = localStorage.getItem('jwtToken'); // 'jwt'는 저장된 키 이름
 
-        console.log("token: " + token);
         // 서버에서 데이터를 가져오는 함수
         const fetchChatRooms = async () => {
           try {
               console.log("Fetching chat rooms...");
-              const response = await axios.get('http://localhost:8080/api/v1/chat'
-              , {
+              const response = await axios.get('http://localhost:8080/api/v1/chat', {
               headers: {
                   Authorization: `Bearer ${token}`,
               }
           }
         );
-          console.log(response.data);
-          let otherUser=user.room.sender === user.name ? room.receiver : room.sender;
-          console.log(otherUser);
-
           rooms.splice(0, rooms.length, ...response.data.rooms);
-          user.name = response.data.user;    // 사용자 이름 저장
+          user.name = response.data.user; 
+          profile.name =response.data.rooms[2].receiverProfileUrl; // 사용자 이름 저장
+          console.log(response.data);
           console.log(user.name);
+          console.log("이미지 url: "+profile.name);
           } catch (error) {
             console.error("Error fetching chat rooms:", error);
           }
@@ -163,19 +158,17 @@
               stompClient.value.disconnect();
               console.log('Disconnected');
           }
-          // fetchChatRoomDetail(room); // 선택한 채팅방의 상세 내용을 불러오는 함수 호출
-          // connect(room);
           roomName.value = room;
           roomId.value = room.roomId;
+
+          profile.name = room.sender === user.name ? room.receiverProfileUrl : room.senderProfileUrl;
+          
           connect(room);
-          // fetchChatRoomDetail(room); // 선택한 채팅방의 상세 내용을 불러오는 함수 호출
-          // 데이터 로드는 비동기로 처리
           fetchChatRoomDetail(room).catch((error) => console.error(error));
       };
   
       /* WebSocket을 통해 서버에 연결 */
       const connect = (room) => {
-        // const socket = new SockJS('/ws-stomp');
       const socket = new SockJS('http://localhost:8080/ws-stomp');
       stompClient.value = Stomp.over(socket);
   
@@ -212,28 +205,10 @@
             );
   
               
-              // user.name = response.data.user;    // 사용자 이름 저장
               selectedUser.sender = response.data.room.sender;
               selectedUser.receiver = response.data.room.receiver;
-              // console.log(selectedUser);
-              // if(response.data.messages != null){
-              //   nextTick(() => {
-              //     messages.splice(0, messages.length, ...response.data.messages);
-              //     messages.forEach(message => {
-              //     if (message.createdAt instanceof Object && message.createdAt.$date) {
-              //       message.createdAt = new Date(message.createdAt.$date).toISOString();
-              //   }
-              //   })
-              // });
-              // }
-              // else{
-              //   messages.splice(0, messages.length);
-              // }
-
-              // 수정 부분이다
-                  // messages 배열을 새로 할당하여 상태 갱신 최소화
-            messages.length = 0; // 기존 메시지 초기화
-            const newMessages = response.data.messages.map((message) => {
+              messages.length = 0; // 기존 메시지 초기화
+              const newMessages = response.data.messages.map((message) => {
               if (message.createdAt instanceof Object && message.createdAt.$date) {
                 message.createdAt = new Date(message.createdAt.$date).toISOString();
               }
@@ -264,12 +239,8 @@
         console.log("stompClient is alive?" + stompClient);
         console.log('Sending message:', JSON.stringify(message));
   
-        // stompClient.value.send('/pub/chat/message', {}, JSON.stringify(message));
-        // stompClient.value.send('/pub/message', {}, JSON.stringify(message));
-        // messageInput.value = '';  // 입력창 비우기
         try {
           console.log("roomId.value : " + roomId.value);
-          // await stompClient.value.send('/pub/message', {}, JSON.stringify(message));
           await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(message));
           messageInput.value = '';
 
@@ -281,13 +252,6 @@
           alert('메시지 전송에 실패했습니다. 다시 시도해주세요.');
         }
       };
-  
-      // 수신된 메시지를 표시하는 함수
-      // const showMessage = (message) => {
-      //     messages.push(message);
-      //     const messageArea = document.getElementById('messageArea');
-      //     messageArea.scrollTop = messageArea.scrollHeight;  // 스크롤을 가장 아래로
-      // };
 
       const showMessage = (message) => {
         messages.push(message);  // 메시지 추가
@@ -343,10 +307,8 @@
         // 저장된 값과 입력 된 값이 일치하지 않을 때
         if(String(date.getDate()).padStart(2, '0') != saveDate.value) {
           saveDate.value = String(date.getDate()).padStart(2, '0');
-          // isDayChange = true;
           return true;
         }
-        // isDayChange = false;
         return false;
       }
   
@@ -360,46 +322,47 @@
       };
 
       // 모달~
-    const showModal = ref(false); // 모달 표시 여부
-    const selectedRoom = ref(null); // 선택된 방
+      const showModal = ref(false); // 모달 표시 여부
+      const selectedRoom = ref(null); // 선택된 방
 
-    // 모달 열기
-    const openDeleteModal = (room) => {
-      selectedRoom.value = room;
-      showModal.value = true;
-    };
+      // 모달 열기
+      const openDeleteModal = (room) => {
+        selectedRoom.value = room;
+        showModal.value = true;
+      };
 
-    // 모달 닫기
-    const closeModal = () => {
-      selectedRoom.value = null;
-      showModal.value = false;
-    };
+      // 모달 닫기
+      const closeModal = () => {
+        selectedRoom.value = null;
+        showModal.value = false;
+      };
 
-    // 삭제 확인
-    const confirmDelete = async () => {
-      if (!selectedRoom.value) return;
+      // 삭제 확인
+      const confirmDelete = async () => {
+        if (!selectedRoom.value) return;
 
-      console.log(selectedRoom.value.roomId);
+        console.log(selectedRoom.value.roomId);
 
-      try {
-        // 삭제 API 호출
-        await axios.delete(`http://localhost:8080/api/v1/chat/${selectedRoom.value.roomId}`
-        ,{
-          headers: {
-              Authorization: `Bearer ${token}`,
-          }
-        });
-        // 삭제 후 목록에서 제거
-        rooms.splice(rooms.findIndex(r => r.roomId === selectedRoom.value.roomId), 1);
-        closeModal(); // 모달 닫기
-      } catch (error) {
-        console.error('방 삭제 실패:', error);
-        alert('방 삭제에 실패했습니다.');
-      }
-    };
+        try {
+          // 삭제 API 호출
+          await axios.delete(`http://localhost:8080/api/v1/chat/${selectedRoom.value.roomId}`
+          ,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+          });
+          // 삭제 후 목록에서 제거
+          rooms.splice(rooms.findIndex(r => r.roomId === selectedRoom.value.roomId), 1);
+          closeModal(); // 모달 닫기
+        } catch (error) {
+          console.error('방 삭제 실패:', error);
+          alert('방 삭제에 실패했습니다.');
+        }
+      };
 
         return {
           rooms,
+          profile,
           user,
           receiver,
           createRoom,
@@ -411,14 +374,12 @@
           formatTime,
           formatDate,
           shouldDisplayDate,
-          // isDayChange
-          // message
           isLastMessageRead,
           showModal,
-      selectedRoom,
-      openDeleteModal,
-      closeModal,
-      confirmDelete,
+          selectedRoom,
+          openDeleteModal,
+          closeModal,
+          confirmDelete,
         };
       }
       }
@@ -688,6 +649,12 @@
 .cancel-button:hover {
   background-color: #d9d9d9;
 }
+.profile {
+  width: 50px; /* 이미지의 너비를 50px로 설정 */
+  height: 50px; /* 이미지의 높이를 50px로 설정 */
+  border-radius: 50%; /* 동그랗게 만들고 싶다면 추가 */
+  object-fit: cover; /* 이미지 비율을 유지하며 크기를 맞추기 */
+}
 
 /* 모달 애니메이션 */
 @keyframes fadeIn {
@@ -700,28 +667,5 @@
     transform: scale(1);
   }
 }
-
-  
-    /* ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    
-    li {
-      padding: 8px;
-      margin-bottom: 4px;
-      background-color: #f0f0f0;
-      border-radius: 4px;
-    }
-    
-    h1 {
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-    
-    p {
-      font-size: 16px;
-      color: #888;
-    } */
-    </style>
+</style>
     

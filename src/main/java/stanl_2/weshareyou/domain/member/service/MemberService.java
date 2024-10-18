@@ -44,4 +44,5 @@ public interface MemberService {
 
     Boolean findNickname(String username);
 
+    MemberDTO findOtherProfile(String nickname);
 }

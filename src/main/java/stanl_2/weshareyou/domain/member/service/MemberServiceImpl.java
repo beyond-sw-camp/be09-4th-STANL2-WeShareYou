@@ -448,13 +448,6 @@ public class MemberServiceImpl implements MemberService {
         }
         return null;
     }
-    @Override
-    @Transactional
-    public Boolean findNickname(String username){
-        memberRepository.findByNickname(username).orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-
-        return true;
-    }
 
 
     @Override

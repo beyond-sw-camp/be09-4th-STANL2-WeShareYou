@@ -3,6 +3,7 @@
         <div class="title">
             <span class="title">{{ translatedCategory }}</span>
 
+            <!-- ProductList.vue 페이지 && ROLE_ADMIN일 때만 버튼 렌더링 -->
             <button v-if="isAdmin && isProductListPage" class="btn" @click="goToProductRegist">
                 상품 등록
             </button>
@@ -16,6 +17,7 @@
 
         <RouterView :category="category" :key="$route.fullPath" />
 
+        <!-- 삭제 모달 -->
         <ProductRemove v-if="isDeleteModalVisible" @confirm="handleDelete" @close="hideDeleteModal" />
     </div>
 </template>
@@ -25,6 +27,7 @@ import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProductRemove from '../../../components/cud/PostRemove.vue';
 import axios from 'axios';
+import { translateText } from '@/assets/language/deepl.js'; // DeepL 번역 함수
 
 const route = useRoute();
 const router = useRouter();
@@ -36,23 +39,9 @@ const isProductListPage = computed(() => route.name === 'ProductList');
 const isProductDetailPage = computed(() => route.name === 'ProductDetail');
 
 const isDeleteModalVisible = ref(false);
-const category = ref(route.params.category || '공유 물품');
-const translatedCategory = ref(''); // 초기화된 번역 카테고리
 
-const categoryTranslations = {
-    NECESSITIES: '생활품',
-    KITCHENWARES: '주방용품',
-    CLOTHES: '의류',
-    TOY: '놀이',
-    DEVICE: '전자기기',
-    ETC: '기타',
-};
-
-async function goToProductRegist() {
-    router.push({
-        path: '/product/regist',
-        query: { category: category.value },
-    });
+function goToProductRegist() {
+    router.push({ path: '/product/regist', query: { category: category.value } });
 }
 
 function showDeleteModal() {
@@ -70,7 +59,7 @@ async function handleDelete() {
     try {
         const response = await axios.delete('http://localhost:8080/api/v1/product', {
             headers: { Authorization: `Bearer ${jwtToken}` },
-            data: { id },
+            data: { id: id },
         });
         console.log('삭제 성공:', response.data);
         router.push(`/product/${category.value}`);
@@ -81,6 +70,31 @@ async function handleDelete() {
         hideDeleteModal();
     }
 }
+
+const category = ref(route.params.category || '공유 물품');
+const categoryTranslations = {
+    NECESSITIES: '생활품',
+    KITCHENWARES: '주방용품',
+    CLOTHES: '의류',
+    TOY: '놀이',
+    DEVICE: '전자기기',
+    ETC: '기타',
+};
+
+const translatedCategory = ref(categoryTranslations[category.value] || '공유 물품');
+
+// 언어 변경 시 카테고리 번역 업데이트
+watch(
+    () => route.params.category,
+    async (newCategory) => {
+        category.value = newCategory || '공유 물품';
+        translatedCategory.value = await translateText(
+            categoryTranslations[newCategory] || '공유 물품',
+            currentLang.value
+        );
+    },
+    { immediate: true }
+);
 </script>
 
 <style scoped>
@@ -111,11 +125,8 @@ async function handleDelete() {
     color: #FF414C;
     border-radius: 1rem;
     cursor: pointer;
-    height: 3.5rem;
-    font-size: 1.3rem;
     border: 1px solid #FF414C;
     margin-left: 1rem;
-    padding: 0 2rem;
 }
 
 .btn-u {
@@ -123,11 +134,8 @@ async function handleDelete() {
     color: #439aff;
     border-radius: 1rem;
     cursor: pointer;
-    height: 3.5rem;
-    font-size: 1.3rem;
     border: 1px solid #439aff;
     margin-left: 1rem;
-    padding: 0 2rem;
 }
 
 .update-wrapper {

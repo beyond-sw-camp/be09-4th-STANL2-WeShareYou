@@ -13,26 +13,32 @@
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/NECESSITIES'"
-                                @click="handleCategoryClick('product', 'NECESSITIES')">{{ translatedCategories.necessities }}</RouterLink>
+                                @click="handleCategoryClick('product', 'NECESSITIES')">{{
+                                    translatedCategories.necessities }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/KITCHENWARES'"
-                                @click="handleCategoryClick('product', 'KITCHENWARES')">{{ translatedCategories.kitchenwares }}</RouterLink>
+                                @click="handleCategoryClick('product', 'KITCHENWARES')">{{
+                                    translatedCategories.kitchenwares }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{ translatedCategories.clothes }}
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{
+                                translatedCategories.clothes }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{ translatedCategories.toy }}
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{
+                                translatedCategories.toy }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{ translatedCategories.device }}
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{
+                                translatedCategories.device }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{ translatedCategories.etc }}
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{
+                                translatedCategories.etc }}
                             </RouterLink>
                         </li>
                     </ul>
@@ -44,16 +50,20 @@
                     <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">{{ translatedMenu.guide }}</RouterLink>
+                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">{{ translatedMenu.guide }}
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/event" @click="setActiveMenu('board')">{{ translatedMenu.freemarket }}</RouterLink>
+                            <RouterLink to="/board/event" @click="setActiveMenu('board')">{{ translatedMenu.freemarket
+                                }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">{{ translatedMenu.companion }}</RouterLink>
+                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">{{ translatedMenu.companion }}
+                            </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">{{ translatedMenu.tip }}</RouterLink>
+                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">{{ translatedMenu.tip }}
+                            </RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -70,7 +80,7 @@
             </ul>
         </div>
 
-        
+
 
         <div class="nav-right">
             <ul class="language-setting">
@@ -84,10 +94,13 @@
                     </ul>
                 </li>
             </ul>
-            
-                
 
-            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
+
+
+            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" @click="toggleAlarmModal" />
+
+            <AlarmModal :isVisible="isAlarmModalVisible" user="nnn" project="nnnnnn" timestamp="일시일시일시" />
+
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
@@ -114,52 +127,58 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, inject, watch} from 'vue';
+import { ref, onMounted, onBeforeUnmount, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { translateText } from '@/assets/language/deepl';
+import AlarmModal from '@/components/alarm/Alarm.vue';
 
 // inject로 전역 언어 상태와 변경 함수 받아오기
 const currentLang = inject('currentLang');
 const changeLanguage = inject('changeLanguage');
 
 const translatedMenu = ref({
-  product: '공유 물품',
-  board: '게시글',
-  guide: '가이드',
-  freemarket: '프리마켓',
-  companion: '동행',
-  tip: 'TIP',
-  notice: '공지사항',
-  faq: '자주 묻는 질문',
-  direction: '오시는 길',
+    product: '공유 물품',
+    board: '게시글',
+    guide: '가이드',
+    freemarket: '프리마켓',
+    companion: '동행',
+    tip: 'TIP',
+    notice: '공지사항',
+    faq: '자주 묻는 질문',
+    direction: '오시는 길',
 });
 
 const translatedCategories = ref({
-  necessities: '생활품',
-  kitchenwares: '주방용품',
-  clothes: '의류',
-  toy: '놀이',
-  device: '전자기기',
-  etc: '기타',
+    necessities: '생활품',
+    kitchenwares: '주방용품',
+    clothes: '의류',
+    toy: '놀이',
+    device: '전자기기',
+    etc: '기타',
 });
 
-const translateMenu = async (lang) => {
-  translatedMenu.value.product = await translateText('공유 물품', lang);
-  translatedMenu.value.board = await translateText('게시글', lang);
-  translatedMenu.value.guide = await translateText('가이드', lang);
-  translatedMenu.value.freemarket = await translateText('프리마켓', lang);
-  translatedMenu.value.companion = await translateText('동행', lang);
-  translatedMenu.value.tip = await translateText('TIP', lang);
-  translatedMenu.value.notice = await translateText('공지사항', lang);
-  translatedMenu.value.faq = await translateText('자주 묻는 질문', lang);
-  translatedMenu.value.direction = await translateText('오시는 길', lang);
+const isAlarmModalVisible = ref(false);
+const toggleAlarmModal = () => {
+    isAlarmModalVisible.value = !isAlarmModalVisible.value;
+};
 
-  translatedCategories.value.necessities = await translateText('생활품', lang);
-  translatedCategories.value.kitchenwares = await translateText('주방용품', lang);
-  translatedCategories.value.clothes = await translateText('의류', lang);
-  translatedCategories.value.toy = await translateText('놀이', lang);
-  translatedCategories.value.device = await translateText('전자기기', lang);
-  translatedCategories.value.etc = await translateText('기타', lang);
+const translateMenu = async (lang) => {
+    translatedMenu.value.product = await translateText('공유 물품', lang);
+    translatedMenu.value.board = await translateText('게시글', lang);
+    translatedMenu.value.guide = await translateText('가이드', lang);
+    translatedMenu.value.freemarket = await translateText('프리마켓', lang);
+    translatedMenu.value.companion = await translateText('동행', lang);
+    translatedMenu.value.tip = await translateText('TIP', lang);
+    translatedMenu.value.notice = await translateText('공지사항', lang);
+    translatedMenu.value.faq = await translateText('자주 묻는 질문', lang);
+    translatedMenu.value.direction = await translateText('오시는 길', lang);
+
+    translatedCategories.value.necessities = await translateText('생활품', lang);
+    translatedCategories.value.kitchenwares = await translateText('주방용품', lang);
+    translatedCategories.value.clothes = await translateText('의류', lang);
+    translatedCategories.value.toy = await translateText('놀이', lang);
+    translatedCategories.value.device = await translateText('전자기기', lang);
+    translatedCategories.value.etc = await translateText('기타', lang);
 };
 // 전역 언어 상태를 감시하고 언어에 따라 메뉴를 DeepL로 번역
 
@@ -190,21 +209,21 @@ function loGin() {
 }
 
 watch(currentLang, (newLang) => {
-  translateMenu(newLang);
+    translateMenu(newLang);
 });
 
 // 드롭다운 열고 닫기
 const changeLang = (lang) => {
-  changeLanguage(lang); // 전역 언어 상태 변경
+    changeLanguage(lang); // 전역 언어 상태 변경
 };
 
 const toggleDropdown = (menu) => {
-  activeDropdown.value = activeDropdown.value === menu ? null : menu;
+    activeDropdown.value = activeDropdown.value === menu ? null : menu;
 };
 
 const resetDropdown = () => {
-  activeDropdown.value = null;
-  activeMenu.value = null;
+    activeDropdown.value = null;
+    activeMenu.value = null;
 };
 
 // 메뉴 클릭 시 처리
@@ -375,11 +394,13 @@ onBeforeUnmount(() => {
     color: #6CB1FF;
     /* 활성화된 메뉴 색상 */
 }
-.language-setting{
+
+.language-setting {
     margin-top: 6px;
     font-size: 4rem;
 }
-.dropdown-language-menu{
+
+.dropdown-language-menu {
     z-index: 1000;
     position: absolute;
     top: 4rem;
@@ -393,18 +414,22 @@ onBeforeUnmount(() => {
     min-width: 8rem;
     padding: 0.5rem 0;
 }
-.dropdown-language{
+
+.dropdown-language {
     text-align: center;
     margin-bottom: 1rem;
-    font-size:1.5rem;
+    font-size: 1.5rem;
 }
-.dropdown-language1{
+
+.dropdown-language1 {
     text-align: center;
-    font-size:1.5rem;
+    font-size: 1.5rem;
 }
+
 .dropdown-language:hover {
     color: #439AFF !important;
 }
+
 .dropdown-language1:hover {
     color: #439AFF !important;
 }

@@ -46,16 +46,26 @@ const submitPost = async () => {
     }
 
     const jwtToken = localStorage.getItem('jwtToken');
+    const userInfoString = localStorage.getItem('userInfo');
+
+    const userInfo = JSON.parse(userInfoString);
+
+    const id = userInfo?.id;
 
     try {
         const response = await axios.post('http://localhost:8080/api/v1/notice', 
-        {
+            {
+                title: title.value,
+                content: content.value,        
+                id: id
+            },
+            {
             headers: {
                 Authorization: `Bearer ${jwtToken}`,
-            },
-            title: title.value,
-            content: content.value,        
-        });
+            }
+            } 
+        );
+        console.log("id: " + id);
         alert('공지가 등록되었습니다.');
         console.log('응답:', response.data.result);
         router.push('/notice');

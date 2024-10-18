@@ -3,10 +3,7 @@
         <h1 class="profile-title">프로필 수정</h1>
 
         <div class="profile-header">
-
-            <!-- 이미지 클릭 시 파일 선택 이벤트 연결 -->
             <img :src="previewImage || profileUrl" alt="프로필 이미지" class="profile-img" @click="triggerFileInput" />
-            <!-- 숨겨진 파일 입력 필드 -->
             <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
 
             <div class="profile-intro">
@@ -39,20 +36,20 @@ import { useRouter } from 'vue-router';
 import { modifyProfile } from '@/stores/member/modifyProfile';
 import { fetchProfileData } from '@/stores/member/profile';
 
-// 초기 값 선언
+// 상태 변수 정의
 const router = useRouter();
 const nickname = ref('');
 const introduction = ref('');
 const language = ref('');
 const profileUrl = ref('');
 const selectedFile = ref(null);
-const previewImage = ref(null); // 미리보기 이미지 URL
+const previewImage = ref(null);
 const fileInput = ref(null);
 
+// 프로필 데이터 불러오기
 onMounted(async () => {
     try {
         const profile = await fetchProfileData();
-        // 프로필 데이터를 UI에 반영
         nickname.value = profile.nickname;
         introduction.value = profile.introduction;
         language.value = profile.language;
@@ -69,24 +66,26 @@ function handleFileChange(event) {
     previewImage.value = URL.createObjectURL(selectedFile.value);
 }
 
-// 이미지 클릭 시 파일 입력 요소 클릭 트리거
+// 파일 입력 필드 트리거
 function triggerFileInput() {
     fileInput.value.click();
 }
 
-// 프로필 수정 제출 핸들러
+// 프로필 수정 요청
 async function submitProfile() {
     try {
         await modifyProfile(
             nickname.value,
             introduction.value,
             language.value,
-            selectedFile.value
+            selectedFile.value || null
         );
+
+        alert('로그아웃 했다가 다시 이용해주세요!');
+        router.push('/');
     } catch (error) {
         console.error('프로필 수정 실패:', error);
     }
-    router.push('/profile');
 }
 </script>
 
@@ -97,8 +96,7 @@ async function submitProfile() {
     padding: 2rem;
     background: #fff;
     border-radius: 1rem;
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0,
-            0.1);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.1);
 }
 
 .profile-title {
@@ -121,6 +119,7 @@ async function submitProfile() {
     border-radius: 50%;
     margin-right: 2rem;
     object-fit: cover;
+    cursor: pointer;
 }
 
 .profile-intro {

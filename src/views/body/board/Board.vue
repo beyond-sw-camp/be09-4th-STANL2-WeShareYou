@@ -19,7 +19,7 @@
         
         <div class="user-info">
           <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image" @click="goToProfile(item.memberNickname)">
-          <span class="nickname">{{ item.memberNickname }}</span>
+          <span class="nickname" @click="goToProfile(item.memberNickname)">{{ item.memberNickname }} </span>
         </div>
 
         <div class="image-container">

@@ -249,10 +249,12 @@ public class BoardServiceImpl implements BoardService{
                     }
 
                     BoardDTO boardDTO = new BoardDTO();
+                    boardDTO.setId(board.getId());
                     boardDTO.setMemberProfileUrl(board.getMember().getProfileUrl());
                     boardDTO.setMemberNickname(board.getMember().getNickname());
                     boardDTO.setImageObj(imageObj);
                     boardDTO.setTitle(board.getTitle());
+                    boardDTO.setContent(board.getContent());
                     boardDTO.setLikesCount(board.getLikesCount());
                     boardDTO.setCommentCount(board.getCommentCount());
                     return boardDTO;

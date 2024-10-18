@@ -25,7 +25,7 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoar
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 import stanl_2.weshareyou.domain.member.repository.HistoryRepository;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
-import stanl_2.weshareyou.domain.s3.S3uploader;
+import stanl_2.weshareyou.global.security.service.s3.S3uploader;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;

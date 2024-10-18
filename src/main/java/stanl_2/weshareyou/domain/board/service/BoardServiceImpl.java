@@ -21,7 +21,7 @@ import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
 import stanl_2.weshareyou.domain.board_image.service.BoardImageService;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
-import stanl_2.weshareyou.domain.s3.S3uploader;
+import stanl_2.weshareyou.global.security.service.s3.S3uploader;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
@@ -30,8 +30,6 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

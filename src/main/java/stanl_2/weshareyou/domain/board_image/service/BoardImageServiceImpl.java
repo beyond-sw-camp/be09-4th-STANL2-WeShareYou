@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
 import stanl_2.weshareyou.domain.board_image.aggregate.entity.BoardImage;
 import stanl_2.weshareyou.domain.board_image.repository.BoardImageRepository;
-import stanl_2.weshareyou.domain.s3.S3uploader;
+import stanl_2.weshareyou.global.security.service.s3.S3uploader;
 
 import java.util.List;
 

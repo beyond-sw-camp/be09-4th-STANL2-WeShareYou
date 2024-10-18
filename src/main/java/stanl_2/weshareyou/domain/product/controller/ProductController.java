@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
-import stanl_2.weshareyou.domain.board.aggregate.entity.TAG;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
@@ -16,9 +15,6 @@ import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/product")

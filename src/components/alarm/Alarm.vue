@@ -44,6 +44,7 @@ export default {
                     },
                 });
                 console.log("api result: " + response.data.result.alarms);
+                
                 this.alarms = response.data.result.alarms; // 서버 응답 저장
             } catch (error) {
                 console.error('Failed to fetch alarms:', error);

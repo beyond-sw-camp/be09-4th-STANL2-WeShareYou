@@ -1,39 +1,39 @@
 <template>
-    <nav class="navigation">
+    <!-- <nav class="navigation"> -->
+    <nav :class="['navigation', { 'hidden-nav': isHidden }]">
         <div class="nav-left">
             <!-- 프로젝트 대표이미지 -->
             <RouterLink to="/" @click="resetDropdown">
                 <img src="../../assets/icon/navigation/logo.png" alt="Project Logo" class="project-logo" />
             </RouterLink>
 
-            <!-- 메뉴 리스트 -->
             <ul class="menu-list">
-                <!-- 공유 물품 드롭다운 -->
+                <!-- 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('product')">
-                    <span :class="{ active: activeMenu === 'product' }">공유 물품</span>
+                    <span :class="{ active: activeMenu === 'product' }">{{ translatedMenu.product }}</span>
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/NECESSITIES'"
-                                @click="handleCategoryClick('product', 'NECESSITIES')">생활품</RouterLink>
+                                @click="handleCategoryClick('product', 'NECESSITIES')">{{ translatedCategories.necessities }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/KITCHENWARES'"
-                                @click="handleCategoryClick('product', 'KITCHENWARES')">주방용품</RouterLink>
+                                @click="handleCategoryClick('product', 'KITCHENWARES')">{{ translatedCategories.kitchenwares }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">의류
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{ translatedCategories.clothes }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">놀이
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{ translatedCategories.toy }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">전자기기
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{ translatedCategories.device }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">기타
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{ translatedCategories.etc }}
                             </RouterLink>
                         </li>
                     </ul>
@@ -45,28 +45,28 @@
                     <span :class="{ active: activeMenu === 'board' }">게시글</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">가이드</RouterLink>
+                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">가이드</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/event" @click="setActiveMenu('board')">프리마켓</RouterLink>
+                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">프리마켓</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">동행</RouterLink>
+                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">동행</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">TIP</RouterLink>
+                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">TIP</RouterLink>
                         </li>
                     </ul>
                 </li>
 
                 <li>
-                    <RouterLink to="/notice" @click="resetDropdown">공지사항</RouterLink>
+                    <RouterLink to="/notice" @click="resetDropdown">{{ translatedMenu.notice }}</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/faq" @click="resetDropdown">자주 묻는 질문</RouterLink>
+                    <RouterLink to="/faq" @click="resetDropdown">{{ translatedMenu.faq }}</RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/direction" @click="resetDropdown">오시는 길</RouterLink>
+                    <RouterLink to="/direction" @click="resetDropdown">{{ translatedMenu.direction }}</RouterLink>
                 </li>
             </ul>
         </div>
@@ -76,30 +76,24 @@
         <div class="nav-right">
             <ul class="language-setting">
                 <li class="dropdown" @click="toggleDropdown('language')">
-                    <span class= "language-font" :class="{ active: activeMenu === 'language' }">Language</span>
+                    <span class="language-font" :class="{ active: activeMenu === 'language' }">Language</span>
                     <ul v-show="activeDropdown === 'language'" class="dropdown-language-menu" @click.stop>
-                        <li class="dropdown-language">
-                            English
-                        </li>
-                        <li class="dropdown-language">
-                            日本語
-                        </li>
-                        <li class="dropdown-language1">
-                            中文
-                        </li>
+                        <li class="dropdown-language" @click="changeLang('EN')">English</li>
+                        <li class="dropdown-language" @click="changeLang('KO')">한국어</li>
+                        <li class="dropdown-language" @click="changeLang('JA')">日本語</li>
+                        <li class="dropdown-language1" @click="changeLang('ZH')">中文</li>
                     </ul>
-                </li> 
+                </li>
             </ul>
             
                 
-            <!-- <span class="language">Language</span> -->
+
             <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
-            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
-                <!-- 프로필 드롭다운 메뉴 -->
+            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>                
+                <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/mypage">마이페이지</RouterLink>
@@ -121,36 +115,107 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, inject, watch} from 'vue';
 import { useRouter } from 'vue-router';
+import { translateText } from '@/assets/language/deepl';
+import defaultProfileImage from '../../assets/icon/navigation/profile.png';
+
+// inject로 전역 언어 상태와 변경 함수 받아오기
+const currentLang = inject('currentLang');
+const changeLanguage = inject('changeLanguage');
+
+const translatedMenu = ref({
+  product: '공유 물품',
+  board: '게시글',
+  guide: '가이드',
+  freemarket: '프리마켓',
+  companion: '동행',
+  tip: 'TIP',
+  notice: '공지사항',
+  faq: '자주 묻는 질문',
+  direction: '오시는 길',
+});
+
+const translatedCategories = ref({
+  necessities: '생활품',
+  kitchenwares: '주방용품',
+  clothes: '의류',
+  toy: '놀이',
+  device: '전자기기',
+  etc: '기타',
+});
+
+const translateMenu = async (lang) => {
+  translatedMenu.value.product = await translateText('공유 물품', lang);
+  translatedMenu.value.board = await translateText('게시글', lang);
+  translatedMenu.value.guide = await translateText('가이드', lang);
+  translatedMenu.value.freemarket = await translateText('프리마켓', lang);
+  translatedMenu.value.companion = await translateText('동행', lang);
+  translatedMenu.value.tip = await translateText('TIP', lang);
+  translatedMenu.value.notice = await translateText('공지사항', lang);
+  translatedMenu.value.faq = await translateText('자주 묻는 질문', lang);
+  translatedMenu.value.direction = await translateText('오시는 길', lang);
+
+  translatedCategories.value.necessities = await translateText('생활품', lang);
+  translatedCategories.value.kitchenwares = await translateText('주방용품', lang);
+  translatedCategories.value.clothes = await translateText('의류', lang);
+  translatedCategories.value.toy = await translateText('놀이', lang);
+  translatedCategories.value.device = await translateText('전자기기', lang);
+  translatedCategories.value.etc = await translateText('기타', lang);
+};
+// 전역 언어 상태를 감시하고 언어에 따라 메뉴를 DeepL로 번역
+
+
 
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
+// 
+const isHidden = ref(false);
 const router = useRouter();
 const isLoggedIn = ref(false);
+const profileImage = ref('');
 
 // 로그인 여부 확인 함수 (JWT와 userInfo 체크)
 function checkLoginStatus() {
     const token = localStorage.getItem('jwtToken');
     const userInfo = localStorage.getItem('userInfo');
-    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
+
+    if (token && userInfo) {
+        isLoggedIn.value = true;
+        profileImage.value = JSON.parse(userInfo).profile || ''; // 프로필 이미지 설정
+    } else {
+        isLoggedIn.value = false;
+        profileImage.value = ''; // 기본 이미지로 초기화
+    }
 }
 function logOut() {
-    // activeDropdown.value = null;
-    // activeMenu.value = null;
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userInfo');
     alert('로그아웃되었습니다.');
     isLoggedIn.value = false;
+    profileImage.value = ''; // 이미지 초기화
     router.push(`/`);
 }
 function loGin() {
     router.push(`/login`);
 }
 
+watch(currentLang, (newLang) => {
+  translateMenu(newLang);
+});
+
 // 드롭다운 열고 닫기
+const changeLang = (lang) => {
+  changeLanguage(lang); // 전역 언어 상태 변경
+};
+
 const toggleDropdown = (menu) => {
-    activeDropdown.value = activeDropdown.value === menu ? null : menu;
+  activeDropdown.value = activeDropdown.value === menu ? null : menu;
+};
+
+const resetDropdown = () => {
+  activeDropdown.value = null;
+  activeMenu.value = null;
 };
 
 // 메뉴 클릭 시 처리
@@ -165,12 +230,6 @@ const setActiveMenu = (menu) => {
     activeMenu.value = menu;
 };
 
-// 드롭다운 및 메뉴 초기화
-const resetDropdown = () => {
-    activeDropdown.value = null;
-    activeMenu.value = null;
-};
-
 // 외부 클릭 감지
 const handleClickOutside = (event) => {
     const dropdowns = document.querySelectorAll('.dropdown-menu, .dropdown > a, .dropdown > span');
@@ -182,13 +241,25 @@ const handleClickOutside = (event) => {
     }
 };
 
+// 
+const handleScroll = () => {
+  if (window.scrollY < lastScrollY) {
+    isHidden.value = false; // 스크롤 위로 시 헤더 표시
+  } else if (window.scrollY > 50) {
+    isHidden.value = true; // 스크롤 아래로 시 헤더 숨김
+  }
+  lastScrollY = window.scrollY;
+};
+
 // 이벤트 등록 및 해제
 onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
     window.addEventListener('click', handleClickOutside);
     checkLoginStatus();
 });
 
 onBeforeUnmount(() => {
+    window.removeEventListener('scroll', handleScroll);
     window.removeEventListener('click', handleClickOutside);
 });
 </script>
@@ -202,6 +273,10 @@ onBeforeUnmount(() => {
     align-items: center;
     background-color: #ffffff;
     border-bottom: 0.1rem solid #e0e0e0;
+}
+
+.hidden-nav {
+  transform: translateY(-100%);
 }
 
 .nav-left {

@@ -82,18 +82,18 @@ async function submitForm() {
 
 <style scoped>
 .mypage-container {
-    max-width: 60rem; /* 600px */
-    margin: 5rem auto; /* 50px */
-    padding: 3rem; /* 30px */
+    max-width: 60rem;
+    margin: 5rem auto; 
+    padding: 3rem; 
     background-color: #fff;
-    border-radius: 1.5rem; /* 15px */
-    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1); /* 4px 8px */
+    border-radius: 1.5rem; 
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
 }
 
 .page-title {
     text-align: center;
-    margin-bottom: 3rem; /* 30px */
-    font-size: 2.8rem; /* 28px */
+    margin-bottom: 3rem; 
+    font-size: 2.8rem; 
     font-weight: bold;
     color: #007bff;
 }
@@ -101,31 +101,31 @@ async function submitForm() {
 .profile-box {
     display: flex;
     flex-direction: column;
-    gap: 2rem; /* 20px */
+    gap: 2rem; 
 }
 
 .profile-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 0.1rem solid #e6e6e6; /* 1px */
-    padding: 1.2rem 0; /* 12px */
-    font-size: 1.6rem; /* 16px */
+    border-bottom: 0.1rem solid #e6e6e6; 
+    padding: 1.2rem 0;
+    font-size: 1.6rem;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; /* 5px */
-    font-size: 1.6rem; /* 16px */
+    gap: 0.5rem; 
+    font-size: 1.6rem; 
 }
 
 .form-group input {
-    padding: 1rem; /* 10px */
-    border: 0.1rem solid #e0e0e0; /* 1px */
-    border-radius: 0.5rem; /* 5px */
+    padding: 1rem; 
+    border: 0.1rem solid #e0e0e0; 
+    border-radius: 0.5rem; 
     transition: border-color 0.3s;
-    font-size: 1.6rem; /* 16px */
+    font-size: 1.6rem; 
 }
 
 .form-group input:focus {
@@ -136,7 +136,7 @@ async function submitForm() {
 .row-group {
     display: flex;
     justify-content: space-between;
-    gap: 1rem; /* 10px */
+    gap: 1rem; 
     width: 100%;
 }
 
@@ -151,14 +151,14 @@ async function submitForm() {
 }
 
 .submit-button {
-    padding: 1rem 1.5rem; /* 10px 15px */
+    padding: 1rem 1.5rem; 
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 0.5rem; /* 5px */
+    border-radius: 0.5rem; 
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 1.8rem; /* 18px */
+    font-size: 1.8rem; 
 }
 
 .submit-button:hover {
@@ -167,12 +167,12 @@ async function submitForm() {
 
 label {
     font-weight: bold;
-    font-size: 1.6rem; /* 16px */
+    font-size: 1.6rem; 
     color: #333;
 }
 
 p {
-    font-size: 1.6rem; /* 16px */
+    font-size: 1.6rem;
     color: #555;
     margin: 0;
 }

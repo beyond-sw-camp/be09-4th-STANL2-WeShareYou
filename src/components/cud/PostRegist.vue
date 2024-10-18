@@ -2,6 +2,9 @@
   <div class="container">
     <div class="title-container">
       <input type="text" placeholder="제목을 작성해주세요." v-model="localTitle" class="title-input" @input="emitTitleUpdate"/>
+      <button class="image-upload-btn" @click="triggerFileInput">
+        <img src="@/assets/icon/Img_box_light.png" alt="이미지 업로드" />
+      </button>
     </div>
 
     <div class="content-area" contenteditable="true" ref="contentArea" @input="updateContent" placeholder="내용을 입력하세요.">
@@ -48,42 +51,6 @@ const handleImageUpload = (event) => {
 // 내용 입력 참조
 const contentArea = ref(null);
 </script>
-
-<!-- 
-// const localTitle = ref('');
-// const localContent = ref('');
-// const localImage = ref(null);
-// const contentArea = ref(null);
-// const fileInput = ref(null);
-
-// watch(localTitle, (newTitle) => emit('update:title', newTitle));
-// watch(localContent, (newContent) => emit('update:content', newContent));
-
-// function handleImageUpload(event) {
-//   const file = event.target.files[0];
-//   if (file) {
-//     localImage.value = file;
-//     emit('update:image', file); 
-
-//     const reader = new FileReader();
-//     reader.onload = (e) => {
-//       const img = document.createElement('img');
-//       img.src = e.target.result;
-//       img.style.maxWidth = '100%';
-//       contentArea.value.appendChild(img);
-//       updateContent();
-//     };
-//     reader.readAsDataURL(file);
-//   }
-// }
-
-// function triggerFileInput() {
-//   fileInput.value.click();
-// }
-
-// function updateContent() {
-//   localContent.value = contentArea.value.innerHTML;
-// } -->
 
 <style scoped>
 .container {

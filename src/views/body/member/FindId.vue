@@ -8,7 +8,7 @@
     <label for="phone">연락처</label>
     <div class="row-btn">
       <div class="form-group">
-        <input v-model="phone" id="phone" type="text" placeholder="연락처를 입력해 주세요." />
+        <input v-model="phone" id="phone" class="input-a" type="text" placeholder="연락처를 입력해 주세요." />
       </div>
 
       <div class="form-group with-button">
@@ -18,7 +18,7 @@
 
     <div class="row-btn">
       <div class="form-group">
-        <input v-model="verificationCode" type="text" placeholder="인증번호를 입력해 주세요." />
+        <input v-model="verificationCode" class="input-a" type="text" placeholder="인증번호를 입력해 주세요." />
       </div>
       <div class="form-group">
         <button class="small-button" @click="verifyCode">인증번호 확인</button>
@@ -135,8 +135,11 @@ async function findId() {
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
   width: 35.6%;
-  width: 100%;
+  width: 95%;
   margin-left: 1rem;
+}
+.input-a{
+  width:100%;
 }
 
 .small-button:hover {

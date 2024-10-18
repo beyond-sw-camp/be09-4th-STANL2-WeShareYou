@@ -4,12 +4,12 @@
       <h1 class="login-title">로그인</h1>
       <form @submit.prevent="login">
         <div class="input-group">
-          <label for="loginId">아이디</label>
+          <label for="loginId" class="i-p">아이디</label>
           <input v-model="loginId" id="loginId" placeholder="아이디를 입력해 주세요." autocomplete="username" required />
         </div>
 
         <div class="input-group">
-          <label for="password">비밀번호</label>
+          <label for="password" class="i-p">비밀번호</label>
           <input v-model="password" id="password" type="password" placeholder="비밀번호를 입력해 주세요."
             autocomplete="current-password" required />
         </div>
@@ -81,6 +81,9 @@ const login = async () => {
 </script>
 
 <style scoped>
+.i-p{
+  width: 10%;
+}
 /* 컨테이너 스타일 */
 .login-container {
   display: flex;

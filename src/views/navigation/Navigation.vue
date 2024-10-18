@@ -42,7 +42,7 @@
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
-                    <span :class="{ active: activeMenu === 'board' }">게시글</span>
+                    <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
                             <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">가이드</RouterLink>

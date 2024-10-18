@@ -4,7 +4,7 @@
     <button @click = "goBack" class="back-button">뒤로가기</button>
     <div class="button-inner">
       <button @click ="noticeModify(id)" class="modify-button">수정</button>
-      <button @click="showDeleteModal" class="delete-button">삭제</button>
+      <button @click="showDeleteModal" class="delete-button1">삭제</button>
     </div>
   </div>
 
@@ -233,7 +233,7 @@
 }
 
 .modify-button,
-.delete-button {
+.delete-button1 {
   padding: 1rem 2rem;
   font-size: 1rem;
   border-radius: 0.5rem;
@@ -246,7 +246,7 @@
   color: #439aff;
 }
 
-.delete-button {
+.delete-button1 {
   border: 0.1rem solid #ff414c;
   color: #ff414c;
 }

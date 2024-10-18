@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.member.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import stanl_2.weshareyou.global.common.RequestUtils;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
+import stanl_2.weshareyou.domain.member.aggregate.history.HistoryInput;
 import stanl_2.weshareyou.domain.member.aggregate.vo.request.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.FindLikeListResponseVO;
@@ -50,8 +54,6 @@ public class MemberController {
                                       @RequestAttribute("sex") String sex,
                                       @RequestAttribute("point") Integer point,
                                       @RequestAttribute("nickname") String nickname,
-//                                      @RequestAttribute("profile") String profile,
-//                                      @RequestAttribute("introduction") String introduction,
                                       @RequestAttribute("language") String language) {
         Map<String, Object> result = new HashMap<>();
         result.put("id", id);
@@ -60,8 +62,6 @@ public class MemberController {
         result.put("sex", sex);
         result.put("point", point);
         result.put("nickname", nickname);
-//        result.put("profile", profile);
-//        result.put("introduction", introduction);
         result.put("language", language);
 
         return ApiResponse.ok(result);
@@ -115,16 +115,23 @@ public class MemberController {
      * }
      */
     @PostMapping("/login")
-    public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO){
-
-        Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
+    public ApiResponse<?> loginMember(@RequestBody @Valid LoginRequestVO loginRequestVO, HttpServletRequest request) {
+        Authentication authentication = UsernamePasswordAuthenticationToken
+                .unauthenticated(loginRequestVO.getLoginId(), loginRequestVO.getPassword());
 
         Authentication authenticationResponse = authenticationManager.authenticate(authentication);
 
         String jwt = memberService.loginMember(authenticationResponse);
-        if("".equals(jwt)){
+        if ("".equals(jwt)) {
             throw new CommonException(ErrorCode.LOGIN_FAILURE);
         }
+
+        // 로그인 이력 저장
+        HistoryInput historyInput = new HistoryInput();
+        historyInput.setUserId(loginRequestVO.getLoginId());
+        historyInput.setClientIp(RequestUtils.getClientIp(request));
+        historyInput.setUserAgent(request.getHeader("User-Agent"));
+        memberService.saveLoginHistory(historyInput);
 
         return ApiResponse.ok(new LoginResponseVO(HttpStatus.OK.getReasonPhrase(), jwt));
     }
@@ -211,12 +218,13 @@ public class MemberController {
      */
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
-                                        @RequestBody @Valid UpdateProfileRequestVO updateProfileRequestVO) {
+                                        @RequestPart("vo") UpdateProfileRequestVO updateProfileRequestVO,
+                                        @RequestPart(value = "file", required = false) MultipartFile profileImage) {
 
         MemberDTO requestMemberDTO = modelMapper.map(updateProfileRequestVO, MemberDTO.class);
         requestMemberDTO.setId(id);
 
-        MemberDTO responseMemberDTO = memberService.updateProfile(requestMemberDTO);
+        MemberDTO responseMemberDTO = memberService.updateProfile(requestMemberDTO, profileImage);
 
         UpdateProfileResponseVO updateProfileResponseVO = modelMapper.map(responseMemberDTO, UpdateProfileResponseVO.class);
 
@@ -344,6 +352,32 @@ public class MemberController {
         return ApiResponse.ok(findIdResponseVO);
     }
 
+    /**
+     * 내용 : 프로필 조회
+     */
+    @GetMapping("/profile")
+    public ApiResponse<?> findProfile(@RequestAttribute("id") Long id){
+        MemberDTO requestMemberDTO = new MemberDTO();
+        requestMemberDTO.setId(id);
+
+        MemberDTO responseMemberDTO = memberService.findProfile(requestMemberDTO);
+
+        FindProfileResponseVO findProfileResponseVO = modelMapper.map(responseMemberDTO, FindProfileResponseVO.class);
+
+        return ApiResponse.ok(findProfileResponseVO);
+    }
+
+    /**
+     * 내용: 다른 사람 없이
+     * Response
+     * nickname
+     */
+    @GetMapping("/otherprofile")
+    public ApiResponse<?> findOtherProfile(@RequestParam String nickname){
+        MemberDTO responseMemberDTO = memberService.findOtherProfile(nickname);
+
+        return ApiResponse.ok(responseMemberDTO);
+    }
 
     /**
      * 내용 : 마이페이지 조회
@@ -364,7 +398,7 @@ public class MemberController {
      *      "updatedAt": "2024-10-11T12:14:48"
      * }
      */
-    @GetMapping("mypage")
+    @GetMapping("/mypage")
     public ApiResponse<?> findMypage(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -387,7 +421,7 @@ public class MemberController {
      *      "point": 10
      * }
      */
-    @GetMapping("point")
+    @GetMapping("/point")
     public ApiResponse<?> findPoint(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -430,7 +464,7 @@ public class MemberController {
      *              ]
      *     }
      */
-    @GetMapping("myboard")
+    @GetMapping("/myboard")
     public ApiResponse<?> findMyBoard(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -485,7 +519,7 @@ public class MemberController {
      *                   ]
      *     }
      */
-    @GetMapping("likeboard")
+    @GetMapping("/likeboard")
     public ApiResponse<?> findLikeBoard(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
         requestMemberDTO.setId(id);
@@ -523,7 +557,7 @@ public class MemberController {
      *         ]
      *     }
      */
-    @GetMapping("mycomment")
+    @GetMapping("/mycomment")
     public ApiResponse<?> findMyComment(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
         requestMemberDTO.setId(id);

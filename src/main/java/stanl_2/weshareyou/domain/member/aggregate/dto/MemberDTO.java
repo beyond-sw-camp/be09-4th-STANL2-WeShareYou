@@ -10,7 +10,6 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoar
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

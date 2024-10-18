@@ -24,18 +24,13 @@ public class ProductUpdateRequestVO {
     @Size(min = 1, max = 1000, message = "1000자 이내로 입력해 주세요.")
     private String content;
 
-    @NotNull
-    private String imageUrl;
-
     @NotNull(message = "카테고리를 선택해 주세요.")
     private ProductCategory category;
 
     @NotNull(message = "물품상태를 선택해 주세요.")
     private ProductStatus status;
 
-    @NotNull(message = "대여 시작 날짜를 선택해 주세요.")
     private Timestamp startAt;
 
-    @NotNull(message = "대여 종료 날짜를 선택해 주세요.")
     private Timestamp endAt;
 }

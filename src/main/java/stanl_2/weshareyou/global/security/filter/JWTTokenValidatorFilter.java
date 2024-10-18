@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -68,6 +67,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
         return path.equals("/api/v1/member/login") ||
                 path.equals("/api/v1/member/register") ||
                 path.startsWith("/api/v1/member/sms") ||  // 와일드카드 경로 포함
-                path.startsWith("/api/v1/member/mail");
+                path.startsWith("/api/v1/member/mail") ||
+                path.equals("/api/v1/member/password");
     }
 }

@@ -13,7 +13,7 @@ public class UpdateProfileResponseVO {
     private String nickname;
 
     @NotNull
-    private String profile_url;
+    private String profileUrl;
 
     @NotNull
     private String introduction;

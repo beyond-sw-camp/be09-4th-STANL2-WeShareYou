@@ -3,7 +3,7 @@
         <h1 class="profile-title">프로필 수정</h1>
 
         <div class="profile-header">
-            <img :src="previewImage || profileUrl" alt="프로필 이미지" class="profile-img" @click="triggerFileInput" />
+            <img :src="defaultProfileImage || profileUrl" alt="프로필 이미지" class="profile-img" @click="triggerFileInput" />
             <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;" />
 
             <div class="profile-intro">
@@ -35,6 +35,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { modifyProfile } from '@/stores/member/modifyProfile';
 import { fetchProfileData } from '@/stores/member/profile';
+import defaultProfileImage from '@/assets/icon/navigation/profile.png';
 
 // 상태 변수 정의
 const router = useRouter();
@@ -59,6 +60,10 @@ onMounted(async () => {
         alert('프로필 정보를 불러오는데 실패했습니다. 다시 시도해 주세요.');
     }
 });
+
+function onImageError(event) {
+  event.target.src = defaultProfileImage; // Apply default image on error
+}
 
 // 파일 변경 핸들러 (미리보기 이미지 설정)
 function handleFileChange(event) {
@@ -104,6 +109,7 @@ async function submitProfile() {
     font-size: 4rem;
     margin-bottom: 3rem;
     font-weight: bold;
+    color: #007bff;
 }
 
 .profile-header {
@@ -159,9 +165,9 @@ input:focus {
 .modify-button {
     width: 25%;
     padding: 1.5rem 3rem;
-    background-color: white;
-    color: #007bff;
-    border: 0.2rem solid #007bff;
+    background-color: #007bff;
+    color: white;
+    border: 0.2rem solid white;
     border-radius: 0.5rem;
     font-size: 1.7rem;
     cursor: pointer;

@@ -109,8 +109,10 @@
                     </div>
                 </div>
             </div>
-
-            <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
+            
+            <RouterLink to="/chat">
+                <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
+            </RouterLink>
 
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>

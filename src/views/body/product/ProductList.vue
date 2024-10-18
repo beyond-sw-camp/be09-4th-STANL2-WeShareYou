@@ -1,18 +1,24 @@
 <template>
-    <div class="product-grid" ref="gridElement">
-        <div v-for="item in products" :key="item.id" class="product-card" @click="goToProductDetail(item.id)">
-            <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
-            <div class="product-info">
-                <span class="available">{{ getStatusText(item.status) }}</span>
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.content }}</p>
+    <div class="container">
+        <div class="product-grid" ref="gridElement">
+            <div v-for="item in products" :key="item.id" class="product-card"
+                @click="goToProductDetail(item.id, category)">
+                <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.title" class="product-image" />
+                <div class="product-info">
+                    <div style="margin-bottom: 1rem;">
+                        <span class="available">{{ getStatusText(item.status) }}</span>
+                        <span class="available1" style="margin-left: 0.5rem;">{{ getIsRentalText(item.rental) }}</span>
+                    </div>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.content }}</p>
+                </div>
             </div>
-        </div>
 
-        <p v-if="products.length === 0" class="no-products">
-            No products available.
-        </p>
-        <p v-if="loading" class="loading">Loading more products...</p>
+            <p v-if="products.length === 0" class="no-products">
+                No products available.
+            </p>
+            <p v-if="loading" class="loading">Loading more products...</p>
+        </div>
     </div>
 </template>
 
@@ -112,13 +118,17 @@ const handleScroll = () => {
 };
 
 // 제품 상세 페이지로 이동하는 함수
-const goToProductDetail = (id) => {
-    router.push(`/product/${id}`);
+const goToProductDetail = (id, category) => {
+    router.push(`/product/${category}/${id}`);
 };
 
 // 상태 텍스트 변환 함수
 const getStatusText = (status) => {
-    return status === 'RENTAL' ? '대여 중' : '사용 가능';
+    return status === 'RENTAL' ? '대여' : '공유';
+};
+
+const getIsRentalText = (rental) => {
+    return status === 'false' ? '대여 가능' : '대여 중';
 };
 
 // 카테고리가 변경될 때마다 데이터를 새로 불러옴
@@ -139,13 +149,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* .container {
+    padding: 2rem;
+} */
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 2rem;
-    margin-top: 2rem;
-    height: 80vh; /* 전체 화면 높이 */
-    overflow-y: auto; /* 스크롤 가능 */
+    height: 80vh;
+    overflow-y: auto;
 }
 
 @media (min-width: 1200px) {
@@ -167,7 +180,7 @@ onMounted(() => {
 
 .product-image {
     max-width: 100%;
-    height: auto;
+    height: 70%;
     border-radius: 8px;
     margin-bottom: 1.5rem;
 }
@@ -181,6 +194,15 @@ onMounted(() => {
 .available {
     background-color: #d9eaff;
     color: #1a73e8;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.available1 {
+    color: #1a73e8;
+    border: 1.3px solid #d9eaff;
     border-radius: 12px;
     padding: 5px 10px;
     font-size: 1.2rem;
@@ -210,4 +232,5 @@ p {
     font-size: 1.8rem;
     color: #888;
 }
+
 </style>

@@ -1,33 +1,29 @@
 <template>
-    <div class="faq-container">
-      <h2>자주 묻는 질문</h2>
-      <div
-        v-for="(item, index) in faqItems" 
-        :key="index"
-        class="faq-item"
-      >
-        <div class="question" @click="toggleAnswer(index)">
-          <span>Q: {{ item.question }}</span>
-          <span class="dropdown-arrow" v-html="item.isOpen ? '&#9650;' : '&#9660;'"></span>
-        </div>
-        <div v-if="item.isOpen" class="answer">
-          <div class="tags">
-            <rounded-button 
-              v-for="(tag, tagIndex) in item.tags" 
-              :key="tagIndex" 
-              :text="tag"
-            />
-          </div>
-          <p v-html="item.answer"></p>
-        </div>
+  <div class="faq-container">
+    <h2>{{ translatedTitle }}</h2>
+    <div
+      v-for="(item, index) in translatedFaqItems"
+      :key="index"
+      class="faq-item"
+    >
+      <div class="question" @click="toggleAnswer(index)">
+        <span>Q: {{ item.question }}</span>
+        <span class="dropdown-arrow" v-html="item.isOpen ? '&#9650;' : '&#9660;'"></span>
+      </div>
+      <div v-if="item.isOpen" class="answer">
+        <p v-html="item.answer"></p>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
-  <script setup>
-  import { reactive } from 'vue'
-  import RoundedButton from '@/components/faq/tags.vue';
+<script setup>
+import { ref, reactive, inject, watch} from 'vue';
+import { translateText } from '@/assets/language/deepl';  // DeepL API 모듈
+import RoundedButton from '@/components/faq/tags.vue';
   
+const currentLang = inject('currentLang');
+
   const faqItems = reactive([
     {
       question: "대여 물품을 어떻게 반납하나요?",
@@ -35,12 +31,14 @@
       tags: ["대여", "물품"],
       isOpen: false,
     },
+
     {
       question: "대여 가능한 물품의 종류는 무엇인가요?",
       answer: "자전거, 카메라, 텐트 등 다양한 레저용품부터 가전제품까지 대여 가능합니다.<br> 물품 목록은 대여 플랫폼에서 확인할 수 있으며, 각 지역마다 대여 가능한 품목이 다를 수 있습니다.",
       tags: ["대여", "물품"],
       isOpen: false,
     },
+
     {
       question: "대여 비용은 어떻게 계산되나요?",
       answer: "대여 비용은 시간 또는 일 단위로 계산되며, 물품마다 다릅니다.<br> 장기 대여 시 할인이 제공될 수 있으며, 대여 전에 정확한 비용을 확인할 수 있습니다.",
@@ -71,12 +69,43 @@
       tags:["대여"],
       isOpen: false,
     },
-  ])
+  ]);
   
-  const toggleAnswer = (index) => {
-    faqItems[index].isOpen = !faqItems[index].isOpen
-  }
-  </script>
+const translatedTitle = ref("자주 묻는 질문");
+const translatedFaqItems = ref([...faqItems]);
+
+// 언어 전환 시 텍스트를 번역하는 함수
+const translateFAQ = async (lang) => {
+  translatedTitle.value = await translateText("자주 묻는 질문", lang);
+
+  // FAQ 항목들을 각각 번역
+  const translatedItems = await Promise.all(
+    faqItems.map(async (item) => {
+      const translatedQuestion = await translateText(item.question, lang);
+      const translatedAnswer = await translateText(item.answer, lang);
+      return {
+        ...item,
+        question: translatedQuestion,
+        answer: translatedAnswer,
+      };
+    })
+  );
+
+  translatedFaqItems.value = translatedItems;
+};
+
+// FAQ 항목 열고 닫기 기능
+const toggleAnswer = (index) => {
+  translatedFaqItems.value[index].isOpen = !translatedFaqItems.value[index].isOpen;
+};
+
+watch(currentLang, (newLang) => {
+  translateFAQ(newLang);
+});
+
+// 초기 언어로 번역 실행
+translateFAQ(currentLang.value);
+</script>
   
 
 <style scoped>

@@ -1,5 +1,6 @@
 <template>
-    <nav class="navigation">
+    <!-- <nav class="navigation"> -->
+    <nav :class="['navigation', { 'hidden-nav': isHidden }]">
         <div class="nav-left">
             <!-- 프로젝트 대표이미지 -->
             <RouterLink to="/" @click="resetDropdown">
@@ -47,7 +48,7 @@
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
-                    <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
+                    <span :class="{ active: activeMenu === 'board' }">게시글</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
                             <RouterLink to="/board/notice" @click="setActiveMenu('board')">{{ translatedMenu.guide }}
@@ -64,6 +65,16 @@
                         <li class="dropdown-font">
                             <RouterLink to="/board/tip" @click="setActiveMenu('board')">{{ translatedMenu.tip }}
                             </RouterLink>
+                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">가이드</RouterLink>
+                        </li>
+                        <li class="dropdown-font">
+                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">프리마켓</RouterLink>
+                        </li>
+                        <li class="dropdown-font">
+                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">동행</RouterLink>
+                        </li>
+                        <li class="dropdown-font">
+                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">TIP</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -104,8 +115,8 @@
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
-            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
+            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>                
+                <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">
                         <RouterLink to="/mypage">마이페이지</RouterLink>
@@ -131,6 +142,7 @@ import { ref, onMounted, onBeforeUnmount, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { translateText } from '@/assets/language/deepl';
 import AlarmModal from '@/components/alarm/Alarm.vue';
+import defaultProfileImage from '../../assets/icon/navigation/profile.png';
 
 // inject로 전역 언어 상태와 변경 함수 받아오기
 const currentLang = inject('currentLang');
@@ -186,22 +198,31 @@ const translateMenu = async (lang) => {
 
 const activeDropdown = ref(null);
 const activeMenu = ref(null);
+// 
+const isHidden = ref(false);
 const router = useRouter();
 const isLoggedIn = ref(false);
+const profileImage = ref('');
 
 // 로그인 여부 확인 함수 (JWT와 userInfo 체크)
 function checkLoginStatus() {
     const token = localStorage.getItem('jwtToken');
     const userInfo = localStorage.getItem('userInfo');
-    isLoggedIn.value = !!token && !!userInfo; // 둘 다 존재해야 true
+
+    if (token && userInfo) {
+        isLoggedIn.value = true;
+        profileImage.value = JSON.parse(userInfo).profile || ''; // 프로필 이미지 설정
+    } else {
+        isLoggedIn.value = false;
+        profileImage.value = ''; // 기본 이미지로 초기화
+    }
 }
 function logOut() {
-    // activeDropdown.value = null;
-    // activeMenu.value = null;
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userInfo');
     alert('로그아웃되었습니다.');
     isLoggedIn.value = false;
+    profileImage.value = ''; // 이미지 초기화
     router.push(`/`);
 }
 function loGin() {
@@ -249,13 +270,25 @@ const handleClickOutside = (event) => {
     }
 };
 
+// 
+const handleScroll = () => {
+  if (window.scrollY < lastScrollY) {
+    isHidden.value = false; // 스크롤 위로 시 헤더 표시
+  } else if (window.scrollY > 50) {
+    isHidden.value = true; // 스크롤 아래로 시 헤더 숨김
+  }
+  lastScrollY = window.scrollY;
+};
+
 // 이벤트 등록 및 해제
 onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
     window.addEventListener('click', handleClickOutside);
     checkLoginStatus();
 });
 
 onBeforeUnmount(() => {
+    window.removeEventListener('scroll', handleScroll);
     window.removeEventListener('click', handleClickOutside);
 });
 </script>
@@ -269,6 +302,10 @@ onBeforeUnmount(() => {
     align-items: center;
     background-color: #ffffff;
     border-bottom: 0.1rem solid #e0e0e0;
+}
+
+.hidden-nav {
+  transform: translateY(-100%);
 }
 
 .nav-left {

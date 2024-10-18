@@ -4,7 +4,13 @@
 
     <!-- 상단 프로필 정보 출력 -->
     <div class="profile-header" v-if="userInfo">
-      <img :src="userInfo.profileUrl" alt="프로필 이미지" class="profile-img" />
+      <!-- <img :src="userInfo.profileUrl" alt="프로필 이미지" class="profile-img" /> -->
+      <img 
+  :src="userInfo.profileUrl || defaultProfileImage" 
+  alt="프로필 이미지" 
+  class="profile-img" 
+  @error="onImageError"
+/>
       <div class="profile-intro">
         <p class="a">Nickname</p>
         <p class="nickname">{{ userInfo.nickname || 'Unknown' }}</p>
@@ -77,8 +83,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { fetchProfileData } from '@/stores/member/profile';
+import defaultProfileImage from '@/assets/icon/navigation/profile.png';
 
+
+const router = useRouter();
 const userInfo = ref(null);
 
 onMounted(async () => {
@@ -90,6 +100,10 @@ onMounted(async () => {
     alert('프로필 정보를 불러오는데 실패했습니다. 다시 시도해 주세요.');
   }
 });
+
+function onImageError(event) {
+  event.target.src = defaultProfileImage; // Apply default image on error
+}
 
 const latestComments = computed(() =>
   [...(userInfo.value?.boardComment || [])]
@@ -115,7 +129,8 @@ function formatDate(dateStr) {
 }
 
 function goToModify() {
-  window.location.href = '/modifyProfile'; // 수정 페이지로 이동
+  router.push('/modifyProfile');
+  // window.location.href = '/modifyProfile'; // 수정 페이지로 이동
 }
 </script>
 
@@ -134,6 +149,7 @@ function goToModify() {
   font-size: 4rem;
   margin-bottom: 3rem;
   font-weight: bold;
+  color: #007bff;
 }
 
 .profile-header {

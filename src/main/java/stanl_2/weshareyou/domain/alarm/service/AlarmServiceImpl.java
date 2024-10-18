@@ -3,9 +3,7 @@ package stanl_2.weshareyou.domain.alarm.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import stanl_2.weshareyou.domain.alarm.aggregate.dto.AlarmDTO;
@@ -24,7 +22,6 @@ import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.alarm.aggregate.vo.response.AlarmResponseVO;
-import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;
 
@@ -32,9 +29,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -201,50 +196,14 @@ public class AlarmServiceImpl implements AlarmService {
 
     // 알림 조회
     @Override
-    public CursorDTO readMemberAlarms(CursorDTO cursorDTO, Long memberId) {
+    public Page<AlarmDTO> readMemberAlarms(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+        // 알림을 페이지 단위로 가져오기
+        Page<Alarm> alarms = alarmRepository.findByMemberIdOrderByCreatedAtDesc(member, pageable);
 
-        Pageable pageable = PageRequest.of(0, cursorDTO.getSize());
-        Slice<Alarm> alarmList;
-
-        if (cursorDTO.getCursorId() == null) {
-            alarmList = alarmRepository.findByMemberIdOrderByCreatedAtDesc(member, pageable);
-        } else {
-            alarmList = alarmRepository.findByMemberIdAndIdLessThanOrderByCreatedAtDesc(
-                    member, cursorDTO.getCursorId(), pageable
-            );
-        }
-
-        Long lastProductId = alarmList.getContent().isEmpty() ? null :
-                alarmList.getContent().get(alarmList.getNumberOfElements() - 1).getId();
-
-        if (alarmList.isEmpty()) {
-            throw new CommonException(ErrorCode.PRODUCT_NOT_FOUND);
-        } else {
-            List<AlarmDTO> alarmDTOList = alarmList.stream()
-                    .map(alarm -> {
-                        AlarmDTO dto = new AlarmDTO();
-                        dto.setId(alarm.getId());
-                        dto.setMessage(alarm.getMessage());
-                        dto.setUrl(alarm.getUrl());
-                        dto.setAlarmType(alarm.getAlarmType());
-                        dto.setReadStatus(alarm.getReadStatus());
-                        dto.setCreatedAt(alarm.getCreatedAt());
-                        dto.setSender(alarm.getSender());
-                        dto.setMemberId(alarm.getMemberId().getId());
-                        return dto;
-                    })
-                    .collect(Collectors.toList());
-
-            CursorDTO cursorResponseDTO = new CursorDTO();
-            cursorResponseDTO.setCursorId(lastProductId);
-            cursorResponseDTO.setHasNext(alarmList.hasNext());
-            cursorResponseDTO.setComment(alarmDTOList);
-
-            // Alarm -> AlarmDTO로 변환
-            return cursorResponseDTO;
-        }
+        // Alarm -> AlarmDTO로 변환
+        return alarms.map(this::toAlarmDTO);
     }
 
     // 알림 읽음

@@ -219,7 +219,7 @@ public class MemberController {
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
                                         @RequestPart("vo") UpdateProfileRequestVO updateProfileRequestVO,
-                                        @RequestPart(value = "file", required = false) MultipartFile profileImage) {
+                                        @RequestPart("file") MultipartFile profileImage) {
 
         MemberDTO requestMemberDTO = modelMapper.map(updateProfileRequestVO, MemberDTO.class);
         requestMemberDTO.setId(id);
@@ -368,18 +368,6 @@ public class MemberController {
     }
 
     /**
-     * 내용: 다른 사람 없이
-     * Response
-     * nickname
-     */
-    @GetMapping("/otherprofile")
-    public ApiResponse<?> findOtherProfile(@RequestParam String nickname){
-        MemberDTO responseMemberDTO = memberService.findOtherProfile(nickname);
-
-        return ApiResponse.ok(responseMemberDTO);
-    }
-
-    /**
      * 내용 : 마이페이지 조회
      * [GET] localhost:8080/api/v1/member/mypage
      * JWT 토큰의 pk 값을 활용한 마이페이지 조회
@@ -421,7 +409,7 @@ public class MemberController {
      *      "point": 10
      * }
      */
-    @GetMapping("/point")
+    @GetMapping("point")
     public ApiResponse<?> findPoint(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -464,7 +452,7 @@ public class MemberController {
      *              ]
      *     }
      */
-    @GetMapping("/myboard")
+    @GetMapping("myboard")
     public ApiResponse<?> findMyBoard(@RequestAttribute("id") Long id) {
 
         MemberDTO requestMemberDTO = new MemberDTO();
@@ -519,7 +507,7 @@ public class MemberController {
      *                   ]
      *     }
      */
-    @GetMapping("/likeboard")
+    @GetMapping("likeboard")
     public ApiResponse<?> findLikeBoard(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
         requestMemberDTO.setId(id);
@@ -557,7 +545,7 @@ public class MemberController {
      *         ]
      *     }
      */
-    @GetMapping("/mycomment")
+    @GetMapping("mycomment")
     public ApiResponse<?> findMyComment(@RequestAttribute("id") Long id) {
         MemberDTO requestMemberDTO = new MemberDTO();
         requestMemberDTO.setId(id);

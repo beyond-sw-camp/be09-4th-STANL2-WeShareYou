@@ -63,7 +63,6 @@ public class NoticeServiceImpl implements NoticeService{
         }
         else {
             List<NoticeDTO> noticeDTOList = noticeList.getContent().stream()
-                    .filter(Notice::getActive)
                     .map(notice -> {
                         NoticeDTO noticeDTO = new NoticeDTO();
                         noticeDTO.setId(notice.getId());

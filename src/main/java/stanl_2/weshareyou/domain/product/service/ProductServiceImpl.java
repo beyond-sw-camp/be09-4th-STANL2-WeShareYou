@@ -14,7 +14,7 @@ import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.Product;
 import stanl_2.weshareyou.domain.product.repository.ProductRepository;
-import stanl_2.weshareyou.global.security.service.s3.S3uploader;
+import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.exception.CommonException;
 import stanl_2.weshareyou.global.common.exception.ErrorCode;

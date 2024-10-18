@@ -14,12 +14,6 @@ import java.util.List;
 public class BoardSummaryVO {
 
     @NotNull
-    private Long id;
-
-    @NotNull
-    private String content;
-
-    @NotNull
     private String memberProfileUrl;
 
     @NotNull

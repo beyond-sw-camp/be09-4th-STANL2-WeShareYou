@@ -41,12 +41,10 @@ public class BoardCommentController {
         BoardCommentDto boardCommentDto = modelMappper.map(boardCommentCreateRequestVO, BoardCommentDto.class);
         boardCommentDto.setMemberId(id);
         boardCommentDto.setNickname(nickname);
-
-        BoardCommentDto boardCommentResponseDTO = boardCommentService.createBoardComment(boardCommentDto);
+        boardCommentService.createBoardComment(boardCommentDto);
 
         alarmService.sendCommentAlarm(boardCommentDto);
-        BoardCommentCreateResponseVO boardCommentCreateResponseVO
-                = modelMappper.map(boardCommentResponseDTO,BoardCommentCreateResponseVO.class);
+        BoardCommentCreateResponseVO boardCommentCreateResponseVO =modelMappper.map(boardCommentDto,BoardCommentCreateResponseVO.class);
         return ApiResponse.ok(boardCommentCreateResponseVO);
     }
 //    @PostMapping("")

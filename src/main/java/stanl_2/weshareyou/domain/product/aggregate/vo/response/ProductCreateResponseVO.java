@@ -31,8 +31,10 @@ public class ProductCreateResponseVO {
     @NotNull
     private ProductStatus status;
 
+    @NotNull
     private Timestamp startAt;
 
+    @NotNull
     private Timestamp endAt;
 
     @NotNull

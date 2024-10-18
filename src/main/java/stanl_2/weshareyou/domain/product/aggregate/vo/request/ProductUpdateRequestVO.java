@@ -30,7 +30,9 @@ public class ProductUpdateRequestVO {
     @NotNull(message = "물품상태를 선택해 주세요.")
     private ProductStatus status;
 
+    @NotNull(message = "대여 시작 날짜를 선택해 주세요.")
     private Timestamp startAt;
 
+    @NotNull(message = "대여 종료 날짜를 선택해 주세요.")
     private Timestamp endAt;
 }

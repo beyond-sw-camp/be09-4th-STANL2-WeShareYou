@@ -9,7 +9,6 @@ import { ref, inject, watch} from 'vue';
 import { translateText } from '@/assets/language/deepl';
 
 const currentLang = inject('currentLang');
-console.log(currentLang);
 
 const translatedFooterText = ref('');
 

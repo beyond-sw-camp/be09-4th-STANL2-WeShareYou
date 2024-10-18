@@ -30,7 +30,7 @@ public class ChatRoomService {
         return chatRoomRepository.findByRoomId(roomId); // ID로 채팅방 조회
     }
 
-    public ChatRoom createChatRoom(String sender, String receiver) {
+    public ChatRoom createChatRoom(String sender, String receiver,String senderProfileUrl,String receiverProfileUrl) {
 
 //        /* 설명. 존재하는 아이디인지 검사 */
 //        if(memberService.findNickname(receiver)) {
@@ -41,7 +41,7 @@ public class ChatRoomService {
 //
 //        return null;
 
-        ChatRoom chatRoom = ChatRoom.create(sender, receiver);
+        ChatRoom chatRoom = ChatRoom.create(sender, receiver,senderProfileUrl,receiverProfileUrl);
         chatRoomRepository.save(chatRoom); // DB에 저장
         return chatRoom;
     }

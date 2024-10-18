@@ -55,7 +55,7 @@ public class ChatRoomMessageService {
     }
 
     // 특정 채팅방에 메시지 추가 (업데이트 방식으로)
-    public void addMessageToRoom(String roomId, String sender, String message) {
+    public Timestamp addMessageToRoom(String roomId, String sender, String message) {
         ChatRoomMessage.Message newMessage = new ChatRoomMessage.Message();
         Timestamp currentTimestamp = getCurrentTimestamp();
 
@@ -71,6 +71,7 @@ public class ChatRoomMessageService {
 
         // document가 있으면 업데이트, 없으면 생성
         mongoTemplate.upsert(query, update, ChatRoomMessage.class);
+        return currentTimestamp;
     }
 
     public void markMessagesAsRead(String roomId, String nickname) {

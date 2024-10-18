@@ -28,7 +28,7 @@
 
         <div class="board-footer">
           <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.id)"/>
-          <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="goToComments(item.id)" />
+          <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(item)" />
           <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
         </div> 
 
@@ -58,6 +58,8 @@
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
+    <!-- Modal Component -->
+    <board-detail v-if="isModalOpen" :board="selectedBoard" @close="closeModal" />
   </div>
 </template>
 
@@ -65,6 +67,7 @@
 import { useRouter, useRoute } from 'vue-router';
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import axios from 'axios';
+import BoardDetail from './BoardDetail.vue'; // 모달 컴포넌트
 
 const boards = ref([]);
 const cursorId = ref('');
@@ -72,6 +75,8 @@ const hasNext = ref(true);
 const loading = ref(false);
 const sentinel = ref(null);
 const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']); // 태그 목록
+const isModalOpen = ref(false);
+const selectedBoard = ref(null);
 
 const router = useRouter();
 const route = useRoute();
@@ -129,6 +134,24 @@ const fetchBoardItems = async (reset = false) => {
     }
 };
 
+// const openModal = (board) => {
+//   selectedBoard.value = board;
+//   isModalOpen.value = true;
+// };
+
+const openModal = (board) => {
+  selectedBoard.value = {
+    ...board,
+    imageUrls: board.imageObj.map(image => image.imageUrl),
+  };
+  isModalOpen.value = true;
+};
+
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
 const selectTag = (selectedTag) => {
   tag.value = selectedTag;
   fetchBoardItems(true);
@@ -165,10 +188,6 @@ const getFirstLine = (text) => {
 const goToProfile = (nickName) => {
   router.push(`/otherprofile/${nickName}`)
 }
-
-const goToComments = (id) => {
-  router.push(`/detail/${id}`); // 댓글 페이지로 이동
-    };
 
 const goToCreate = () => {
   router.push('/board/create'); // 글 작성 페이지로 이동

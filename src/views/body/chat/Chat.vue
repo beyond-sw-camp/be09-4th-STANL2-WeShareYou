@@ -87,7 +87,7 @@
           const selectedUser = reactive({sender: ''}, {receiver: ''}); // 선택된 
    
         // 로그인한 사용자의 JWT token
-        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTVEFOTDIiLCJzdWIiOiJKV1QgVG9rZW4iLCJpZCI6NCwibG9naW5JZCI6InRlc3Q1QGdtYWlsLmNvbSIsIm5hdGlvbmFsaXR5Ijoic2VvdWwiLCJzZXgiOiJGRU1BTEUiLCJwb2ludCI6MCwibmlja25hbWUiOiLqsIDsp4DrgqgiLCJsYW5ndWFnZSI6IktPUkVBTiIsImF1dGhvcml0aWVzIjoiUk9MRV9NRU1CRVIiLCJpYXQiOjE3MjkwNzc3NTUsImV4cCI6MTcyOTEwNzc1NX0.uT5R0Z52DqWZ4owF9rWLdU0qUr2J3mmTMDu4SbWpnOQ';  
+        const token = localStorage.getItem("jwtToken");  
         // 서버에서 데이터를 가져오는 함수
         const fetchChatRooms = async () => {
           try {

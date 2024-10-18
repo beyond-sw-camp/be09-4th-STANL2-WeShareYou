@@ -15,6 +15,7 @@ import Profile from "../views/body/member/Profile.vue";
 import ModifyProfile from "../views/body/member/ModifyProfile.vue";
 
 import Chat from "../views/body/chat/Chat.vue";
+import NoticeDetail from "@/views/body/notice/components/NoticeDetail.vue";
 
 const routes = [
     {
@@ -93,6 +94,11 @@ const routes = [
         name: 'Chat',
         component: Chat
     },
+    {
+        path: '/notice/:id',
+        name: 'NoitceDetail',
+        component: NoticeDetail
+    }
 ];
 
 const router = createRouter({

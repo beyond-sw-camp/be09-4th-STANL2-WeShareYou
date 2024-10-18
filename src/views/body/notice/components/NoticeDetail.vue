@@ -1,7 +1,12 @@
 <template>
   <div class="page-wrapper">
     <!-- 등록 버튼 -->
-    <button class="back-button">뒤로가기</button>
+    <!-- <button class="back-button">뒤로가기</button> -->
+    <div class="button-container">
+      <button class="back-button">뒤로가기</button>
+      <button @click="noticeModify" class="modify-button" v-if="isAdmin">수정</button>
+      <button @click="noticeDelete" class="delete-button" v-if="isAdmin">삭제</button>
+    </div>
 
     <!-- 공지사항 상세 컨테이너 -->
     <div class="container">
@@ -25,7 +30,19 @@
     const router = useRouter();
 
     const noticeId = ref('');
+  
     const noticeValues = ref({});
+    const isAdmin = ref(false);
+
+    const checkRole = () => {
+      const roleString = localStorage.getItem('Roles');   
+      if(roleString){
+        const roles = roleString.split(',');
+        isAdmin.value = roles.includes('ADMIN');
+      }else{
+        isAdmin.value = false;
+      }
+    }
 
     const token = localStorage.getItem("jwtToken");
 
@@ -61,6 +78,7 @@
     }
 
     onMounted(() => {
+      checkRole();
       fetchNoticeData();
       noticeId.value = route.params.noticeId;
     }) 
@@ -125,4 +143,40 @@
   font-size: 1.25rem; /* 20px */
   line-height: 1.5; /* 텍스트 가독성을 위한 줄 간격 */
 }
+
+
+.button-container {
+  display:flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.modify-button {
+    display:flex;
+    justify-content: center;
+    align-items:end;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+    padding: 1rem 2rem;
+    border: 1px solid #439aff;
+    color: #439aff;
+    background-color: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .delete-button {
+    display:flex;
+    justify-content: center;
+    align-items:end;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+    padding: 1rem 2rem;
+    border: 1px solid #439aff;
+    color: #439aff;
+    background-color: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
 </style>

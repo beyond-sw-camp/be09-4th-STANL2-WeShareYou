@@ -128,7 +128,7 @@ const getStatusText = (status) => {
 };
 
 const getIsRentalText = (rental) => {
-    return status === 'false' ? '대여 가능' : '대여 중';
+    return rental === 'false' ? '대여 가능' : '대여 중';
 };
 
 // 카테고리가 변경될 때마다 데이터를 새로 불러옴
@@ -149,10 +149,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* .container {
-    padding: 2rem;
-} */
-
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

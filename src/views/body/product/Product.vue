@@ -7,39 +7,38 @@
             <button v-if="isAdmin && isProductListPage" class="btn" @click="goToProductRegist">
                 상품 등록
             </button>
+
             <div v-if="isAdmin && isProductDetailPage" class="update-wrapper">
-                <button class="btn-u" @click="goToProductModify">
-                    수정
-                </button>
-                <button class="btn-d" @click="goToProductDelete">
-                    삭제
-                </button>
-                <button class="btn-u" @click="goToProductList">
-                    목록
-                </button>
+                <button class="btn-u" @click="goToProductModify">수정</button>
+                <button class="btn-d" @click="showDeleteModal">삭제</button>
+                <button class="btn-u" @click="goToProductList">목록</button>
             </div>
         </div>
+
         <RouterView :category="category" :key="$route.fullPath" />
+
+        <!-- 삭제 모달 -->
+        <ProductRemove v-if="isDeleteModalVisible" @confirm="handleDelete" @close="hideDeleteModal" />
     </div>
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import ProductRemove from '../../../components/cud/PostRemove.vue';
+import axios from 'axios';
 
-// Vue Router에서 현재 경로 정보 가져오기
 const route = useRoute();
-const router = useRouter(); // router 사용 선언
-
-// 로컬 스토리지에서 userInfo 가져오기
+const router = useRouter();
 const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
 
-// ROLE_ADMIN인지 확인하는 computed 속성
 const isAdmin = computed(() => userInfo.authorities === 'ROLE_ADMIN');
 
 // 현재 페이지가 ProductList인지 확인하는 computed 속성
 const isProductListPage = computed(() => route.name === 'ProductList');
 const isProductDetailPage = computed(() => route.name === 'ProductDetail');
+
+const isDeleteModalVisible = ref(false);
 
 // 상품 등록 페이지로 이동하는 함수
 function goToProductRegist() {
@@ -50,22 +49,40 @@ function goToProductRegist() {
     });
 }
 
-function goToProductModify() {
-    const productId = route.params.id; // URL에서 ID 가져오기
-
-    // 수정 페이지로 이동
-    router.push({
-        path: `/product/${category.value}/${productId}/modify`, // 수정 페이지로 이동
-    });
+function showDeleteModal() {
+    isDeleteModalVisible.value = true;
 }
 
-function goToProductList() {
-    router.push({
-        path: `/product/${category.value}`,
-    });
+function hideDeleteModal() {
+    isDeleteModalVisible.value = false;
 }
 
-// 카테고리 설정 및 번역 로직
+async function handleDelete() {
+    const id = route.params.id; // URL에서 제품 ID 가져오기
+    const jwtToken = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 토큰 가져오기
+
+    try {
+        // 서버에 DELETE 요청 보내기 (Authorization 헤더 포함)
+        const response = await axios.delete('http://localhost:8080/api/v1/product', {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`,
+            },
+            data: {
+                id: id, // ProductDeleteRequestVO 본문에 id 포함
+            },
+        });
+        console.log('삭제 성공:', response.data);
+
+        // 삭제 성공 시 목록으로 이동
+        router.push(`/product/${category.value}`);
+    } catch (error) {
+        console.error('삭제 실패:', error);
+        alert('삭제하는 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+        hideDeleteModal(); // 모달 닫기
+    }
+}
+
 const category = ref(route.params.category || '공유 물품');
 const categoryTranslations = {
     NECESSITIES: '생활품',
@@ -86,7 +103,6 @@ watch(
     { immediate: true }
 );
 </script>
-
 
 <style scoped>
 .container {

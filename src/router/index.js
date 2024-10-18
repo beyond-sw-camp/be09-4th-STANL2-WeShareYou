@@ -13,7 +13,6 @@ import Mypage from "../views/body/member/Mypage.vue";
 import ModifyMypage from "../views/body/member/ModifyMypage.vue";
 import Profile from "../views/body/member/Profile.vue";
 import ModifyProfile from "../views/body/member/ModifyProfile.vue";
-
 import Chat from "../views/body/chat/Chat.vue";
 
 const routes = [
@@ -43,6 +42,11 @@ const routes = [
                 path: ':category/:id', // :category 뒤에 :id 추가
                 name: 'ProductDetail',
                 component: () => import('@/views/body/product/ProductDetail.vue'),
+            },
+            {
+                path: ':remove/:id', // :category 뒤에 :id 추가
+                name: 'ProductRemove',
+                component: () => import('@/components/cud/PostRemove.vue'),
             },
         ],
     },
@@ -116,6 +120,7 @@ const routes = [
         name: 'Chat',
         component: Chat
     },
+
 ];
 
 const router = createRouter({

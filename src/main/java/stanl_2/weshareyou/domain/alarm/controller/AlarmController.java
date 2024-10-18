@@ -12,6 +12,7 @@ import stanl_2.weshareyou.domain.alarm.aggregate.dto.AlarmDTO;
 import stanl_2.weshareyou.domain.alarm.aggregate.vo.response.AlarmReadMemberResponseVO;
 import stanl_2.weshareyou.domain.alarm.aggregate.vo.response.AlarmReadStatusResponseVO;
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
+import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.HashMap;
@@ -155,30 +156,21 @@ public class AlarmController {
      */
     @GetMapping("")
     public ApiResponse<?> readMemberAlarms(@RequestAttribute("id") Long memberId,
-                                           @PageableDefault(size = 3, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<AlarmDTO> alarmResponseDTO = alarmService.readMemberAlarms(memberId, pageable);
+                                           @RequestParam(value = "cursor", required = false) Long cursorId,
+                                           @RequestParam(value ="size", defaultValue = "4") Integer size) {
+        CursorDTO cursorDTO = new CursorDTO();
+        cursorDTO.setCursorId(cursorId);
+        cursorDTO.setSize(size);
 
-        List<AlarmReadMemberResponseVO> alarmReadMemberResponseVOs = alarmResponseDTO.stream().map(dto -> {
-            AlarmReadMemberResponseVO vo = new AlarmReadMemberResponseVO();
-            vo.setId(dto.getId());
-            vo.setMessage(dto.getMessage());
-            vo.setCreatedAt(dto.getCreatedAt());
-            vo.setReadStatus(dto.getReadStatus());
-            vo.setMemberId(dto.getMemberId());
-            vo.setUrl(dto.getUrl());
-            return vo;
-        }).collect(Collectors.toList());
+        CursorDTO alarmResponseDTO = alarmService.readMemberAlarms(cursorDTO, memberId);
 
-        // 페이지 정보 + 알림 리스트
-        Map<String, Object> response = new HashMap<>();
-        response.put("alarms", alarmReadMemberResponseVOs);  // 알림 리스트
-        response.put("currentPage", alarmResponseDTO.getNumber());  // 현재 페이지 번호
-        response.put("totalPages", alarmResponseDTO.getTotalPages());  // 총 페이지 수
-        response.put("totalElements", alarmResponseDTO.getTotalElements());  // 전체 알림 개수
-        response.put("pageSize", alarmResponseDTO.getSize());  // 페이지 크기
+        AlarmReadMemberResponseVO alarmReadMemberResponseVO = new AlarmReadMemberResponseVO();
+        alarmReadMemberResponseVO.setCursorId(alarmResponseDTO.getCursorId());
+        alarmReadMemberResponseVO.setContents(alarmResponseDTO.getComment());
+        alarmReadMemberResponseVO.setHasNext(alarmResponseDTO.isHasNext());
 
 
-        return ApiResponse.ok(response);
+        return ApiResponse.ok(alarmReadMemberResponseVO);
     }
 
     /**

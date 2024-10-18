@@ -93,6 +93,21 @@
             <!-- 프로필 이미지 -->
             <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
                 <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" />
+                <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
+                    <li @click="resetDropdown" class="dropdown-font">
+                        <RouterLink to="/mypage">마이페이지</RouterLink>
+                    </li>
+                    <li @click="resetDropdown" class="dropdown-font">
+                        <RouterLink to="/profile">내 프로필</RouterLink>
+                    </li>
+                    <li v-if="isLoggedIn" @click="logOut" class="dropdown-font">
+                        <RouterLink to="/login">로그아웃</RouterLink>
+                    </li>
+                    <li v-else @click="loGin" class="dropdown-font">
+                        <RouterLink to="/">로그인</RouterLink>
+                    </li>
+
+                </ul>
             </div>
         </div>
     </nav>

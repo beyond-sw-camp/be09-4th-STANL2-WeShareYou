@@ -219,7 +219,7 @@ public class MemberController {
     @PutMapping("/profile")
     public ApiResponse<?> updateProfile(@RequestAttribute("id") Long id,
                                         @RequestPart("vo") UpdateProfileRequestVO updateProfileRequestVO,
-                                        @RequestPart("file") MultipartFile profileImage) {
+                                        @RequestPart(value = "file", required = false) MultipartFile profileImage) {
 
         MemberDTO requestMemberDTO = modelMapper.map(updateProfileRequestVO, MemberDTO.class);
         requestMemberDTO.setId(id);
@@ -365,6 +365,18 @@ public class MemberController {
         FindProfileResponseVO findProfileResponseVO = modelMapper.map(responseMemberDTO, FindProfileResponseVO.class);
 
         return ApiResponse.ok(findProfileResponseVO);
+    }
+
+    /**
+     * 내용: 다른 사람 없이
+     * Response
+     * nickname
+     */
+    @GetMapping("/otherprofile")
+    public ApiResponse<?> findOtherProfile(@RequestParam String nickname){
+        MemberDTO responseMemberDTO = memberService.findOtherProfile(nickname);
+
+        return ApiResponse.ok(responseMemberDTO);
     }
 
     /**

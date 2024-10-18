@@ -3,7 +3,7 @@
   <div class = "buttons" v-if="isAdmin">
     <button @click = "goBack" class="back-button">뒤로가기</button>
     <div class="button-inner">
-      <button @click ="noticeModify" class="modify-button">수정</button>
+      <button @click ="noticeModify(id)" class="modify-button">수정</button>
       <button @click="noticeDelete" class="delete-button">삭제</button>
     </div>
   </div>
@@ -22,6 +22,7 @@
     import { ref, onMounted} from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import axios from 'axios';
+import NoticeModify from './NoticeModify.vue';
 
     const route = useRoute();
     const router = useRouter();
@@ -98,7 +99,14 @@
     }
     };
 
-    
+
+    const noticeModify = (id) => {
+      console.log("noticeId: " + id);
+      router.push({name: 'NoticeModify',
+        query: {id: id}
+    });
+    }
+
     console.log("value: " + noticeValues.value);
 
     const goBack = () => {

@@ -18,19 +18,28 @@ import PostModify from '@/components/cud/PostModify.vue';
 
 const route = useRoute();
 const router = useRouter();
-const imageFile = ref(null);
 const notice = ref({});
 const loading = ref(true);
 const error = ref(null);
-const id = ref(route.params.id); // URL에서 ID 가져오기
+const id = ref(route.query.id); // URL에서 ID 가져오기
+
+const token = localStorage.getItem("jwtToken");
 
 // API에서 제품 상세 정보를 가져오는 함수
 const fetchnoticeModify = async () => {
     loading.value = true; // 로딩 시작
     error.value = null; // 이전 에러 초기화
 
+    console.log("id: " + id.value);
+
     try {
-        const response = await axios.get(`http://localhost:8080/api/v1/notice/${id.value}`);
+        const response = await axios.get(`http://localhost:8080/api/v1/notice/detail/${id.value}`,
+        {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              }
+          }
+        );
 
         console.log("notice detail response:", response.data);
 
@@ -63,7 +72,7 @@ onMounted(() => {
     fetchnoticeModify();
 });
 
-// 자식 컴포넌트로부터 데이터 수신
+/// 자식 컴포넌트로부터 데이터 수신
 const handleTitleUpdate = (newTitle) => {
     // 자식으로부터 받은 값이 null이면 기존 값을 유지
     console.log("부모에서 받은 제목:", newTitle);
@@ -77,69 +86,52 @@ const handleContentUpdate = (newContent) => {
     console.log("notice.value.title:", notice.value.content);
 };
 
-const handleImageUpload = (file) => {
-    // 파일이 없으면 기존 이미지 URL 유지
-    if (file) {
-        imageFile.value = file;
-        console.log("이미지ㅣ짖11111: " + notice.imageUrl);
-    } else {
-        imageFile.value = notice.imageUrl;
-        console.log("이미지ㅣ짖: " + notice.imageUrl);
-    }
-};
+// const handleImageUpload = (file) => {
+//     // 파일이 없으면 기존 이미지 URL 유지
+//     if (file) {
+//         imageFile.value = file;
+//         console.log("이미지ㅣ짖11111: " + notice.imageUrl);
+//     } else {
+//         imageFile.value = notice.imageUrl;
+//         console.log("이미지ㅣ짖: " + notice.imageUrl);
+//     }
+// };
 
 // 취소 버튼 클릭 시
 const listPost = () => {
     console.log('취소 버튼 클릭!');
     // 필요에 따라 다른 로직 추가 가능
+    router.back();
 };
 
 // 서버로 데이터 전송
 const submitPost = async () => {
     console.log("title: " + notice.value.title);
     console.log("content: " + notice.value.content);
-    console.log("imageFile: " + imageFile.value);
     console.log("id: " + id.value);
-    if (!notice.value.title || !notice.value.content || !imageFile.value || !category1.value) {
+    if (!notice.value.title || !notice.value.content) {
         alert('모든 항목을 입력해주세요.');
         return;
     }
 
-    const formData = new FormData();
-    formData.append('file', imageFile.value);
-    formData.append(
-        'vo',
-        new Blob(
-            [
-                JSON.stringify({
-                    id: id.value,
-                    title: notice.value.title,
-                    content: notice.value.content,
-                    category: category1.value,
-                    status: "RENTAL",
-                }),
-            ],
-            { type: 'application/json' }
-        )
-    );
-
-    const jwtToken = localStorage.getItem('jwtToken');
-
     try {
         const response = await axios.put(`http://localhost:8080/api/v1/notice`,
-            formData,
+            {
+                title: notice.value.title,
+                content: notice.value.content,
+                id: id.value,
+            },
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${jwtToken}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
-        alert('상품이 수정되었습니다.');
+        alert('공지가 수정되었습니다.');
         console.log('응답:', response.data.result);
-        router.push(`/notice/${category1.value}`);
+        router.push(`/notice`);
     } catch (error) {
         console.error('수정 실패:', error);
-        alert('상품이 수정되지 않았습니다.');
+        alert('공지가 수정되지 않았습니다.');
     }
 };
 </script>
@@ -162,7 +154,7 @@ const submitPost = async () => {
     text-align: center;
     height: 4rem;
     font-size: 1.6rem;
-    padding: 1rem 2rem;
+    padding: 0rem 2rem;
     border: 1px solid #439aff;
     margin-right: 1rem;
 }
@@ -175,7 +167,7 @@ const submitPost = async () => {
     text-align: center;
     height: 4rem;
     font-size: 1.6rem;
-    padding: 0.5rem 2rem;
+    padding: 0rem 2rem;
     border: none !important;
 }
 

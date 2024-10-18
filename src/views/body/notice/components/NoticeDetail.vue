@@ -4,7 +4,7 @@
     <button @click = "goBack" class="back-button">뒤로가기</button>
     <div class="button-inner">
       <button @click ="noticeModify(id)" class="modify-button">수정</button>
-      <button @click="noticeDelete" class="delete-button">삭제</button>
+      <button @click="showDeleteModal" class="delete-button">삭제</button>
     </div>
   </div>
 
@@ -15,6 +15,10 @@
         {{ noticeValues.content }}
     </div>
   </div>
+
+  <!-- 삭제 모달 -->
+  <PostRemove v-if="isDeleteModalVisible" @confirm="handleDelete" @close="hideDeleteModal" />
+
 </div>
 </template>
 
@@ -22,7 +26,8 @@
     import { ref, onMounted} from 'vue'
     import { useRoute, useRouter } from 'vue-router'
     import axios from 'axios';
-import NoticeModify from './NoticeModify.vue';
+    import PostRemove from '@/components/cud/PostRemove.vue';
+
 
     const route = useRoute();
     const router = useRouter();
@@ -34,6 +39,8 @@ import NoticeModify from './NoticeModify.vue';
 
     const loading = ref(true);
     const error = ref(null);
+
+    const isDeleteModalVisible = ref(false);
 
     const checkRole = () => {
       const roleString = localStorage.getItem('Roles');   
@@ -98,6 +105,40 @@ import NoticeModify from './NoticeModify.vue';
         loading.value = false; // 로딩 종료
     }
     };
+
+    const showDeleteModal = () => {
+    isDeleteModalVisible.value = true;
+    }
+
+    const hideDeleteModal = () => {
+    isDeleteModalVisible.value = false;
+    }
+
+    async function handleDelete() {
+      const id = route.params.id; // URL에서 제품 ID 가져오기
+      const jwtToken = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 토큰 가져오기
+
+      try {
+          // 서버에 DELETE 요청 보내기 (Authorization 헤더 포함)
+          const response = await axios.delete('http://localhost:8080/api/v1/notice', {
+              headers: {
+                  Authorization: `Bearer ${jwtToken}`,
+              },
+              data: {
+                  id: id, // noticeDeleteRequestVO 본문에 id 포함
+              },
+          });
+          console.log('삭제 성공:', response.data);
+
+          // 삭제 성공 시 목록으로 이동
+          router.push('/notice');
+      } catch (error) {
+          console.error('삭제 실패:', error);
+          alert('삭제하는 중 오류가 발생했습니다. 다시 시도해주세요.');
+      } finally {
+          hideDeleteModal(); // 모달 닫기
+      }
+  }
 
 
     const noticeModify = (id) => {

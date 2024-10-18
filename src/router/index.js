@@ -16,6 +16,7 @@ import ModifyProfile from "../views/body/member/ModifyProfile.vue";
 import MemberIP from "../views/body/admin/MemberIP.vue";
 import OtherProfile from "../views/body/member/OtherProfile.vue";
 import Chat from "../views/body/chat/Chat.vue";
+import BoardDetail from "@/views/body/board/BoardDetail.vue";
 
 
 const routes = [
@@ -67,6 +68,11 @@ const routes = [
         path: '/board/:tag',
         name: 'Board',
         component: () => Board,
+    },
+    {
+        path: '/board/detal/:id',
+        name: 'BoardDetail',
+        component: () => BoardDetail,
     },
     {
         path: '/notice',

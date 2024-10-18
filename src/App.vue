@@ -49,5 +49,6 @@ header {
 }
 .content {
   flex: 1;
+  background-color: #F9F9F9;
 }
 </style>

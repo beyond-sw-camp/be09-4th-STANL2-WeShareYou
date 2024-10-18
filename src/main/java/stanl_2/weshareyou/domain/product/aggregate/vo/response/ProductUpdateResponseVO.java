@@ -31,10 +31,8 @@ public class ProductUpdateResponseVO {
     @NotNull
     private ProductStatus status;
 
-    @NotNull
     private Timestamp startAt;
 
-    @NotNull
     private Timestamp endAt;
 
     @NotNull

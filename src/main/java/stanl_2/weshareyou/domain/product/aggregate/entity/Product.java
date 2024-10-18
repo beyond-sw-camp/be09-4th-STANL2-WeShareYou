@@ -41,11 +41,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    @NotNull
     @Column(name = "PRODUCT_START_AT")
     private Timestamp startAt;
 
-    @NotNull
     @Column(name = "PRODUCT_END_AT")
     private Timestamp endAt;
 

@@ -45,16 +45,16 @@
                     <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">가이드</RouterLink>
+                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">{{ translatedMenu.guide }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">프리마켓</RouterLink>
+                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">{{ translatedMenu.freemarket }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">동행</RouterLink>
+                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">{{ translatedMenu.companion }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">TIP</RouterLink>
+                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">{{ translatedMenu.tip }}</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -92,8 +92,7 @@
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
-            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <!-- <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" /> -->
+            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>                
                 <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">

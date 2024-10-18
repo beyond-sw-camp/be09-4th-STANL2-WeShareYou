@@ -42,19 +42,19 @@
 
                 <!-- 게시글 드롭다운 -->
                 <li class="dropdown" @click="toggleDropdown('board')">
-                    <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
+                    <span :class="{ active: activeMenu === 'board' }">게시글</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/notice" @click="setActiveMenu('board')">{{ translatedMenu.guide }}</RouterLink>
+                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">가이드</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/event" @click="setActiveMenu('board')">{{ translatedMenu.freemarket }}</RouterLink>
+                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">프리마켓</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/faq" @click="setActiveMenu('board')">{{ translatedMenu.companion }}</RouterLink>
+                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">동행</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/tip" @click="setActiveMenu('board')">{{ translatedMenu.tip }}</RouterLink>
+                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">TIP</RouterLink>
                         </li>
                     </ul>
                 </li>

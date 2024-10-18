@@ -203,7 +203,6 @@ label {
 }
 
 .submit-btn {
-    padding: 15px;
     font-size: 1.8rem;
     background-color: #007bff;
     color: #fff;

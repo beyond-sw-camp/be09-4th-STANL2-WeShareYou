@@ -149,12 +149,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.container {
+    height: 100%;
+    overflow-y: auto;
+}
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 2rem;
-    height: 80vh;
-    overflow-y: auto;
 }
 
 @media (min-width: 1200px) {

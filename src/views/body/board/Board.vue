@@ -16,29 +16,42 @@
         <button class="create-button" @click="goToCreate">글 작성</button>
       </div>
       <div v-for="item in boards" :key="item.id" class="board-card">
+        
         <div class="user-info">
-          <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image">
+          <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image" @click="goToProfile(item.memberNickname)">
           <span class="nickname">{{ item.memberNickname }}</span>
         </div>
+
         <div class="image-container">
           <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image"/>
         </div>
+
         <div class="board-footer">
-          <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.likesCount)"/>
-          <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="goToComments(item)" />
+          <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.id)"/>
+          <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="goToComments(item.id)" />
           <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
         </div> 
+
         <h3 class="board-title">{{ item.title }}</h3>
-        <p class="board-content" v-if="!item.showFullContent">
-          <span v-html="formatContent(getFirstLine(item.content))"></span>
-          <span v-if="item.content.includes('\n') || item.content.length > getFirstLine(item.content).length">...</span>
-        </p>
-        <p class="board-content" v-else>
-          <span v-html="formatContent(item.content)"></span>
-        </p>
-        <button v-if="item.content.length > 30" @click="toggleContent(item)" class="more-button">
-          {{ item.showFullContent ? '닫기' : '더보기' }}
-        </button>
+
+        <div class="content-container">
+          <p class="board-content" v-if="!item.showFullContent">
+            <span v-html="formatContent(getFirstLine(item.content))"></span>
+            <span v-if="item.content.includes('\n') || item.content.length > getFirstLine(item.content).length">...</span>
+          </p>
+          <p class="board-content" v-else>
+            <span v-html="formatContent(item.content)"></span>
+          </p>
+          <button v-if="!item.showFullContent && item.content.length > 30" @click="toggleContent(item)" class="more-button">
+            더보기
+          </button>
+        </div>
+
+        <!-- 좋아요와 댓글 수 -->
+        <div class="interaction-info">
+          <span>좋아요 {{ item.likesCount }}개</span>
+          <span>댓글 {{ item.commentCount }}개</span>
+        </div>
       </div>
       <!-- 무한 스크롤을 위한 sentinel -->
       <div ref="sentinel" class="sentinel"></div>
@@ -77,7 +90,6 @@ const fetchBoardItems = async (reset = false) => {
     }
 
     try {
-        console.log('Fetching board items...'); // 디버깅 로그
         const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
             params: { cursor: cursorId.value || '', size: 3 }
         });
@@ -150,8 +162,12 @@ const getFirstLine = (text) => {
   return text.split('\n')[0]; // \n 기준으로 첫 번째 줄 반환
 }
 
-const goToComments = (item) => {
-  router.push(`/detail/${item.id}`); // 댓글 페이지로 이동
+const goToProfile = (nickName) => {
+  router.push(`/otherprofile/${nickName}`)
+}
+
+const goToComments = (id) => {
+  router.push(`/detail/${id}`); // 댓글 페이지로 이동
     };
 
 const goToCreate = () => {
@@ -161,6 +177,28 @@ const goToCreate = () => {
 const goToChat = () => {
   router.push('/chat');
 };
+
+const upLike = async (boardId) => {
+    
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/board_like', {
+        headers: {
+          'Content-Type': "application.json" // 요청 속성으로 포함
+          }
+        });
+
+        // 좋아요 개수 1 증가
+        const boardIndex = boards.value.findIndex(board => board.id === boardId);
+        if (boardIndex !== -1) {
+            boards.value[boardIndex].likesCount += 1;
+        }
+        
+        console.log('좋아요 추가 완료:', response.data);
+    } catch (error) {
+        console.error('좋아요 추가 에러:', error.response?.data || error.message);
+    }
+};
+
 
 watch(
     () => route.params.tag,
@@ -185,7 +223,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-:root {
+/* :root {
   --main-blue: #94C7FF;
   --white: #FFF;
   --black-60: #627086;
@@ -194,7 +232,7 @@ onUnmounted(() => {
 
 body {
   font-family: ABeeZee, sans-serif;
-}
+} */
 
 .actions {
   display: flex;
@@ -234,6 +272,7 @@ body {
   border: 0.5px solid var(--Main_-3, #94C7FF);
   background: var(--White_100, #FFF);
   box-shadow: 0px 4px 8px 0px rgba(19, 24, 48, 0.15);
+  margin-left: -0.5rem;
 }
 
 .tag-list {
@@ -250,7 +289,7 @@ body {
   width: 100%; /* 부모 요소의 너비에 맞게 설정 */
   height: 3.4rem; /* 버튼 높이 설정 */
   align-items: center; /* 수직 가운데 정렬 */
-  justify-content: center; /* 수평 가운데 정렬 */
+  /* justify-content: center; 수평 가운데 정렬 */
   border: none; /* 기본 테두리 제거 */
   background: var(--White_100, #FFF); /* 기본 배경색: 흰색 */
   color: var(--Black_60, #627086); /* 기본 텍스트 색상 */
@@ -319,30 +358,14 @@ body {
 }
 
 .nickname {
-  font-size: 3rem;
+  font-size: 2rem;
 }
-
-/* .board-content {
-  font-size: 3rem; 
-  margin-bottom: 0; 
-  margin-top: 0;
-} */
 
 .board-title {
   font-weight: bold;
   font-size: 1.6rem; /* Adjust as needed */
   margin-bottom: 0; /* Remove margin below title */
   margin-left: 1rem;
-}
-
-.board-content {
-  font-size: 2.2rem;
-  margin-top: 0; 
-  margin-bottom: 0; 
-  white-space: pre-wrap; /* Ensure text formatting with line breaks is preserved */
-  margin-left: 1rem;
-  color: #666;
-  line-height: 1.2; /* 줄 간 간격을 줄임 */
 }
 
 .image-container {
@@ -377,6 +400,22 @@ body {
   color: #666;
 }
 
+.content-container {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 1rem; /* content와 버튼 간의 간격 */
+  margin-left: 1rem;
+}
+
+.board-content {
+  font-size: 2.2rem;
+  margin-top: 0; 
+  margin-bottom: 0; 
+  white-space: pre-wrap; /* Ensure text formatting with line breaks is preserved */
+  color: #666;
+  line-height: 1.2; /* 줄 간 간격을 줄임 */
+}
+
 .more-button {
   background: none;
   border: none;
@@ -384,16 +423,25 @@ body {
   font-size: 1.5rem; /* Adjusted size to fit the style */
   cursor: pointer;
   padding: 0;
-  margin-left: 1rem; /* Slight margin for alignment */
   text-decoration: none;
   transition: color 0.2s;
-  
+  margin-top: auto;
+  margin-left: -0.5rem;
 }
 
 .more-button:hover {
   color: #555; /* Darker grey on hover */
 }
 
+.interaction-info {
+  margin-left: 1rem;
+  font-size: 1.3rem;
+  color: #666;
+  display: flex;
+  gap: 0.3rem;
+  font-size: 2rem;
+  margin-top: 0.2rem;
+}
 
 .loading {
   text-align: center;

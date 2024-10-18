@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
-import stanl_2.weshareyou.global.common.exception.CommonException;
-import stanl_2.weshareyou.global.common.exception.ErrorCode;
 import stanl_2.weshareyou.global.security.constants.ApplicationConstants;
 
 import javax.crypto.SecretKey;
@@ -81,7 +79,8 @@ public class TokenFilter extends OncePerRequestFilter {
                 path.equals("/api/v1/member/register") ||
                 path.startsWith("/api/v1/member/sms") ||  // 와일드카드 경로 포함
                 path.startsWith("/api/v1/member/mail") ||
-                path.equals("/api/v1/member/password");
+                path.equals("/api/v1/member/password") ||
+                path.startsWith("/ws");
     }
 
 }

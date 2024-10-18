@@ -17,10 +17,13 @@ import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.dto.MemberDTO;
 import stanl_2.weshareyou.domain.member.aggregate.entity.Member;
+import stanl_2.weshareyou.domain.member.aggregate.history.HistoryInput;
+import stanl_2.weshareyou.domain.member.aggregate.history.LoginHistory;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.BoardLikesResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.LikeNoResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoardResponseVO;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
+import stanl_2.weshareyou.domain.member.repository.HistoryRepository;
 import stanl_2.weshareyou.domain.member.repository.MemberRepository;
 import stanl_2.weshareyou.domain.s3.S3uploader;
 import stanl_2.weshareyou.global.common.exception.CommonException;
@@ -34,7 +37,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,7 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final HistoryRepository historyRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationConstants applicationConstants;
@@ -172,13 +175,26 @@ public class MemberServiceImpl implements MemberService {
         member.setLanguage(requestMemberDTO.getLanguage());
         member.setUpdatedAt(currentTimestamp);
 
+        // 프로필 이미지을 변경하지 않는 경우
+        if(file == null){
+            memberRepository.save(member);
+            MemberDTO responseMemberDTO = modelMapper.map(member, MemberDTO.class);
+
+            // 보안상 null
+            responseMemberDTO.setId(null);
+            responseMemberDTO.setPassword(null);
+            responseMemberDTO.setActive(null);
+
+            return responseMemberDTO;
+        }
+
         // s3 이미지 저장
         if(member.getProfileUrl() == null || member.getProfileUrl().isEmpty()){
-            // 프로필 이미지 없는 경우
+            // 기존 프로필 이미지 없는 경우
             String url = s3uploader.uploadOneImage(file);
             member.setProfileUrl(url);
         }else{
-            // 프로필 이미지 있는 경우
+            // 기존 프로필 이미지 있는 경우
             String key = member.getProfileUrl();
             if(key == null){
                 throw new CommonException(ErrorCode.BAD_REQUEST_IMAGE);
@@ -259,11 +275,26 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public MemberDTO findProfile(MemberDTO requestMemberDTO) {
         MemberDTO responseMemberDTO = getMemberDTO(requestMemberDTO);
 
         return responseMemberDTO;
     }
+
+    @Override
+    @Transactional
+    public void saveLoginHistory(HistoryInput historyInput) {
+        LoginHistory loginHistory = LoginHistory.builder()
+                .loginId(historyInput.getUserId())
+                .loginDate(LocalDateTime.now())
+                .clientIp(historyInput.getClientIp())
+                .userAgent(historyInput.getUserAgent())
+                .build();
+
+        historyRepository.save(loginHistory);
+    }
+
 
 
     @Override
@@ -376,6 +407,7 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
+    @Transactional
     public MemberDTO checkMember(MemberDTO requestMemberDTO) {
 
         Member member = memberRepository.findByPhone(requestMemberDTO.getPhone());
@@ -415,6 +447,23 @@ public class MemberServiceImpl implements MemberService {
             }
         }
         return null;
+    }
+
+
+    @Override
+    @Transactional
+    public MemberDTO findOtherProfile(String nickname) {
+        log.info(nickname);
+        Member otherMember = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        MemberDTO responseMemberDTO = modelMapper.map(otherMember, MemberDTO.class);
+
+        // 보안상 null
+        responseMemberDTO.setId(null);
+        responseMemberDTO.setPassword(null);
+        responseMemberDTO.setActive(null);
+        return responseMemberDTO;
     }
 
 }

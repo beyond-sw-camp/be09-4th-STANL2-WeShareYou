@@ -2,8 +2,6 @@ package stanl_2.weshareyou.domain.member.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import stanl_2.weshareyou.domain.member.aggregate.Role;
-import stanl_2.weshareyou.domain.member.aggregate.Sex;
 
 @Getter
 @Setter

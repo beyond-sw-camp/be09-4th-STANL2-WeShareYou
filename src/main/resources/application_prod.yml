@@ -71,4 +71,4 @@ logging:
   level:
     org:
       springframework:
-        security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}
+        security: ${SPRING_SECURITY_LOG_LEVEL:INFO}

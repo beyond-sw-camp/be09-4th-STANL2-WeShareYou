@@ -14,15 +14,9 @@
   
         <ul v-if="rooms && rooms.length > 0">
           <li v-for="room in rooms" :key="room.roomId" class="room-item-container">
-            <p
-              class="room-item"
-              @click="setSelectedRoom(room)"
-
-            >
-              {{ room.sender === user.name ? room.receiver : room.sender }}
+            <p class="room-item"@click="setSelectedRoom(room)" >
+             {{ getOtherUser(room) }}
             </p>
-            <!-- 버튼을 마우스 오버 시 표시 -->
-            <!-- <button class="delete-button" @click="deleteRoom(room)">Delete</button> -->
             <button class="delete-button" @click="openDeleteModal(room)">삭제</button>
           </li>
         </ul>
@@ -56,7 +50,7 @@
               <div class="message-sender">{{ message.sender }}</div>
               <div class="message-content">
                 <span class="message-time">{{ message.message }}</span>
-                <span class="message-time">{{ formatTime(message.createdAt) }}</span>
+                <span class="message-time">{{ message.createdAt }}</span>
               </div>
               <div v-if="isLastMessageRead(index, message)">
                 <span class="message-time">읽음</span>
@@ -125,6 +119,8 @@
           }
         );
           console.log(response.data);
+          let otherUser=user.room.sender === user.name ? room.receiver : room.sender;
+          console.log(otherUser);
 
           rooms.splice(0, rooms.length, ...response.data.rooms);
           user.name = response.data.user;    // 사용자 이름 저장

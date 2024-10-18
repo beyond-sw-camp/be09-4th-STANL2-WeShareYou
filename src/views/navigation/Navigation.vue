@@ -92,8 +92,7 @@
             <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
 
             <!-- 프로필 이미지 -->
-            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
-                <!-- <img src="../../assets/icon/navigation/profile.png" alt="Profile" class="profile-image" /> -->
+            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>                
                 <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">

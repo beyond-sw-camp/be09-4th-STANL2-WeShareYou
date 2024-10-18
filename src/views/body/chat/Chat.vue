@@ -45,16 +45,23 @@
 
       <div id="messageArea" class="message-area">
         <template v-for="(message, index) in messages" :key="index">
-          <div v-if="shouldDisplayDate(message.createdAt)" class="message-date">
-            {{  formatDate(message.createdAt) }}  
-          </div>
+          <div v-if="message.createdAt"></div>
+            <div v-if="shouldDisplayDate(message.createdAt) && message.createdAt" class="message-date">
+              {{  formatDate(message.createdAt) }}  
+            </div>
+            <!-- 실시간으로 날짜 바뀌었을 때 -->
+          <!-- <div v-else></div>
+            <div v-if="shouldDisplayDate(message.sendTime) && message.sendTime" class="message-date">
+              {{  formatDate(message.sendTime) }}  
+            </div> -->
 
           <!-- 메시지 내용 -->
           <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
             <div class="message-sender">{{ message.sender }}</div>
             <div class="message-content">
               <span class="message-time">{{ message.message }}</span>
-              <span class="message-time">{{ formatTime(message.createdAt) }}</span>
+              <span class="message-time" v-if="message.createdAt">{{ formatTime(message.createdAt) }}</span>
+              <span class="message-time" v-if="message.sendTime">{{ message.sendTime }}</span>
             </div>
             <div v-if="isLastMessageRead(index, message)">
               <span class="message-time">읽음</span>
@@ -230,19 +237,20 @@
         return;
       }
 
-      const message = {
+      const sendMessage = {
         roomId: roomId.value,
         sender: user.name,
         message: messageInput.value,
+        sendTime: new Date(),
         type: 'TALK'
       };
 
       console.log("stompClient is alive?" + stompClient);
-      console.log('Sending message:', JSON.stringify(message));
+      console.log('Sending message:', JSON.stringify(sendMessage));
 
       try {
         console.log("roomId.value : " + roomId.value);
-        await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(message));
+        await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(sendMessage));
         messageInput.value = '';
 
         console.log("roomName.value : " + roomName.value);
@@ -255,6 +263,22 @@
     };
 
     const showMessage = (message) => {
+    
+      // message 파싱 가능할듯?
+      console.log(message);
+
+      const formatSendTime = (sendTime) => {
+        const newDate = new Date(sendTime);
+        // const options = { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Seoul' };
+        // return new Intl.DateTimeFormat('ko-KR', options).format(newDate);
+        const newHour = String(newDate.getHours()).padStart(2, '0'); // 월은 0부터 시작 1을 더해줌
+        const newMinute = String(newDate.getMinutes()).padStart(2, '0');
+
+        return `${newHour}:${newMinute}`;
+      };
+
+      // sendTime 변환 후 재할당
+      message.sendTime = formatSendTime(message.sendTime);
       messages.push(message);  // 메시지 추가
 
       nextTick(() => {
@@ -264,6 +288,8 @@
         }
       });
     };
+
+    
 
     // 컴포넌트가 마운트될 때 데이터 가져오기
     onMounted(async () => {

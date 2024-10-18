@@ -27,26 +27,21 @@ import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProductRemove from '../../../components/cud/PostRemove.vue';
 import axios from 'axios';
+import { translateText } from '@/assets/language/deepl.js'; // DeepL 번역 함수
 
 const route = useRoute();
 const router = useRouter();
 const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+const id1 = route.params.id;
 
 const isAdmin = computed(() => userInfo.authorities === 'ROLE_ADMIN');
-
-// 현재 페이지가 ProductList인지 확인하는 computed 속성
 const isProductListPage = computed(() => route.name === 'ProductList');
 const isProductDetailPage = computed(() => route.name === 'ProductDetail');
 
 const isDeleteModalVisible = ref(false);
 
-// 상품 등록 페이지로 이동하는 함수
 function goToProductRegist() {
-    // 카테고리 값을 쿼리 파라미터로 함께 전달
-    router.push({
-        path: '/product/regist',
-        query: { category: category.value }
-    });
+    router.push({ path: '/product/regist', query: { category: category.value } });
 }
 
 function showDeleteModal() {
@@ -58,28 +53,21 @@ function hideDeleteModal() {
 }
 
 async function handleDelete() {
-    const id = route.params.id; // URL에서 제품 ID 가져오기
-    const jwtToken = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 토큰 가져오기
+    const id = route.params.id;
+    const jwtToken = localStorage.getItem('jwtToken');
 
     try {
-        // 서버에 DELETE 요청 보내기 (Authorization 헤더 포함)
         const response = await axios.delete('http://localhost:8080/api/v1/product', {
-            headers: {
-                Authorization: `Bearer ${jwtToken}`,
-            },
-            data: {
-                id: id, // ProductDeleteRequestVO 본문에 id 포함
-            },
+            headers: { Authorization: `Bearer ${jwtToken}` },
+            data: { id: id },
         });
         console.log('삭제 성공:', response.data);
-
-        // 삭제 성공 시 목록으로 이동
         router.push(`/product/${category.value}`);
     } catch (error) {
         console.error('삭제 실패:', error);
         alert('삭제하는 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
-        hideDeleteModal(); // 모달 닫기
+        hideDeleteModal();
     }
 }
 
@@ -92,13 +80,18 @@ const categoryTranslations = {
     DEVICE: '전자기기',
     ETC: '기타',
 };
+
 const translatedCategory = ref(categoryTranslations[category.value] || '공유 물품');
 
+// 언어 변경 시 카테고리 번역 업데이트
 watch(
     () => route.params.category,
-    (newCategory) => {
+    async (newCategory) => {
         category.value = newCategory || '공유 물품';
-        translatedCategory.value = categoryTranslations[newCategory] || '공유 물품';
+        translatedCategory.value = await translateText(
+            categoryTranslations[newCategory] || '공유 물품',
+            currentLang.value
+        );
     },
     { immediate: true }
 );
@@ -122,7 +115,6 @@ watch(
     color: white;
     border-radius: 1rem;
     cursor: pointer;
-    text-align: center;
     width: 7%;
     height: 4rem;
     font-size: 1.6rem;
@@ -133,11 +125,7 @@ watch(
     color: #FF414C;
     border-radius: 1rem;
     cursor: pointer;
-    text-align: center;
-    height: 3.5rem;
-    font-size: 1.3rem;
     border: 1px solid #FF414C;
-    padding: 0 2rem 0 2rem;
     margin-left: 1rem;
 }
 
@@ -146,11 +134,7 @@ watch(
     color: #439aff;
     border-radius: 1rem;
     cursor: pointer;
-    text-align: center;
-    height: 3.5rem;
-    font-size: 1.3rem;
     border: 1px solid #439aff;
-    padding: 0 2rem 0 2rem;
     margin-left: 1rem;
 }
 

@@ -77,8 +77,10 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { fetchProfileData } from '@/stores/member/profile';
 
+const router = useRouter();
 const userInfo = ref(null);
 
 onMounted(async () => {
@@ -115,7 +117,8 @@ function formatDate(dateStr) {
 }
 
 function goToModify() {
-  window.location.href = '/modifyProfile'; // 수정 페이지로 이동
+  router.push('/modifyProfile');
+  // window.location.href = '/modifyProfile'; // 수정 페이지로 이동
 }
 </script>
 

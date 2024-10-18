@@ -35,10 +35,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { modifyProfile } from '@/stores/member/modifyProfile';
 import { fetchProfileData } from '@/stores/member/profile';
 
 // 초기 값 선언
+const router = useRouter();
 const nickname = ref('');
 const introduction = ref('');
 const language = ref('');
@@ -84,12 +86,11 @@ async function submitProfile() {
     } catch (error) {
         console.error('프로필 수정 실패:', error);
     }
-    window.location.href = '/profile';
+    router.push('/profile');
 }
 </script>
 
 <style scoped>
-/* 스타일 동일 */
 .profile-container {
     max-width: 60rem;
     margin: 4rem auto;

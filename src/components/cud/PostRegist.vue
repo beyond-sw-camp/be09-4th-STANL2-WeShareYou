@@ -52,42 +52,6 @@ const handleImageUpload = (event) => {
 const contentArea = ref(null);
 </script>
 
-<!-- 
-// const localTitle = ref('');
-// const localContent = ref('');
-// const localImage = ref(null);
-// const contentArea = ref(null);
-// const fileInput = ref(null);
-
-// watch(localTitle, (newTitle) => emit('update:title', newTitle));
-// watch(localContent, (newContent) => emit('update:content', newContent));
-
-// function handleImageUpload(event) {
-//   const file = event.target.files[0];
-//   if (file) {
-//     localImage.value = file;
-//     emit('update:image', file); 
-
-//     const reader = new FileReader();
-//     reader.onload = (e) => {
-//       const img = document.createElement('img');
-//       img.src = e.target.result;
-//       img.style.maxWidth = '100%';
-//       contentArea.value.appendChild(img);
-//       updateContent();
-//     };
-//     reader.readAsDataURL(file);
-//   }
-// }
-
-// function triggerFileInput() {
-//   fileInput.value.click();
-// }
-
-// function updateContent() {
-//   localContent.value = contentArea.value.innerHTML;
-// } -->
-
 <style scoped>
 .container {
   display: flex;

@@ -56,13 +56,14 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardComment.setContent(boardCommentDto.getContent());
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
-        System.out.println("=====================여기까지 성공=================");
         boardComment.setBoard(board);
         boardComment.setMember(member);
         boardCommentRepository.save(boardComment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardComment, BoardCommentDto.class);
         boardCommentDto1.setBoardCommentId(board.getId());
+        boardCommentDto1.setNickname(member.getNickname());
+        boardCommentDto1.setBoardId(board.getId());
 
         return boardCommentDto1;
     }
@@ -99,6 +100,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
             BoardCommentDto boardCommentDto = new BoardCommentDto();
             boardCommentDto.setBoardCommentId(boardComment.getId());
             boardCommentDto.setContent(boardComment.getContent());
+            boardCommentDto.setMemberProfileUrl(boardComment.getMember().getProfileUrl());
 
             if (boardComment.getMember() != null) {
                 boardCommentDto.setNickname(boardComment.getMember().getNickname()); // Member의 닉네임 추가

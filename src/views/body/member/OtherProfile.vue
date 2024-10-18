@@ -28,16 +28,18 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
+import defaultProfileImage from '@/assets/icon/navigation/profile.png'; // 기본 프로필 이미지 가져오기
 import messageIcon from '@/assets/icon/member/message.svg';
 
 const route = useRoute();
+const router = useRouter();
 const userInfo = ref(null); // 초기값을 null로 설정
 const errorMessage = ref(null); // 에러 메시지 저장
 const loading = ref(true); // 로딩 상태 관리
-const defaultProfileImage = 'https://via.placeholder.com/150'; // 기본 프로필 이미지
+
 
 // 서버에서 프로필 데이터 가져오기
 async function fetchProfile(nickname) {
@@ -48,7 +50,6 @@ async function fetchProfile(nickname) {
         const response = await axios.get(
             `http://localhost:8080/api/v1/member/otherprofile?nickname=${nickname}`
         );
-        console.log(response);
 
         // JSON 객체가 여러 개일 경우 첫 번째 객체만 추출
         const firstJson = response.data.match(/\{.*?\}(?=\{|\s*$)/s)[0];
@@ -59,7 +60,6 @@ async function fetchProfile(nickname) {
         } else {
             errorMessage.value = parsedData.error?.message || '프로필 정보를 찾을 수 없습니다.';
         }
-        console.log(userInfo.value); // userInfo 값 확인
 
     } catch (error) {
         console.error('Failed to load profile data:', error);
@@ -67,6 +67,10 @@ async function fetchProfile(nickname) {
     } finally {
         loading.value = false;
     }
+}
+
+const handleIconClick = () => {
+    router.push('/chat');
 }
 
 // 닉네임이 변경될 때마다 프로필 정보 가져오기

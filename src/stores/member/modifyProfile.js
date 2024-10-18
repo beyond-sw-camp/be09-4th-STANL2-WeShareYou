@@ -3,15 +3,21 @@ import axios from 'axios';
 export async function modifyProfile(nickname, introduction, language, file) {
     try {
         const formData = new FormData();
-        formData.append('file', file); // 이미지 파일 추가
+
+        // 파일이 선택된 경우에만 추가
+        if (file) {
+            formData.append('file', file);
+        }
+
+        // JSON 데이터를 Blob으로 추가
         formData.append(
             'vo',
             new Blob(
                 [
                     JSON.stringify({
-                        nickname: nickname,
-                        introduction: introduction,
-                        language: language,
+                        nickname,
+                        introduction,
+                        language,
                     }),
                 ],
                 { type: 'application/json' }
@@ -26,7 +32,7 @@ export async function modifyProfile(nickname, introduction, language, file) {
             {
                 headers: {
                     Authorization: `Bearer ${jwtToken}`,
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data', // Content-Type 설정
                 },
             }
         );

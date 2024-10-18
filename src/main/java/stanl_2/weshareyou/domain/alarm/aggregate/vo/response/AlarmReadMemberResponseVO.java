@@ -2,8 +2,11 @@ package stanl_2.weshareyou.domain.alarm.aggregate.vo.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
+import stanl_2.weshareyou.domain.product.aggregate.vo.response.ProductSummaryVO;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Setter
 @Getter
@@ -13,21 +16,12 @@ import java.sql.Timestamp;
 public class AlarmReadMemberResponseVO {
 
     @NotNull
-    private Long id;
+    private Long cursorId;
 
     @NotNull
-    private String message;
+    private List<ProductSummaryVO> contents;
 
     @NotNull
-    private String url;
-
-    @NotNull
-    private Boolean readStatus;
-
-    @NotNull
-    private Timestamp createdAt;
-
-    @NotNull
-    private Long memberId;
+    private boolean hasNext;
 
 }

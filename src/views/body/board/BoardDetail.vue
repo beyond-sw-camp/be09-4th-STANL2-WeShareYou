@@ -66,8 +66,11 @@
 
 
 <script setup>
-import { defineProps, defineEmits, ref, computed } from 'vue';
-import { onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { defineProps, defineEmits, ref, computed, onMounted } from 'vue';
+
+const router = useRouter();
+const route = useRoute();
 
 const props = defineProps({
   board: {
@@ -156,6 +159,10 @@ const addComment = () => {
 
 const likePost = () => {
   console.log('Post liked!');
+};
+
+const goToChat = () => {
+  router.push('/chat');
 };
 
 // 게시물이 열릴 때 댓글을 가져옴
@@ -286,9 +293,14 @@ p {
 }
 
 .comments {
-  /* margin-top: 1rem; */
   margin: 0;
   overflow-y: scroll;
+  scrollbar-width: none; /* Firefox용 */
+}
+
+/* 크롬, 사파리, 엣지 등의 웹킷 기반 브라우저용 */
+.comments::-webkit-scrollbar {
+  display: none;
 }
 
 .comment-item {
@@ -303,16 +315,19 @@ p {
   border-radius: 50%;
   margin-right: 10px;
   object-fit: cover;
+  flex-shrink: 0; /* 이미지 크기 고정 */
 }
 
 .comment-content {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem; /* 닉네임과 댓글 간 여백 */
+  flex-wrap: wrap; /* 긴 텍스트가 있을 경우 줄바꿈 */
 }
 
 .nickname {
   font-weight: bold;
-  margin-bottom: 0.2rem;
+  margin-right: 0.5rem;
 }
 
 .content {

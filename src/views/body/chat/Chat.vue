@@ -24,12 +24,15 @@
       <p v-else class="no-rooms">No chat rooms available.</p>
     </div>
 
-        <div v-if="showModal" class="modal-overlay">
-    <div class="modal-content">
-      <p>정말 취소하시겠습니까?</p>
-      <div class="modal-actions">
-        <button @click="confirmDelete">확인</button>
-        <button @click="closeModal">취소</button>
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-icon">
+        <img src="@/assets/icon/delete-icon.png" alt="Delete Icon" />
+        <p class="delete-font">삭제하시겠습니까?</p>
+      </div>
+      <div class="button-group">
+        <button class="confirm-btn" @click="confirmDelete">확인</button>
+        <button class="cancel-btn" @click="closeModal">취소</button>
       </div>
     </div>
   </div>
@@ -59,9 +62,14 @@
           <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
             <div class="message-sender">{{ message.sender }}</div>
             <div class="message-content">
+<<<<<<< HEAD
+              <span class="message-time1">{{ message.message }}</span><br>
+              <span class="message-time2">{{ formatTime(message.createdAt) }}</span>
+=======
               <span class="message-time">{{ message.message }}</span>
               <span class="message-time" v-if="message.createdAt">{{ formatTime(message.createdAt) }}</span>
               <span class="message-time" v-if="message.sendTime">{{ message.sendTime }}</span>
+>>>>>>> 31b4b6704400a99f576238fad8752281eccd4828
             </div>
             <div v-if="isLastMessageRead(index, message)">
               <span class="message-time">읽음</span>
@@ -441,8 +449,7 @@
   margin-bottom: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 1.6rem;
-  /* 추가 */
+  font-size: 2.3rem;
   flex: 1;
   margin: 0;
 }
@@ -459,18 +466,25 @@
 /* 채팅방 상세 */
 .chat-room {
   width: 70vw;
-  padding: 2rem;
+  height: 112vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 17rem;
+  padding-top: 2rem;
+  padding-left: 20rem;
+  padding-right: 10rem;
 }
 
 .chat-room-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 4rem;
+  margin-bottom: -3rem;
 }
 
 .message-area {
+  margin: 5rem 1rem;
+  margin-bottom: 2rem;
   flex: 1;
+  width:40vw;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -504,16 +518,22 @@
 }
 
 .message-sender {
-  font-weight: bold;
-  font-size: 1.6rem;
+  font-size: 2rem;
+  padding-right: 1vw;
 }
 
 .message-content {
   background-color: #e5e5ea;
-  padding: 1rem;
+  padding: 0.5rem 2rem;
   border-radius: 1rem;
-  max-width: 50vw;
+  max-width: 25vw;
   word-break: break-word;
+}
+.message-time1{
+  font-size:1vw;
+}
+.message-time2{
+  font-size:0.8vw;
 }
 
 .my-message .message-content {
@@ -524,7 +544,7 @@
 .message-time {
   font-size: 1.2rem;
   margin-top: 0.5rem;
-  color: #555;
+  color: white;
   display: block;
 }
 
@@ -535,14 +555,15 @@
 }
 
 .message-input input {
-  flex: 1;
-  padding: 1rem;
+  margin-left: 1.4rem;
+  flex: 0.8;
+  padding: 1.5rem;
   font-size: 1.4rem;
 }
 
 .message-input button {
   padding: 1rem 2rem;
-  font-size: 1.4rem;
+  font-size: 2rem;
   background-color: white;
   color: #439aff;
   border: 1px solid #439aff;
@@ -564,104 +585,113 @@ cursor: pointer;
 display: block; /* 마우스 오버 시 버튼 표시 */
 }
 .room-item-container {
-position: relative; /* 버튼을 이 항목 내에서 절대 위치하도록 설정 */
-display: flex; /* 버튼과 텍스트를 한 줄에 배치 */
-align-items: center;
-padding: 1rem;
-background-color: white;
-margin-bottom: 0.5rem;
-border-radius: 0.5rem;
-cursor: pointer;
-font-size: 1.6rem;
+  margin-left: -2rem;
+  margin-top: 1rem;
+  position: relative; /* 버튼을 이 항목 내에서 절대 위치하도록 설정 */
+  display: flex; /* 버튼과 텍스트를 한 줄에 배치 */
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 2.3rem;
 }
 
 .room-item-container:hover {
 background-color: #e9ecef;
 }
+/* 모달 오버레이 */
 .modal-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.6); /* 반투명 배경 */
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
-/* 모달 컨테이너 */
-.modal-container {
-background-color: white;
-width: 30%; /* 화면의 30% 너비 */
-max-width: 500px; /* 최대 너비 제한 */
-min-width: 300px; /* 최소 너비 보장 */
-height: 25%; /* 화면의 25% 높이 */
-padding: 2rem;
-border-radius: 12px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-text-align: center;
-animation: fadeIn 0.3s ease-out;
+/* 모달 내용 */
+.modal-content {
+  position: relative;
+  background-color: white !important;
+  padding: 2rem;
+  border-radius: 4px !important;
+  text-align: center;
+  width: 40rem !important; /* 고정 너비 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000 !important;
+  width: 60%;
 }
 
-/* 모달 타이틀 */
-.modal-title {
-font-size: 2rem;
-font-weight: bold;
-margin-bottom: 1rem;
-color: #333;
+/* 아이콘과 메시지 */
+.modal-icon {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  margin-top: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 모달 메시지 */
-.modal-message {
-font-size: 1.6rem;
-margin-bottom: 2rem;
-color: #555;
+.modal-icon img {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 
-/* 모달 버튼 영역 */
-.modal-actions {
-display: flex;
-justify-content: space-around;
-gap: 1rem;
+/* 메시지 폰트 */
+.delete-font {
+  font-size: 2rem;
+  color: #333;
+}
+
+/* 버튼 그룹 */
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
 /* 확인 버튼 */
-.confirm-button {
-background-color: #ff4d4f;
-color: white;
-border: none;
-padding: 1rem 2rem;
-border-radius: 8px;
-font-size: 1.4rem;
-cursor: pointer;
-transition: background-color 0.3s;
-flex: 1;
-max-width: 120px;
+.confirm-btn {
+  background-color: white;
+  color: #ff414c;
+  border: 1px solid #ff414c;
+  border-radius: 5px;
+  padding: 1rem 5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s;
 }
 
-.confirm-button:hover {
-background-color: #ff7875;
+.confirm-btn:hover {
+  background-color: #ff414c;
+  color: white;
 }
 
 /* 취소 버튼 */
-.cancel-button {
-background-color: #f0f0f0;
-color: #333;
-border: none;
-padding: 1rem 2rem;
-border-radius: 8px;
-font-size: 1.4rem;
-cursor: pointer;
-transition: background-color 0.3s;
-flex: 1;
-max-width: 120px;
+.cancel-btn {
+  background-color: white;
+  color: #439aff;
+  border: 1px solid #439aff;
+  border-radius: 5px;
+  padding: 1rem 5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s;
 }
 
-.cancel-button:hover {
-background-color: #d9d9d9;
+.cancel-btn:hover {
+  background-color: #439aff;
+  color: white;
 }
+
 .profile {
 width: 50px; /* 이미지의 너비를 50px로 설정 */
 height: 50px; /* 이미지의 높이를 50px로 설정 */

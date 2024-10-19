@@ -322,23 +322,21 @@ public class ProductController {
     /**
      * 내용: 공유물품 대여신청
      * req: localhost:8080/api/v1/product/share/1?memberId=2
+     * {
+     *     "startAt": "2024-10-08T03:00:00.000+00:00",
+     *     "endAt": "2024-10-09T03:00:00.000+00:00"
+     * }
      * res:
      * {
      *     "success": true,
      *     "result": {
-     *         "id": 1,
-     *         "memberId": 2,
-     *         "rental": false
+     *         "id": 12,
+     *         "memberId": 5,
+     *         "rental": true,
+     *         "startAt": "2024-10-08T03:00:00.000+00:00",
+     *         "endAt": "2024-10-09T03:00:00.000+00:00"
      *     },
      *     "error": null
-     * }
-     * {
-     *     "success": false,
-     *     "result": null,
-     *     "error": {
-     *         "code": 40010,
-     *         "message": "이미 대여된 물품입니다."
-     *     }
      * }
      */
     @PutMapping("/share/{productId}")

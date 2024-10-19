@@ -1,5 +1,6 @@
 package stanl_2.weshareyou.domain.chat.service;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,7 @@ class ChatRoomMessageServiceImplTests {
     private ChatRoomMessageServiceImpl chatRoomMessageService;
 
     @Test
+    @DisplayName("채팅방 메시지 로딩 성공 테스트")
     void testGetMessagesByRoomId() {
         // given
         String roomId = "roomId123";
@@ -54,6 +56,7 @@ class ChatRoomMessageServiceImplTests {
     }
 
     @Test
+    @DisplayName("채팅방 메시지 로딩 실패 테스트")
     void testGetMessagesByRoomIdWhenNoMessages() {
         // given
         String roomId = "roomId123";

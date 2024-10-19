@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.chat.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,6 +26,7 @@ class ChatRoomServiceImplTests {
     private ChatRoomServiceImpl chatRoomService;
 
     @Test
+    @DisplayName("채팅방 생성 테스트")
     void testCreateChatRoom() {
         // given
         String sender = "senderUser";

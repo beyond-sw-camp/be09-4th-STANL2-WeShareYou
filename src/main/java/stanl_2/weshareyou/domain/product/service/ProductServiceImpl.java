@@ -254,6 +254,9 @@ public class ProductServiceImpl implements ProductService {
             throw new CommonException(ErrorCode.PRODUCT_IS_RENTAL);
         } else {
             product.setMemberId(member);
+            product.setRental(true);
+            product.setStartAt(productDTO.getStartAt());
+            product.setEndAt(productDTO.getEndAt());
 
             productRepository.save(product);
 
@@ -262,7 +265,8 @@ public class ProductServiceImpl implements ProductService {
             productResponseDTO.setRental(product.isRental());
             productResponseDTO.setMemberId(product.getMemberId().getId());
             productResponseDTO.setTitle(product.getTitle());
-            productResponseDTO.setAdminId(product.getAdminId().getId());
+            productResponseDTO.setStartAt(product.getStartAt());
+            productResponseDTO.setEndAt(product.getEndAt());
 
             return productResponseDTO;
         }

@@ -10,6 +10,7 @@ import stanl_2.weshareyou.domain.product.aggregate.dto.ProductDTO;
 import stanl_2.weshareyou.domain.product.aggregate.entity.ProductCategory;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductCreateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductDeleteRequestVO;
+import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductRentalRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.request.ProductUpdateRequestVO;
 import stanl_2.weshareyou.domain.product.aggregate.vo.response.*;
 import stanl_2.weshareyou.domain.product.service.ProductService;
@@ -291,7 +292,7 @@ public class ProductController {
      *                 "adminId": 1,
      *                 "memberId": null
      *             }
-     *         ],
+ z    *         ],
      *         "hasNext": false
      *     },
      *     "error": null
@@ -342,11 +343,14 @@ public class ProductController {
      */
     @PutMapping("/share/{productId}")
     public ApiResponse<?> updateRentalProduct(@PathVariable Long productId,
+                                              @RequestBody ProductRentalRequestVO productRentalRequestVO,
                                               @RequestAttribute("id") Long id) {
 
         ProductDTO productRequestDTO = new ProductDTO();
         productRequestDTO.setId(productId);
         productRequestDTO.setMemberId(id);
+        productRequestDTO.setStartAt(productRentalRequestVO.getStartAt());
+        productRequestDTO.setEndAt(productRentalRequestVO.getEndAt());
         ProductDTO productResponseDTO = productService.updateRentalProduct(productRequestDTO);
 
         alarmService.sendRentalAlarm(productResponseDTO);

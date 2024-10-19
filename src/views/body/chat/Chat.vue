@@ -53,8 +53,8 @@
           <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
             <div class="message-sender">{{ message.sender }}</div>
             <div class="message-content">
-              <span class="message-time">{{ message.message }}</span>
-              <span class="message-time">{{ formatTime(message.createdAt) }}</span>
+              <span class="message-time1">{{ message.message }}</span><br>
+              <span class="message-time2">{{ formatTime(message.createdAt) }}</span>
             </div>
             <div v-if="isLastMessageRead(index, message)">
               <span class="message-time">읽음</span>
@@ -429,8 +429,7 @@
   margin-bottom: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-size: 1.6rem;
-  /* 추가 */
+  font-size: 2.3rem;
   flex: 1;
   margin: 0;
 }
@@ -447,18 +446,25 @@
 /* 채팅방 상세 */
 .chat-room {
   width: 70vw;
-  padding: 2rem;
+  height: 112vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 17rem;
+  padding-top: 2rem;
+  padding-left: 20rem;
+  padding-right: 10rem;
 }
 
 .chat-room-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 4rem;
+  margin-bottom: -3rem;
 }
 
 .message-area {
+  margin: 5rem 1rem;
+  margin-bottom: 2rem;
   flex: 1;
+  width:40vw;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -492,16 +498,22 @@
 }
 
 .message-sender {
-  font-weight: bold;
-  font-size: 1.6rem;
+  font-size: 2rem;
+  padding-right: 1vw;
 }
 
 .message-content {
   background-color: #e5e5ea;
-  padding: 1rem;
+  padding: 0.5rem 2rem;
   border-radius: 1rem;
-  max-width: 50vw;
+  max-width: 25vw;
   word-break: break-word;
+}
+.message-time1{
+  font-size:1vw;
+}
+.message-time2{
+  font-size:0.8vw;
 }
 
 .my-message .message-content {
@@ -512,7 +524,7 @@
 .message-time {
   font-size: 1.2rem;
   margin-top: 0.5rem;
-  color: #555;
+  color: white;
   display: block;
 }
 
@@ -523,14 +535,15 @@
 }
 
 .message-input input {
-  flex: 1;
-  padding: 1rem;
+  margin-left: 1.4rem;
+  flex: 0.8;
+  padding: 1.5rem;
   font-size: 1.4rem;
 }
 
 .message-input button {
   padding: 1rem 2rem;
-  font-size: 1.4rem;
+  font-size: 2rem;
   background-color: white;
   color: #439aff;
   border: 1px solid #439aff;
@@ -552,15 +565,17 @@ cursor: pointer;
 display: block; /* 마우스 오버 시 버튼 표시 */
 }
 .room-item-container {
-position: relative; /* 버튼을 이 항목 내에서 절대 위치하도록 설정 */
-display: flex; /* 버튼과 텍스트를 한 줄에 배치 */
-align-items: center;
-padding: 1rem;
-background-color: white;
-margin-bottom: 0.5rem;
-border-radius: 0.5rem;
-cursor: pointer;
-font-size: 1.6rem;
+  margin-left: -2rem;
+  margin-top: 1rem;
+  position: relative; /* 버튼을 이 항목 내에서 절대 위치하도록 설정 */
+  display: flex; /* 버튼과 텍스트를 한 줄에 배치 */
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 2.3rem;
 }
 
 .room-item-container:hover {

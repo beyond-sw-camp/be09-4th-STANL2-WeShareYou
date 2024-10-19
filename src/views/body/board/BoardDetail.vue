@@ -1,11 +1,13 @@
 <template>
   <div class="modal-overlay" @click.self="close">
     <div class="modal-content">
+      <button class="close-button" @click="close">✕</button>
+
       <!-- 이미지 슬라이더 -->
       <div class="modal-left">
         <img :src="currentImage" alt="Board Image" class="board-image" />
         <div class="navigation">
-          <button v-if="currentImageIndex === 0" @click="nextImage" class="right-button">❯</button>
+          <button v-if="currentImageIndex === 0" @click="nextImage" :class="['right-button', 'first-button']">❯</button>
           <template v-else-if="currentImageIndex < board.imageUrls.length - 1">
             <button @click="prevImage" class="left-button">❮</button>
             <button @click="nextImage" class="right-button">❯</button>
@@ -25,6 +27,7 @@
         <div class="comments">
           <h2>{{ board.title }}</h2>
           <p v-html="formattedContent"></p>
+          <hr class="comment-divider"/>
           <h3>Comments</h3>
           <ul>
             <li v-for="(comment, index) in comments" :key="index" class="comment-item">
@@ -44,8 +47,16 @@
           <div class="interaction-icons">
             <img src="@/assets/icon/boardIcons/heart.svg" @click="likePost" class="svg-icon" alt="Like Icon" />
             <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="focusCommentInput" />
-            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />
-          </div>
+            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />\
+
+            <div class="more-options" @click="toggleDropdown">
+              <button class="more-button">⋯</button>
+              <div v-if="showDropdown" class="dropdown-menu">
+                <button v-if="isAuthor" @click="editPost">수정</button>
+                <button v-if="isAuthor" @click="deletePost">삭제</button>
+              </div>
+            </div>
+          </div>  
 
           <!-- 중간: 좋아요 및 댓글 수 -->
           <div class="interaction-info">
@@ -77,13 +88,43 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  initialImageIndex: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const emit = defineEmits(['close']);
 const close = () => emit('close');
 
+const token = localStorage.getItem('jwtToken'); // JWT 토큰 가져오기
+const showDropdown = ref(false);
+
+const isAuthor = computed(() => board.memberId === token.id);
+
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value;
+};
+
+const editPost = () => {
+  router.push(`/edit/${board.id}`); // Navigate to edit page
+};
+
+const deletePost = async () => {
+  const confirmed = confirm('정말로 이 게시글을 삭제하시겠습니까?');
+  if (confirmed) {
+    try {
+      await fetch(`http://localhost:8080/api/v1/board/${board.id}`, { method: 'DELETE' });
+      alert('게시글이 삭제되었습니다.');
+      close(); // Close the modal after deletion
+    } catch (error) {
+      console.error('게시글 삭제 에러:', error);
+    }
+  }
+};
+
 // 이미지 슬라이드 상태 관리
-const currentImageIndex = ref(0);
+const currentImageIndex = ref(props.initialImageIndex);
 
 const currentImage = computed(() => {
   return props.board.imageUrls?.[currentImageIndex.value] || 'https://via.placeholder.com/300';
@@ -215,7 +256,7 @@ onMounted(() => {
 .board-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* object-fit: cover; */
   object-position: center;
 }
 
@@ -282,7 +323,14 @@ onMounted(() => {
   border: 0;
   height: 1.3px; /* 더 두껍게 */
   background-color: #444; /* 더 진한 회색 */
-  margin: 1rem 0 0 0;
+  margin: 0.3rem 0 0 0;
+}
+
+.comment-divider {
+  border: 0;
+  height: 1px; 
+  background-color: #c8c8c8; 
+  margin: 0.3rem 0 0 0;
 }
 
 h2 {
@@ -398,5 +446,65 @@ p {
 .send-icon {
   width: 3rem;
   height: 3rem;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.more-options {
+  position: relative;
+}
+
+.more-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.more-button:hover {
+  color: #333;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 2.5rem;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.dropdown-menu button:hover {
+  color: red;
 }
 </style>

@@ -21,13 +21,26 @@
           <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image" @click="goToProfile(item.memberNickname)">
           <span class="nickname" @click="goToProfile(item.memberNickname)">{{ item.memberNickname }} </span>
         </div>
-
+        
+        <hr class="divider"/>
         <div class="image-container">
-          <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image" @click="openModal(item)"/>
+          <img 
+            v-for="(image, i) in item.imageObj.slice(0, 3)" 
+            :key="i" 
+            :src="image.imageUrl" 
+            :alt="image.fileName" 
+            class="board-image" 
+            @click="openModal(item, i)" 
+          />
         </div>
 
         <div class="board-footer">
-          <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.id)"/>
+          <img
+            :src="item.liked ? filledHeartIcon : emptyHeartIcon"
+            class="svg-icon"
+            alt="Heart Icon"
+            @click="upLike(item.id)"
+          />
           <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(item)" />
           <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
         </div> 
@@ -59,7 +72,12 @@
 
     <div v-if="loading" class="loading">Loading...</div>
     <!-- Modal Component -->
-    <board-detail v-if="isModalOpen" :board="selectedBoard" @close="closeModal" />
+    <board-detail 
+      v-if="isModalOpen" 
+      :board="selectedBoard" 
+      :initialImageIndex="selectedImageIndex" 
+      @close="closeModal" 
+    />
   </div>
 </template>
 
@@ -77,11 +95,14 @@ const sentinel = ref(null);
 const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']); // 태그 목록
 const isModalOpen = ref(false);
 const selectedBoard = ref(null);
+const selectedImageIndex = ref(0);
 
 const router = useRouter();
 const route = useRoute();
 
 const tag = ref(route.params.tag || 'GUIDE');
+const emptyHeartIcon = new URL('@/assets/icon/boardIcons/heart.svg', import.meta.url).href;
+const filledHeartIcon = new URL('@/assets/icon/boardIcons/filledheart.svg', import.meta.url).href;
 
 const fetchBoardItems = async (reset = false) => {
     if (loading.value || (!reset && !hasNext.value)) return;
@@ -134,11 +155,12 @@ const fetchBoardItems = async (reset = false) => {
     }
 };
 
-const openModal = (board) => {
+const openModal = (board, imageIndex) => {
   selectedBoard.value = {
     ...board,
     imageUrls: board.imageObj.map(image => image.imageUrl),
   };
+  selectedImageIndex.value = imageIndex; // Set the initial image index
   isModalOpen.value = true;
 };
 
@@ -194,10 +216,9 @@ const goToChat = () => {
 
 const upLike = async (boardId) => {
     try {
-        const token = localStorage.getItem('jwtToken'); // JWT 토큰 가져오기
+        const token = localStorage.getItem('jwtToken');
         const boardIndex = boards.value.findIndex(board => board.id === boardId);
-
-        if (boardIndex === -1) return; // 게시물을 찾지 못한 경우 처리
+        if (boardIndex === -1) return;
 
         const board = boards.value[boardIndex];
         const url = 'http://localhost:8080/api/v1/board_like';
@@ -207,30 +228,25 @@ const upLike = async (boardId) => {
         };
 
         if (board.liked) {
-            // 이미 좋아요된 상태 -> DELETE 요청
             await axios.delete(url, {
                 headers,
-                data: { boardId } // DELETE 요청 본문에 데이터 전달
+                data: { boardId }
             });
 
-            board.likesCount -= 1; // 좋아요 개수 감소
+            board.likesCount -= 1;
+            board.liked = false;
             console.log('좋아요 취소 완료');
         } else {
-            // 좋아요가 안된 상태 -> POST 요청
             await axios.post(url, { boardId }, { headers });
 
-            board.likesCount += 1; // 좋아요 개수 증가
+            board.likesCount += 1;
+            board.liked = true;
             console.log('좋아요 추가 완료');
         }
-
-        // liked 상태 토글
-        board.liked = !board.liked;
     } catch (error) {
         console.error('좋아요 처리 에러:', error.response?.data || error.message);
     }
 };
-
-
 
 watch(
     () => route.params.tag,
@@ -391,19 +407,21 @@ onUnmounted(() => {
 
 .image-container {
   display: flex;
-  gap: 1.5rem; /* 8px = 0.5rem */
-  margin-bottom: 0.75rem; /* 12px = 0.75rem */
   padding: 1rem;
-  box-sizing: border-box; /* Ensure padding is included in the total size */
+  box-sizing: border-box;
+  width: 100%;
+  gap: 1rem; /* 이미지 사이의 간격 */
 }
 
 .board-image {
-  width: 30rem;
-  height: 30rem;
-  border-radius: 0.8rem; /* 모서리 둥글게 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* 애니메이션 */
-  cursor: pointer; /* 마우스 커서 변경 */
+  flex: 1;
+  max-width: calc((100% - 2rem) / 3); /* 3개 이미지일 때 각각의 최대 너비 */
+  height: 26rem;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .board-footer {
@@ -461,7 +479,7 @@ onUnmounted(() => {
   display: flex;
   gap: 0.3rem;
   font-size: 2rem;
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 }
 
 .loading {
@@ -471,5 +489,15 @@ onUnmounted(() => {
   color: #666;
 }
 
-/* -- */
+.svg-icon {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.svg-icon:hover {
+  transform: scale(1.2);
+}
 </style>

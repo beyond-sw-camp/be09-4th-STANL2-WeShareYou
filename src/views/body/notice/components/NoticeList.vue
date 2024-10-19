@@ -231,13 +231,13 @@ p {
   display: flex;
   justify-content: center;
   align-items: end;
-  font-size: 1.25rem;
-  margin-right: 1rem;
+  font-size: 1.6rem;
+  margin-right: 0.25rem;
   padding: 1rem 2rem;
   border: 1px solid #439aff;
   color: #439aff;
-  background-color: transparent;
-  border-radius: 4px;
+  background-color: white;
+  border-radius: 0.5rem;
   cursor: pointer;
 }
 

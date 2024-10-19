@@ -229,7 +229,7 @@
 
 .button-inner {
   display: flex;
-  gap: 1vw; /* 버튼 간 간격 설정 */
+  gap: 0.5vw; /* 버튼 간 간격 설정 */
 }
 
 .modify-button,

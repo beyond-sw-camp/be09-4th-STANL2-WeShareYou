@@ -149,7 +149,7 @@ const submitPost = async () => {
 .list-btn {
     color: #FF414C;
     background-color: white;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     text-align: center;
     height: 4rem;
@@ -162,7 +162,7 @@ const submitPost = async () => {
 .submit-btn {
     background-color: white;
     color: #439aff;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     text-align: center;
     height: 4rem;

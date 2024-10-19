@@ -237,7 +237,7 @@ p {
   border: 1px solid #439aff;
   color: #439aff;
   background-color: white;
-  border-radius: 4px;
+  border-radius: 0.5rem;
   cursor: pointer;
 }
 

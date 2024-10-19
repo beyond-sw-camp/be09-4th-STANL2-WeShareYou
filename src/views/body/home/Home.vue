@@ -62,6 +62,10 @@ const translatedText6 = ref(originalText8);
 const translateContent = async (lang) => {
   translatedText1.value = await translateText(originalText1, lang);
   translatedText2.value = await translateText(originalText4, lang);
+  translatedText3.value = await translateText(originalText5, lang);
+  translatedText4.value = await translateText(originalText6, lang);
+  translatedText5.value = await translateText(originalText7, lang);
+  translatedText6.value = await translateText(originalText8, lang);
 };
 
 // 전역 언어 상태를 감시하고, 변경될 때마다 번역 실행
@@ -77,6 +81,8 @@ translateContent(currentLang.value);
 .Landing {
   height: 900vh; /* 전체 화면 높이에 맞추기 */
   overflow: hidden; /* 오버플로우를 숨김 */
+  scroll-snap-type: y mandatory; /* 세로 방향으로 스냅, 강제 스냅 */
+  scroll-behavior: smooth; /* 부드러운 스크롤 */
 }
 
 .page {
@@ -107,6 +113,7 @@ button {
   width: 100%;
   height: auto;
   object-fit: contain;
+  
 }
 
 .overlay1 {
@@ -212,6 +219,34 @@ button {
   font-size: 3.5vw;
   text-align: center;
   margin: 5vh 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.overlay1, .overlay2, .overlay3, .overlay4, .overlay5, .overlay6, .overlay7 {
+  animation: fadeIn 2s ease-in-out, slideUp 2s ease-in-out; /* 페이드인과 슬라이드 업 효과 */
+}
+
+.text-1, .text-2, .text-3, .text-4 {
+  animation: fadeIn 2s ease-in-out; /* 텍스트에 페이드인 효과 */
 }
 
 

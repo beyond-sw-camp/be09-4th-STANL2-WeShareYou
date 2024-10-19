@@ -31,13 +31,19 @@
           <h3>Comments</h3>
           <ul>
             <li v-for="(comment, index) in comments" :key="index" class="comment-item">
-              <img v-if="comment.memberProfileUrl" :src="comment.memberProfileUrl" alt="Profile Image" class="profile-img" />
+              <img 
+                v-if="comment.memberProfileUrl" 
+                :src="comment.memberProfileUrl" 
+                alt="Profile Image" 
+                class="profile-img" 
+              />
               <div class="comment-content">
                 <strong class="nickname">{{ comment.nickname }}</strong>
                 <p class="content">{{ comment.content }}</p>
               </div>
             </li>
           </ul>
+
         </div>
 
         <div class="interactions">
@@ -66,7 +72,7 @@
 
           <!-- 하단: 댓글 입력과 전송 -->
           <div class="comment-input">
-            <input v-model="newComment" ref="commentInput" placeholder="Write a comment..." />
+            <input v-model="newComment" ref="commentInput" placeholder="Write a comment..." @keyup.enter="addComment"/>
             <img src="@/assets/icon/boardIcons/send.svg" @click="addComment" class="svg-icon send-icon" alt="Send Icon" />
           </div>
         </div>
@@ -197,12 +203,52 @@ const fetchComments = async () => {
   }
 };
 
-const addComment = () => {
-  if (newComment.value.trim() !== '') {
-    comments.value.push({ nickname: 'You', content: newComment.value, memberProfileUrl: null });
+const addComment = async () => {
+  if (newComment.value.trim() === '') return; // 빈 댓글 방지
+
+  try {
+    const token = localStorage.getItem('jwtToken');
+    const payload = JSON.parse(atob(token.split('.')[1])); // JWT 토큰에서 유저 정보 추출
+    const nickName = payload.nickname || '익명'; // 닉네임 추출 (없을 시 '익명')
+    const profileUrl = payload.profile || null; // 프로필 이미지 URL 추출
+
+    const response = await fetch('http://localhost:8080/api/v1/board-comment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' ,
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        content: newComment.value, // 댓글 내용
+        boardId: props.board.id, // 게시물 ID
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('댓글 작성 실패:', response.statusText);
+      return;
+    }
+
+    const result = await response.json(); // 서버 응답을 JSON으로 파싱
+
+    // 댓글을 작성자 정보와 함께 실시간으로 추가
+    comments.value.push({
+      memberProfileUrl: profileUrl,
+      nickname: nickName,
+      content: newComment.value, // 작성한 댓글 내용
+    });
+
+    // 댓글 수 업데이트
+    props.board.commentCount += 1;
+
+    // 입력창 초기화
     newComment.value = '';
+    console.log('댓글 작성 성공:', result);
+  } catch (error) {
+    console.error('댓글 작성 에러:', error);
   }
 };
+
 
 const likePost = () => {
   console.log('Post liked!');

@@ -71,6 +71,7 @@
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
+    
     <!-- Modal Component -->
     <board-detail 
       v-if="isModalOpen" 
@@ -93,6 +94,7 @@ const hasNext = ref(true);
 const loading = ref(false);
 const sentinel = ref(null);
 const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']); // 태그 목록
+const likedBoardIds = ref(new Set());
 const isModalOpen = ref(false);
 const selectedBoard = ref(null);
 const selectedImageIndex = ref(0);
@@ -103,6 +105,19 @@ const route = useRoute();
 const tag = ref(route.params.tag || 'GUIDE');
 const emptyHeartIcon = new URL('@/assets/icon/boardIcons/heart.svg', import.meta.url).href;
 const filledHeartIcon = new URL('@/assets/icon/boardIcons/filledheart.svg', import.meta.url).href;
+
+const fetchLikedBoards = async () => {
+    try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('http://localhost:8080/api/v1/board_likes', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        likedBoardIds.value = new Set(response.data); // 좋아요한 게시글 ID 저장
+    } catch (error) {
+        console.error('Error fetching liked boards:', error.response?.data || error.message);
+    }
+};
 
 const fetchBoardItems = async (reset = false) => {
     if (loading.value || (!reset && !hasNext.value)) return;
@@ -142,6 +157,10 @@ const fetchBoardItems = async (reset = false) => {
             hasNext.value = data.result?.hasNext;
         }
 
+        newContents.forEach((board) => {
+            board.liked = likedBoardIds.value.has(board.id);
+        });
+        
         boards.value = [...boards.value, ...newContents];
         console.log('New contents added:', newContents.length); // 디버깅 로그
 
@@ -217,7 +236,7 @@ const goToChat = () => {
 const upLike = async (boardId) => {
     try {
         const token = localStorage.getItem('jwtToken');
-        const boardIndex = boards.value.findIndex(board => board.id === boardId);
+        const boardIndex = boards.value.findIndex((board) => board.id === boardId);
         if (boardIndex === -1) return;
 
         const board = boards.value[boardIndex];
@@ -235,12 +254,14 @@ const upLike = async (boardId) => {
 
             board.likesCount -= 1;
             board.liked = false;
+            likedBoardIds.value.delete(boardId); // Set에서 삭제
             console.log('좋아요 취소 완료');
         } else {
             await axios.post(url, { boardId }, { headers });
 
             board.likesCount += 1;
             board.liked = true;
+            likedBoardIds.value.add(boardId); // Set에 추가
             console.log('좋아요 추가 완료');
         }
     } catch (error) {
@@ -256,12 +277,14 @@ watch(
     }
 );
 
-onMounted(() => {
-    fetchBoardItems();
+onMounted(async () => {
+    await fetchLikedBoards(); // 좋아요한 게시글 정보 먼저 로드
+    await fetchBoardItems(); // 게시글 로드 후 좋아요 상태 반영
     if (sentinel.value) {
         intersectionObserver.observe(sentinel.value);
     }
 });
+
 
 onUnmounted(() => {
     if (sentinel.value) {

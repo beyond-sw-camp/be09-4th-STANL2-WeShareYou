@@ -1,6 +1,7 @@
 package stanl_2.weshareyou.domain.notice.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -46,6 +47,7 @@ class NoticeServiceImplTests {
     }
 
     @Test
+    @DisplayName("공지 상세조회 테스트")
     void testReadNoticeById() {
         // given
         Long noticeId = 1L;
@@ -74,6 +76,7 @@ class NoticeServiceImplTests {
     }
 
     @Test
+    @DisplayName("공지 작성 테스트")
     void testCreateNotice() {
         // given
         NoticeDTO noticeDTO = new NoticeDTO();

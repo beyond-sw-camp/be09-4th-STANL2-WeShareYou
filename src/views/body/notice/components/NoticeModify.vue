@@ -153,7 +153,7 @@ const submitPost = async () => {
     cursor: pointer;
     text-align: center;
     height: 4rem;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     padding: 0rem 2rem;
     border: 1px solid #FF414C;
     margin-right: 4.5rem;
@@ -166,7 +166,7 @@ const submitPost = async () => {
     cursor: pointer;
     text-align: center;
     height: 4rem;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     padding: 0rem 2rem;
     border: 1px solid #439aff !important;
     margin-right: 0.5rem;

@@ -16,7 +16,7 @@ import ModifyProfile from "../views/body/member/ModifyProfile.vue";
 import MemberIP from "../views/body/admin/MemberIP.vue";
 import OtherProfile from "../views/body/member/OtherProfile.vue";
 import Chat from "../views/body/chat/Chat.vue";
-import BoardDetail from "@/views/body/board/BoardDetail.vue";
+import BoardDetail from "../views/body/board/BoardDetail.vue";
 
 import NoticeDetail from "@/views/body/notice/components/NoticeDetail.vue";
 import NoticePost from '@/views/body/notice/components/NoticePost.vue';
@@ -70,12 +70,21 @@ const routes = [
     {
         path: '/board/:tag',
         name: 'Board',
-        component: () => Board,
+        component: Board,
+        children: [
+            {
+                path: 'detail/:id', // Nested route for modal
+                name: 'BoardDetailModal',
+                component: BoardDetail,
+                props: true,
+            },
+        ],
     },
     {
-        path: '/board/detal/:id',
+        path: '/board/detail/:id', // Regular route for direct access
         name: 'BoardDetail',
-        component: () => BoardDetail,
+        component: BoardDetail,
+        props: true,
     },
     {
         path: '/notice',

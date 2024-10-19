@@ -51,20 +51,16 @@
                     <span :class="{ active: activeMenu === 'board' }">{{ translatedMenu.board }}</span>
                     <ul v-show="activeDropdown === 'board'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/GUIDE" @click="setActiveMenu('board')">{{ translatedMenu.guide }}
-                            </RouterLink>
+                            <RouterLink to="/board/GUIDE" @click="handletagClick('board','GUIDE')">{{ translatedMenu.guide }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/FREEMARKET" @click="setActiveMenu('board')">{{
-                                translatedMenu.freemarket }}</RouterLink>
+                            <RouterLink to="/board/FREEMARKET" @click="handletagClick('board','FREEMARKET')">{{ translatedMenu.freemarket }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/ACCOMPANY" @click="setActiveMenu('board')">{{
-                                translatedMenu.companion }}</RouterLink>
+                            <RouterLink to="/board/ACCOMPANY" @click="handletagClick('board','ACCOMPANY')">{{ translatedMenu.accompany }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink to="/board/TIP" @click="setActiveMenu('board')">{{ translatedMenu.tip }}
-                            </RouterLink>
+                            <RouterLink to="/board/TIP" @click="handletagClick('board','TIP')">{{ translatedMenu.tip }}</RouterLink>
                         </li>
                     </ul>
                 </li>
@@ -154,15 +150,15 @@ const hasNext = ref(true); // 다음 페이지 여부를 서버 응답으로 관
 const loading = ref(false); // 로딩 중인지 여부를 관리
 
 const translatedMenu = ref({
-    product: '공유 물품',
-    board: '게시글',
-    guide: '가이드',
-    freemarket: '프리마켓',
-    companion: '동행',
-    tip: 'TIP',
-    notice: '공지사항',
-    faq: '자주 묻는 질문',
-    direction: '오시는 길',
+  product: '공유 물품',
+  board: '게시글',
+  guide: '가이드',
+  freemarket: '프리마켓',
+  accompany: '동행',
+  tip: 'TIP',
+  notice: '공지사항',
+  faq: '자주 묻는 질문',
+  direction: '오시는 길',
 });
 
 const translatedCategories = ref({
@@ -301,6 +297,12 @@ const handleCategoryClick = (menu, category) => {
     setActiveMenu(menu); // 메뉴 활성화
     activeDropdown.value = null; // 드롭다운 닫기
     router.push(`/product/${category}`); // 선택된 카테고리로 이동
+};
+
+const handletagClick = (menu, tag) => {
+    setActiveMenu(menu); // 메뉴 활성화
+    activeDropdown.value = null; // 드롭다운 닫기
+    router.push(`/board/${tag}`); // 선택된 카테고리로 이동
 };
 
 // 메뉴 활성화

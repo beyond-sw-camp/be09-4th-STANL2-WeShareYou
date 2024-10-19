@@ -1,414 +1,394 @@
 <template>
-    <div class="layout">
-      <!-- 태그판 (Sidebar) -->
-      <div class="sidebar">
-        <ul class="tag-list">
-          <li v-for="(tag, index) in tags" :key="index" class="tag-item">
-            <button @click="selectTag(tag)">{{ tag }}</button>
-          </li>
-        </ul>
-      </div>
-  
-      <!-- 게시물 목록 (Main Content) -->
-      <div class="board-container">
-        <div class="actions">
-          <!-- 글 작성 버튼 -->
-          <button class="create-button" @click="goToCreate">글 작성</button>
+  <div class="modal-overlay" @click.self="close">
+    <div class="modal-content">
+      <!-- 이미지 슬라이더 -->
+      <div class="modal-left">
+        <img :src="currentImage" alt="Board Image" class="board-image" />
+        <div class="navigation">
+          <button v-if="currentImageIndex === 0" @click="nextImage" class="right-button">❯</button>
+          <template v-else-if="currentImageIndex < board.imageUrls.length - 1">
+            <button @click="prevImage" class="left-button">❮</button>
+            <button @click="nextImage" class="right-button">❯</button>
+          </template>
+          <button v-if="currentImageIndex === board.imageUrls.length - 1" @click="prevImage" class="left-button">❮</button>
         </div>
-        <div v-for="item in boards" :key="item.id" class="board-card">
-          
-          <div class="user-info">
-            <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image">
-            <span class="nickname">{{ item.memberNickname }}</span>
+      </div>
+
+      <!-- 게시물 제목과 내용 -->
+      <div class="modal-right">
+        <div class="user-info">
+          <img :src="board.memberProfileUrl" alt="User Profile" class="profile-image" />
+          <span class="nickname">{{ board.memberNickname }}</span>
+        </div>
+        <hr class="divider" />
+
+        <div class="comments">
+          <h2>{{ board.title }}</h2>
+          <p v-html="formattedContent"></p>
+          <h3>Comments</h3>
+          <ul>
+            <li v-for="(comment, index) in comments" :key="index" class="comment-item">
+              <img v-if="comment.memberProfileUrl" :src="comment.memberProfileUrl" alt="Profile Image" class="profile-img" />
+              <div class="comment-content">
+                <strong class="nickname">{{ comment.nickname }}</strong>
+                <p class="content">{{ comment.content }}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="interactions">
+
+          <hr class="interaction-divider" />
+          <!-- 상단: 좋아요 아이콘 -->
+          <div class="interaction-icons">
+            <img src="@/assets/icon/boardIcons/heart.svg" @click="likePost" class="svg-icon" alt="Like Icon" />
+            <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(board)" />
+            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />
           </div>
-  
-          <div class="image-container">
-            <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image"/>
+
+          <!-- 중간: 좋아요 및 댓글 수 -->
+          <div class="interaction-info">
+            <span>좋아요 {{ board.likesCount }}개</span>
+            <span>댓글 {{ board.commentCount }}개</span>
           </div>
-  
-          <div class="board-footer">
-            <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.likesCount)"/>
-            <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="goToComments(item)" />
-            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
-          </div> 
-  
-          <h3 class="board-title">{{ item.title }}</h3>
-  
-          <div class="content-container">
-            <p class="board-content" v-if="!item.showFullContent">
-              <span v-html="formatContent(getFirstLine(item.content))"></span>
-              <span v-if="item.content.includes('\n') || item.content.length > getFirstLine(item.content).length">...</span>
-            </p>
-            <p class="board-content" v-else>
-              <span v-html="formatContent(item.content)"></span>
-            </p>
-            <button v-if="!item.showFullContent && item.content.length > 30" @click="toggleContent(item)" class="more-button">
-              더보기
-            </button>
+
+          <!-- 하단: 댓글 입력과 전송 -->
+          <div class="comment-input">
+            <input v-model="newComment" placeholder="Write a comment..." />
+            <img src="@/assets/icon/boardIcons/send.svg" @click="addComment" class="svg-icon send-icon" alt="Send Icon" />
           </div>
         </div>
-        <!-- 무한 스크롤을 위한 sentinel -->
-        <div ref="sentinel" class="sentinel"></div>
       </div>
-  
-      <div v-if="loading" class="loading">Loading...</div>
     </div>
-  </template>
-  
-  <script setup>
-  import { useRouter, useRoute } from 'vue-router';
-  import { ref, onMounted, onUnmounted, watch } from 'vue';
-  import axios from 'axios';
-  
-  const boards = ref([]);
-  const cursorId = ref('');
-  const hasNext = ref(true);
-  const loading = ref(false);
-  const sentinel = ref(null);
-  const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']); // 태그 목록
-  
-  const router = useRouter();
-  const route = useRoute();
-  
-  const tag = ref(route.params.tag || 'GUIDE');
-  
-  const fetchBoardItems = async (reset = false) => {
-      if (loading.value || (!reset && !hasNext.value)) return;
-  
-      loading.value = true;
-  
-      if (reset) {
-          boards.value = [];
-          cursorId.value = '';
-          hasNext.value = true;
+  </div>
+</template>
+
+
+<script setup>
+import { useRouter, useRoute } from 'vue-router';
+import { defineProps, defineEmits, ref, computed, onMounted } from 'vue';
+
+const router = useRouter();
+const route = useRoute();
+
+const props = defineProps({
+  board: {
+    type: Object,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['close']);
+const close = () => emit('close');
+
+// 이미지 슬라이드 상태 관리
+const currentImageIndex = ref(0);
+
+const currentImage = computed(() => {
+  return props.board.imageUrls?.[currentImageIndex.value] || 'https://via.placeholder.com/300';
+});
+
+const prevImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+  }
+};
+
+const nextImage = () => {
+  if (currentImageIndex.value < props.board.imageUrls.length - 1) {
+    currentImageIndex.value++;
+  }
+};
+
+const formattedContent = computed(() => {
+  return props.board.content.replace(/\n/g, '<br>');
+});
+
+const comments = ref([]);
+
+const fetchComments = async () => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/v1/board-comment/${props.board.id}`);
+
+    let data = await response.text(); // 응답을 텍스트로 읽기
+    console.log('Response Text:', data); // 응답 로그 출력
+
+    let parsedData;
+    // 응답이 문자열일 경우 JSON을 파싱
+    if (typeof data === 'string') {
+      const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || []; // 여러 JSON이 중복될 경우 첫 번째만 추출
+      if (jsonParts.length > 0) {
+        try {
+          parsedData = JSON.parse(jsonParts[0]); // 첫 번째 JSON 파싱
+        } catch (error) {
+          console.error("JSON 파싱 실패:", error);
+          return;
+        }
+      } else {
+        console.error('No valid JSON found in response.');
+        return;
       }
-  
-      try {
-          console.log('Fetching board items...'); // 디버깅 로그
-          const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
-              params: { cursor: cursorId.value || '', size: 3 }
-          });
-  
-          let data = response.data;
-          let newContents = [];
-          
-          console.log("Parsed Data:", data);
-          if (typeof data === 'string') {
-              const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
-              if (jsonParts.length > 0) {
-                  try {
-                      const parsed = JSON.parse(jsonParts[0]);
-                      newContents = parsed.result?.comment || [];
-                      cursorId.value = parsed.result?.cursorId || '';
-                      hasNext.value = parsed.result?.hasNext;
-                  } catch (error) {
-                      console.error("JSON 파싱 실패:", error);
-                  }
-              }
-          } else {
-              newContents = data.result?.comment || [];
-              cursorId.value = data.result?.cursorId || '';
-              hasNext.value = data.result?.hasNext;
-          }
-  
-          boards.value = [...boards.value, ...newContents];
-          console.log('New contents added:', newContents.length); // 디버깅 로그
-  
-          if (boards.value.length === 0) {
-              console.warn("No boards found.");
-          }
-      } catch (error) {
-          console.error("API 호출 에러:", error.response?.data || error.message);
-      } finally {
-          loading.value = false;
-      }
-  };
-  
-  const selectTag = (selectedTag) => {
-    tag.value = selectedTag;
-    fetchBoardItems(true);
-  };
-  
-  // "더보기" 버튼 클릭 시 전체 내용 토글 함수
-  const toggleContent = (item) => {
-      item.showFullContent = !item.showFullContent;
-  };
-  
-  const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 1.0
-  };
-  
-  const intersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-          if (entry.isIntersecting && !loading.value && hasNext.value) {
-              console.log('Intersection observed, fetching more items...'); // 디버깅 로그
-              fetchBoardItems();
-          }
-      });
-  }, observerOptions);
-  
-  const formatContent = (text) => {
-    return text.replace(/\n/g, '<br>');
+    } else {
+      // 만약 응답이 이미 JSON 객체라면 그대로 할당
+      parsedData = data;
+    }
+
+    // JSON이 성공적으로 파싱되었을 때 처리
+    if (parsedData.success && parsedData.result) {
+      comments.value = parsedData.result.map(comment => ({
+        memberProfileUrl: comment.memberProfileUrl,
+        nickname: comment.nickname,
+        content: comment.content,
+      }));
+    } else {
+      console.error('Unexpected data format:', parsedData);
+    }
+
+  } catch (error) {
+    console.error('Error fetching comments:', error);
   }
-  
-  const getFirstLine = (text) => {
-    return text.split('\n')[0]; // \n 기준으로 첫 번째 줄 반환
+};
+
+const addComment = () => {
+  if (newComment.value.trim() !== '') {
+    comments.value.push({ nickname: 'You', content: newComment.value, memberProfileUrl: null });
+    newComment.value = '';
   }
-  
-  const goToComments = (item) => {
-    router.push(`/detail/${item.id}`); // 댓글 페이지로 이동
-      };
-  
-  const goToCreate = () => {
-    router.push('/board/create'); // 글 작성 페이지로 이동
-  };
-  
-  const goToChat = () => {
-    router.push('/chat');
-  };
-  
-  watch(
-      () => route.params.tag,
-      (newTag) => {
-          tag.value = newTag || 'GUIDE';
-          fetchBoardItems(true);
-      }
-  );
-  
-  onMounted(() => {
-      fetchBoardItems();
-      if (sentinel.value) {
-          intersectionObserver.observe(sentinel.value);
-      }
-  });
-  
-  onUnmounted(() => {
-      if (sentinel.value) {
-          intersectionObserver.unobserve(sentinel.value);
-      }
-  });
-  </script>
-  
-  <style scoped>
-  /* :root {
-    --main-blue: #94C7FF;
-    --white: #FFF;
-    --black-60: #627086;
-    --shadow-color: rgba(19, 24, 48, 0.15);
-  }
-  
-  body {
-    font-family: ABeeZee, sans-serif;
-  } */
-  
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .create-button {
-    border-radius: 6.954px;
-    border: 0.993px solid var(--Main_1, #439AFF);
-    background: var(--White_100, #FFF);
-    color: var(--Main_1, #439AFF);
-    width: 10rem;
-    height: 3.5rem;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    font-size: 2rem;
-    
-  }
-  
-  .create-button:hover {
-    background-color: #73b3ff;
-  }
-  
-  .layout {
-    position: relative;
-  }
-  
-  .sidebar {
-    position: fixed;
-    width: 15rem;
-    height: 16.7rem;
-    margin-top: 12rem;
-    transition: top 0.3s ease;
-    transform: translateX(7rem);
-    border-radius: 7px;
-    border: 0.5px solid var(--Main_-3, #94C7FF);
-    background: var(--White_100, #FFF);
-    box-shadow: 0px 4px 8px 0px rgba(19, 24, 48, 0.15);
-    margin-left: -0.5rem;
-  }
-  
-  .tag-list {
-    list-style: none;
-    padding: 0; /* 리스트 패딩 제거 */
-    margin: 0; /* 리스트 마진 제거 */
-  }
-  
-  .tag-item {
-    margin: 0; /* 태그 항목 간격 제거 */
-  }
-  
-  .tag-item button {
-    width: 100%; /* 부모 요소의 너비에 맞게 설정 */
-    height: 3.4rem; /* 버튼 높이 설정 */
-    align-items: center; /* 수직 가운데 정렬 */
-    /* justify-content: center; 수평 가운데 정렬 */
-    border: none; /* 기본 테두리 제거 */
-    background: var(--White_100, #FFF); /* 기본 배경색: 흰색 */
-    color: var(--Black_60, #627086); /* 기본 텍스트 색상 */
-    border-radius: 7px;
-    cursor: pointer; /* 커서 변경 */
-    font-size: 13px;
-    font-style: italic;
-    font-weight: 400;
-    transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
-    box-shadow: none; /* 기본 그림자 제거 */
-  }
-  
-  .tag-item button:hover {
-    background-color: var(--Main_-3, #94C7FF); /* 호버 시 활성화된 배경색 */
-    color: var(--White_100, #FFF); /* 호버 시 텍스트 색상 변경 */
-  }
-  
-  .tag-item button.active {
-    background-color: var(--Main_-3, #94C7FF); /* 활성화된 배경색 */
-    color: var(--White_100, #FFF); /* 활성화된 텍스트 색상 */
-  }
-  
-  
-  .tag-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .tag-item {
-    margin-bottom: 1rem;
-  }
-  
-  .board-container {
-    width: 90rem;
-    margin: 27rem ;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .board-card {
-    background: #FFFFFF;
-    border: 0.07rem solid #E0E0E0; /* 1px = 0.07rem */
-    border-radius: 1.5rem; /* 8px = 0.5rem */
-    padding: 2rem; /* 16px = 1rem */
-    margin-bottom: 3rem; /* 카드 간의 아래 여백 추가 */
-    margin-top: 2rem; /* 카드 간의 아래 여백 추가 */
-    box-shadow: 0px 1.5px 4.6px 0px rgba(0, 0, 0, 0.25);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  }
-  
-  .board-card:hover {
-    transform: scale(1.01); /* 호버 시 이미지 확대 */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 진하게 */
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profile-image {
-    width: 5rem; /* 40px = 2.5rem */
-    height: 5rem; /* 40px = 2.5rem */
-    border-radius: 50%;
-    margin-right: 0.75rem; /* 12px = 0.75rem */
-  }
-  
-  .nickname {
-    font-size: 2rem;
-  }
-  
-  .board-title {
-    font-weight: bold;
-    font-size: 1.6rem; /* Adjust as needed */
-    margin-bottom: 0; /* Remove margin below title */
-    margin-left: 1rem;
-  }
-  
-  .image-container {
-    display: flex;
-    gap: 1.5rem; /* 8px = 0.5rem */
-    margin-bottom: 0.75rem; /* 12px = 0.75rem */
-    padding: 1rem;
-    box-sizing: border-box; /* Ensure padding is included in the total size */
-  }
-  
-  .board-image {
-    width: 30rem;
-    height: 30rem;
-    border-radius: 0.8rem; /* 모서리 둥글게 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* 애니메이션 */
-    cursor: pointer; /* 마우스 커서 변경 */
-  }
-  
-  .board-footer {
-    width: 2rem;
-    height: 2rem;
-    flex-shrink: 0;
-    display: flex;
-    margin-left: 1rem;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-  }
-  
-  .interaction-count {
-    font-size: 0.875rem; /* 14px = 0.875rem */
-    color: #666;
-  }
-  
-  .content-container {
-    display: flex;
-    align-items: center; /* 세로 중앙 정렬 */
-    gap: 1rem; /* content와 버튼 간의 간격 */
-    margin-left: 1rem;
-  }
-  
-  .board-content {
-    font-size: 2.2rem;
-    margin-top: 0; 
-    margin-bottom: 0; 
-    white-space: pre-wrap; /* Ensure text formatting with line breaks is preserved */
-    color: #666;
-    line-height: 1.2; /* 줄 간 간격을 줄임 */
-  }
-  
-  .more-button {
-    background: none;
-    border: none;
-    color: #999; /* Grey color similar to Instagram UI */
-    font-size: 1.5rem; /* Adjusted size to fit the style */
-    cursor: pointer;
-    padding: 0;
-    text-decoration: none;
-    transition: color 0.2s;
-    margin-top: auto;
-    margin-left: -0.5rem;
-  }
-  
-  .more-button:hover {
-    color: #555; /* Darker grey on hover */
-  }
-  
-  
-  .loading {
-    text-align: center;
-    padding: 1.25rem; /* 20px = 1.25rem */
-    font-size: 1.125rem; /* 18px = 1.125rem */
-    color: #666;
-  }
-  
-  /* -- */
-  </style>
+};
+
+const likePost = () => {
+  console.log('Post liked!');
+};
+
+const goToChat = () => {
+  router.push('/chat');
+};
+
+// 게시물이 열릴 때 댓글을 가져옴
+onMounted(() => {
+  fetchComments();
+});
+
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: row;
+  background: white;
+  width: 80vw;
+  height: 90vh;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-left {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  height: 100%;
+}
+
+.board-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.navigation {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.left-button,
+.right-button {
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+.left-button {
+  margin-left: 1rem;
+}
+
+.right-button {
+  margin-right: 1rem;
+}
+
+.left-button:hover,
+.right-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-right {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem; /* 조금 더 조정 */
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.nickname {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.divider {
+  border: 0;
+  height: 1.3px; /* 더 두껍게 */
+  background-color: #444; /* 더 진한 회색 */
+  margin: 1rem 0 0 0;
+}
+
+h2 {
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+}
+
+p {
+  flex-grow: 1;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.comments {
+  margin: 0;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox용 */
+}
+
+/* 크롬, 사파리, 엣지 등의 웹킷 기반 브라우저용 */
+.comments::-webkit-scrollbar {
+  display: none;
+}
+
+.comment-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.profile-img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+  flex-shrink: 0; /* 이미지 크기 고정 */
+}
+
+.comment-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 닉네임과 댓글 간 여백 */
+  flex-wrap: wrap; /* 긴 텍스트가 있을 경우 줄바꿈 */
+}
+
+.nickname {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.content {
+  margin: 0;
+  font-size: 1rem;
+}
+
+
+.interactions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+}
+
+.interaction-divider{
+  border: 0;
+  height: 1.3px; /* 더 두껍게 */
+  background-color: #444; /* 더 진한 회색 */
+  margin: 0 0 1rem 0;
+}
+
+.interaction-icons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.svg-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.svg-icon:hover {
+  transform: scale(1.2);
+}
+
+.interaction-info {
+  display: flex;
+  font-size: 1.3rem;
+  color: #666;
+  gap: 0.7rem;
+}
+
+.comment-input {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.comment-input input {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.send-icon {
+  width: 3rem;
+  height: 3rem;
+}
+</style>

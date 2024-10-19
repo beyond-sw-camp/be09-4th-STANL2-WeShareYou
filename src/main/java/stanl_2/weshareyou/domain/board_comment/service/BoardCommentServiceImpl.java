@@ -56,7 +56,7 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardComment.setContent(boardCommentDto.getContent());
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
-        System.out.println("=====================여기까지 성공=================");
+        board.setCommentCount(board.getCommentCount() + 1);
         boardComment.setBoard(board);
         boardComment.setMember(member);
         boardCommentRepository.save(boardComment);
@@ -86,8 +86,11 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     @Transactional
     @Override
     public void deleteBoardComment(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
         BoardComment boardcomment = boardCommentRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        board.setCommentCount(board.getCommentCount()-1);
         boardCommentRepository.delete(boardcomment);
     }
 

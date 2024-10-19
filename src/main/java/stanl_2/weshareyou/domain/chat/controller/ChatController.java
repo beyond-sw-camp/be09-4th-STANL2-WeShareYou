@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
-import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageServiceImpl;
+import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,7 +17,7 @@ import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageServiceImpl;
 @RequestMapping("")
 public class ChatController {
 
-    private final ChatRoomMessageServiceImpl chatRoomMessageService;
+    private final ChatRoomMessageService chatRoomMessageService;
     private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/message/{roomId}")

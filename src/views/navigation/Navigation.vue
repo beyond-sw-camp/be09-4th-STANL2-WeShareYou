@@ -14,26 +14,32 @@
                     <ul v-show="activeDropdown === 'product'" class="dropdown-menu" @click.stop>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/NECESSITIES'"
-                                @click="handleCategoryClick('product', 'NECESSITIES')">{{ translatedCategories.necessities }}</RouterLink>
+                                @click="handleCategoryClick('product', 'NECESSITIES')">{{
+                                    translatedCategories.necessities }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
                             <RouterLink :to="'/product/KITCHENWARES'"
-                                @click="handleCategoryClick('product', 'KITCHENWARES')">{{ translatedCategories.kitchenwares }}</RouterLink>
+                                @click="handleCategoryClick('product', 'KITCHENWARES')">{{
+                                    translatedCategories.kitchenwares }}</RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{ translatedCategories.clothes }}
+                            <RouterLink :to="'/product/CLOTHES'" @click="handleCategoryClick('product', 'CLOTHES')">{{
+                                translatedCategories.clothes }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{ translatedCategories.toy }}
+                            <RouterLink :to="'/product/TOY'" @click="handleCategoryClick('product', 'TOY')">{{
+                                translatedCategories.toy }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{ translatedCategories.device }}
+                            <RouterLink :to="'/product/DEVICE'" @click="handleCategoryClick('product', 'DEVICE')">{{
+                                translatedCategories.device }}
                             </RouterLink>
                         </li>
                         <li class="dropdown-font">
-                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{ translatedCategories.etc }}
+                            <RouterLink :to="'/product/ETC'" @click="handleCategoryClick('product', 'ETC')">{{
+                                translatedCategories.etc }}
                             </RouterLink>
                         </li>
                     </ul>
@@ -71,7 +77,7 @@
             </ul>
         </div>
 
-        
+
 
         <div class="nav-right">
             <ul class="language-setting">
@@ -85,14 +91,27 @@
                     </ul>
                 </li>
             </ul>
-            
-                
 
-            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" />
-            <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
+
+
+            <img src="../../assets/icon/navigation/alarm.png" class="icon-img" alt="alarm" @click="toggleModal" />
+            <div v-show="isModalVisible" class="alarm-modal">
+                <div v-if="alarms.length === 0" class="alarm-item">
+                    알림이 없습니다.
+                </div>
+                <div v-else>
+                    <div v-for="(item, index) in alarms" :key="index" class="alarm-item">
+                        {{ item.message }}
+                    </div>
+                </div>
+            </div>
+            
+            <RouterLink to="/chat">
+                <img src="../../assets/icon/navigation/message.png" class="icon-img" alt="message" />
+            </RouterLink>
 
             <!-- 프로필 이미지 -->
-            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>                
+            <div class="profile-container" @click="toggleDropdown('profile')" @click.stop>
                 <img :src="profileImage ? profileImage : defaultProfileImage" alt="Profile" class="profile-image" />
                 <ul v-show="activeDropdown === 'profile'" class="dropdown-menu profile-dropdown" @click.stop>
                     <li @click="resetDropdown" class="dropdown-font">
@@ -115,14 +134,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, inject, watch} from 'vue';
+import { ref, onMounted, onBeforeUnmount, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { translateText } from '@/assets/language/deepl';
 import defaultProfileImage from '../../assets/icon/navigation/profile.png';
+import axios from 'axios';
 
 // inject로 전역 언어 상태와 변경 함수 받아오기
 const currentLang = inject('currentLang');
 const changeLanguage = inject('changeLanguage');
+
+const alarms = ref([]);
+const cursorId = ref(''); // cursorId를 빈 문자열로 초기화
+const hasNext = ref(true); // 다음 페이지 여부를 서버 응답으로 관리
+const loading = ref(false); // 로딩 중인지 여부를 관리
 
 const translatedMenu = ref({
   product: '공유 물품',
@@ -137,31 +162,31 @@ const translatedMenu = ref({
 });
 
 const translatedCategories = ref({
-  necessities: '생활품',
-  kitchenwares: '주방용품',
-  clothes: '의류',
-  toy: '놀이',
-  device: '전자기기',
-  etc: '기타',
+    necessities: '생활품',
+    kitchenwares: '주방용품',
+    clothes: '의류',
+    toy: '놀이',
+    device: '전자기기',
+    etc: '기타',
 });
 
 const translateMenu = async (lang) => {
-  translatedMenu.value.product = await translateText('공유 물품', lang);
-  translatedMenu.value.board = await translateText('게시글', lang);
-  translatedMenu.value.guide = await translateText('가이드', lang);
-  translatedMenu.value.freemarket = await translateText('프리마켓', lang);
-  translatedMenu.value.companion = await translateText('동행', lang);
-  translatedMenu.value.tip = await translateText('TIP', lang);
-  translatedMenu.value.notice = await translateText('공지사항', lang);
-  translatedMenu.value.faq = await translateText('자주 묻는 질문', lang);
-  translatedMenu.value.direction = await translateText('오시는 길', lang);
+    translatedMenu.value.product = await translateText('공유 물품', lang);
+    translatedMenu.value.board = await translateText('게시글', lang);
+    translatedMenu.value.guide = await translateText('가이드', lang);
+    translatedMenu.value.freemarket = await translateText('프리마켓', lang);
+    translatedMenu.value.companion = await translateText('동행', lang);
+    translatedMenu.value.tip = await translateText('TIP', lang);
+    translatedMenu.value.notice = await translateText('공지사항', lang);
+    translatedMenu.value.faq = await translateText('자주 묻는 질문', lang);
+    translatedMenu.value.direction = await translateText('오시는 길', lang);
 
-  translatedCategories.value.necessities = await translateText('생활품', lang);
-  translatedCategories.value.kitchenwares = await translateText('주방용품', lang);
-  translatedCategories.value.clothes = await translateText('의류', lang);
-  translatedCategories.value.toy = await translateText('놀이', lang);
-  translatedCategories.value.device = await translateText('전자기기', lang);
-  translatedCategories.value.etc = await translateText('기타', lang);
+    translatedCategories.value.necessities = await translateText('생활품', lang);
+    translatedCategories.value.kitchenwares = await translateText('주방용품', lang);
+    translatedCategories.value.clothes = await translateText('의류', lang);
+    translatedCategories.value.toy = await translateText('놀이', lang);
+    translatedCategories.value.device = await translateText('전자기기', lang);
+    translatedCategories.value.etc = await translateText('기타', lang);
 };
 // 전역 언어 상태를 감시하고 언어에 따라 메뉴를 DeepL로 번역
 
@@ -174,6 +199,55 @@ const isHidden = ref(false);
 const router = useRouter();
 const isLoggedIn = ref(false);
 const profileImage = ref('');
+
+const isModalVisible = ref(false);
+
+const toggleModal = async () => {
+    if (!isModalVisible.value) {
+        await fetchAlarmItems(true); // 알림 모달을 열 때 API 호출 (초기화)
+    }
+    isModalVisible.value = !isModalVisible.value; // 모달 열기/닫기
+};
+
+const fetchAlarmItems = async (reset = false) => {
+    if (loading.value || (!reset && !hasNext.value)) return; // 로딩 중이거나 더 불러올 데이터가 없으면 중단
+
+    loading.value = true;
+
+    if (reset) {
+        alarms.value = []; // 알림 초기화
+        cursorId.value = ''; // 커서 초기화
+        hasNext.value = true;
+    }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    try {
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/alarm`,
+            {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+                params: { cursor: cursorId.value || '', size: 5 }
+            }
+        );
+
+        console.log("API Response:", response.data);
+
+        let data = response.data;
+        let newContents = data.result?.contents || [];
+
+        // 새로운 알림 추가
+        alarms.value = [...alarms.value, ...newContents];
+        cursorId.value = data.result?.cursorId || ''; // 다음 커서 업데이트
+        hasNext.value = data.result?.hasNext; // 다음 페이지 여부 업데이트
+
+        console.log("Alarms after assignment:", alarms.value);
+    } catch (error) {
+        console.error("API 호출 에러:", error.response?.data || error.message);
+    } finally {
+        loading.value = false; // 로딩 종료
+    }
+};
 
 // 로그인 여부 확인 함수 (JWT와 userInfo 체크)
 function checkLoginStatus() {
@@ -201,21 +275,21 @@ function loGin() {
 }
 
 watch(currentLang, (newLang) => {
-  translateMenu(newLang);
+    translateMenu(newLang);
 });
 
 // 드롭다운 열고 닫기
 const changeLang = (lang) => {
-  changeLanguage(lang); // 전역 언어 상태 변경
+    changeLanguage(lang); // 전역 언어 상태 변경
 };
 
 const toggleDropdown = (menu) => {
-  activeDropdown.value = activeDropdown.value === menu ? null : menu;
+    activeDropdown.value = activeDropdown.value === menu ? null : menu;
 };
 
 const resetDropdown = () => {
-  activeDropdown.value = null;
-  activeMenu.value = null;
+    activeDropdown.value = null;
+    activeMenu.value = null;
 };
 
 // 메뉴 클릭 시 처리
@@ -249,12 +323,17 @@ const handleClickOutside = (event) => {
 
 // 
 const handleScroll = () => {
-  if (window.scrollY < lastScrollY) {
-    isHidden.value = false; // 스크롤 위로 시 헤더 표시
-  } else if (window.scrollY > 50) {
-    isHidden.value = true; // 스크롤 아래로 시 헤더 숨김
-  }
-  lastScrollY = window.scrollY;
+    if (window.scrollY < lastScrollY) {
+        isHidden.value = false; // 스크롤 위로 시 헤더 표시
+    } else if (window.scrollY > 50) {
+        isHidden.value = true; // 스크롤 아래로 시 헤더 숨김
+    }
+    lastScrollY = window.scrollY;
+
+    const gridElement = document.querySelector('.product-grid');
+    if (gridElement.scrollTop + gridElement.clientHeight >= gridElement.scrollHeight) {
+        fetchProductItems(); // 페이지 끝에 도달하면 데이터 요청
+    }
 };
 
 // 이벤트 등록 및 해제
@@ -262,6 +341,9 @@ onMounted(() => {
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('click', handleClickOutside);
     checkLoginStatus();
+    fetchAlarmItems();
+    const gridElement = document.querySelector('.alarm-modal');
+    gridElement.addEventListener('scroll', handleScroll);
 });
 
 onBeforeUnmount(() => {
@@ -282,7 +364,7 @@ onBeforeUnmount(() => {
 }
 
 .hidden-nav {
-  transform: translateY(-100%);
+    transform: translateY(-100%);
 }
 
 .nav-left {
@@ -408,11 +490,13 @@ onBeforeUnmount(() => {
     color: #6CB1FF;
     /* 활성화된 메뉴 색상 */
 }
-.language-setting{
+
+.language-setting {
     margin-top: 6px;
     font-size: 4rem;
 }
-.dropdown-language-menu{
+
+.dropdown-language-menu {
     z-index: 1000;
     position: absolute;
     top: 4rem;
@@ -426,19 +510,57 @@ onBeforeUnmount(() => {
     min-width: 8rem;
     padding: 0.5rem 0;
 }
-.dropdown-language{
+
+.dropdown-language {
     text-align: center;
     margin-bottom: 1rem;
-    font-size:1.5rem;
+    font-size: 1.5rem;
 }
-.dropdown-language1{
+
+.dropdown-language1 {
     text-align: center;
-    font-size:1.5rem;
+    font-size: 1.5rem;
 }
+
 .dropdown-language:hover {
     color: #439AFF !important;
 }
+
 .dropdown-language1:hover {
     color: #439AFF !important;
+}
+
+.alarm-modal {
+    position: absolute;
+    top: 8rem;
+    right: 2rem;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    z-index: 1000;
+    padding: 1rem;
+    height: 50vh;
+    overflow-y: auto;
+}
+
+.alarm-item {
+    padding: 1rem;
+    font-size: 1.6rem;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.alarm-item:last-child {
+    border-bottom: none;
+}
+
+.alarm-item:hover {
+    background-color: #f0f8ff;
+}
+
+.new-message {
+    background-color: #e8f4ff;
 }
 </style>

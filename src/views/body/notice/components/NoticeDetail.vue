@@ -220,9 +220,9 @@
 .back-button {
   padding: 0.75rem 1.5rem;
   border: 0.1rem solid #439aff;
-  background-color: transparent;
+  background-color: white;
   color: #439aff;
-  font-size: 1rem;
+  font-size: 1.6rem;
   border-radius: 0.5rem;
   cursor: pointer;
 }
@@ -234,11 +234,11 @@
 
 .modify-button,
 .delete-button1 {
-  padding: 1rem 2rem;
-  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.6rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  background-color: transparent;
+  background-color: white;
 }
 
 .modify-button {

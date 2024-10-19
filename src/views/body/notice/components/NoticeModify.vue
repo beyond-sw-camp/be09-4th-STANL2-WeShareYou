@@ -1,8 +1,8 @@
 <template>
     <div class="container-regist">
         <div class="wrapper-regist">
-            <button @click="listPost" class="list-btn">취소</button>
             <button @click="submitPost" class="submit-btn">수정</button>
+            <button @click="listPost" class="list-btn">취소</button>
         </div>
 
         <PostModify :initialTitle="notice.title" :initialContent="notice.content"
@@ -35,10 +35,10 @@ const fetchnoticeModify = async () => {
     try {
         const response = await axios.get(`http://localhost:8080/api/v1/notice/detail/${id.value}`,
         {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              }
-          }
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }
         );
 
         console.log("notice detail response:", response.data);
@@ -147,28 +147,29 @@ const submitPost = async () => {
 }
 
 .list-btn {
-    color: #439aff;
+    color: #FF414C;
     background-color: white;
     border-radius: 1rem;
     cursor: pointer;
     text-align: center;
     height: 4rem;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     padding: 0rem 2rem;
-    border: 1px solid #439aff;
-    margin-right: 1rem;
+    border: 1px solid #FF414C;
+    margin-right: 4.5rem;
 }
 
 .submit-btn {
-    background-color: #439aff;
-    color: white;
+    background-color: white;
+    color: #439aff;
     border-radius: 1rem;
     cursor: pointer;
     text-align: center;
     height: 4rem;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     padding: 0rem 2rem;
-    border: none !important;
+    border: 1px solid #439aff !important;
+    margin-right: 0.5rem;
 }
 
 .category-select {

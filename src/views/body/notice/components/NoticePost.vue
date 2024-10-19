@@ -1,8 +1,8 @@
 <template>
     <div class="container-regist">
         <div class="wrapper-regist">
-            <button @click="listPost" class="list-btn">취소</button>
             <button @click="submitPost" class="submit-btn">등록</button>
+            <button @click="listPost" class="list-btn">취소</button>
         </div>
 
         <PostRegist @updateTitle="handleTitleUpdate" 
@@ -89,7 +89,7 @@ const submitPost = async () => {
 }
 
 .list-btn {
-    color: #439aff;
+    color: #FF414C;
     background-color: white;
     border-radius: 1rem;
     cursor: pointer;
@@ -97,20 +97,21 @@ const submitPost = async () => {
     height: 4rem;
     font-size: 1.6rem;
     padding: 0rem 2rem;
-    border: 1px solid #439aff;
-    margin-right: 1rem;
+    border: 1px solid #FF414C;
+    margin-right: 4.5rem;
 }
 
 .submit-btn {
-    background-color: #439aff;
-    color: white;
+    background-color: white;
+    color: #439aff;
     border-radius: 1rem;
     cursor: pointer;
     text-align: center;
     height: 4rem;
     font-size: 1.6rem;
     padding: 0rem 2rem;
-    border: none !important;
+    border: 1px solid #439aff !important;
+    margin-right: 0.5rem;
 }
 
 .category-select {

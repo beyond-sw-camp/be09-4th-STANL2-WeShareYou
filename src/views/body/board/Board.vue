@@ -15,7 +15,7 @@
         <!-- 글 작성 버튼 -->
         <button class="create-button" @click="goToCreate">글 작성</button>
       </div>
-      <div v-for="item in boards" :key="item.id" class="board-card" @click="openModal(item)">
+      <div v-for="item in boards" :key="item.id" class="board-card">
         
         <div class="user-info">
           <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image" @click="goToProfile(item.memberNickname)">
@@ -23,7 +23,7 @@
         </div>
 
         <div class="image-container">
-          <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image"/>
+          <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image" @click="openModal(item)"/>
         </div>
 
         <div class="board-footer">
@@ -193,25 +193,43 @@ const goToChat = () => {
 };
 
 const upLike = async (boardId) => {
-    
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/board_like', {
-        headers: {
-          'Content-Type': "application.json" // 요청 속성으로 포함
-          }
-        });
-
-        // 좋아요 개수 1 증가
+        const token = localStorage.getItem('jwtToken'); // JWT 토큰 가져오기
         const boardIndex = boards.value.findIndex(board => board.id === boardId);
-        if (boardIndex !== -1) {
-            boards.value[boardIndex].likesCount += 1;
+
+        if (boardIndex === -1) return; // 게시물을 찾지 못한 경우 처리
+
+        const board = boards.value[boardIndex];
+        const url = 'http://localhost:8080/api/v1/board_like';
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
+        if (board.liked) {
+            // 이미 좋아요된 상태 -> DELETE 요청
+            await axios.delete(url, {
+                headers,
+                data: { boardId } // DELETE 요청 본문에 데이터 전달
+            });
+
+            board.likesCount -= 1; // 좋아요 개수 감소
+            console.log('좋아요 취소 완료');
+        } else {
+            // 좋아요가 안된 상태 -> POST 요청
+            await axios.post(url, { boardId }, { headers });
+
+            board.likesCount += 1; // 좋아요 개수 증가
+            console.log('좋아요 추가 완료');
         }
-        
-        console.log('좋아요 추가 완료:', response.data);
+
+        // liked 상태 토글
+        board.liked = !board.liked;
     } catch (error) {
-        console.error('좋아요 추가 에러:', error.response?.data || error.message);
+        console.error('좋아요 처리 에러:', error.response?.data || error.message);
     }
 };
+
 
 
 watch(
@@ -237,17 +255,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* :root {
-  --main-blue: #94C7FF;
-  --white: #FFF;
-  --black-60: #627086;
-  --shadow-color: rgba(19, 24, 48, 0.15);
-}
-
-body {
-  font-family: ABeeZee, sans-serif;
-} */
-
 .actions {
   display: flex;
   justify-content: flex-end;

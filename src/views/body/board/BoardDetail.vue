@@ -43,7 +43,7 @@
           <!-- 상단: 좋아요 아이콘 -->
           <div class="interaction-icons">
             <img src="@/assets/icon/boardIcons/heart.svg" @click="likePost" class="svg-icon" alt="Like Icon" />
-            <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(board)" />
+            <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="focusCommentInput" />
             <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />
           </div>
 
@@ -55,7 +55,7 @@
 
           <!-- 하단: 댓글 입력과 전송 -->
           <div class="comment-input">
-            <input v-model="newComment" placeholder="Write a comment..." />
+            <input v-model="newComment" ref="commentInput" placeholder="Write a comment..." />
             <img src="@/assets/icon/boardIcons/send.svg" @click="addComment" class="svg-icon send-icon" alt="Send Icon" />
           </div>
         </div>
@@ -106,6 +106,12 @@ const formattedContent = computed(() => {
 });
 
 const comments = ref([]);
+const newComment = ref(''); 
+const commentInput = ref(null); // 입력창에 접근하기 위한 ref
+
+const focusCommentInput = () => {
+  commentInput.value?.focus(); // 입력창에 포커스
+};
 
 const fetchComments = async () => {
   try {
@@ -341,13 +347,14 @@ p {
   flex-direction: column;
   gap: 1rem;
   margin: 0;
+  margin-top: auto;
 }
 
 .interaction-divider{
   border: 0;
   height: 1.3px; /* 더 두껍게 */
   background-color: #444; /* 더 진한 회색 */
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .interaction-icons {
@@ -368,9 +375,10 @@ p {
 
 .interaction-info {
   display: flex;
-  font-size: 1.3rem;
+  font-size: 2rem;
   color: #666;
   gap: 0.7rem;
+  margin-bottom: 1rem;
 }
 
 .comment-input {

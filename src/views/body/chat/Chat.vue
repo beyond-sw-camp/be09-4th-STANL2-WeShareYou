@@ -45,16 +45,28 @@
 
       <div id="messageArea" class="message-area">
         <template v-for="(message, index) in messages" :key="index">
-          <div v-if="shouldDisplayDate(message.createdAt)" class="message-date">
-            {{  formatDate(message.createdAt) }}  
-          </div>
+          <div v-if="message.createdAt"></div>
+            <div v-if="shouldDisplayDate(message.createdAt) && message.createdAt" class="message-date">
+              {{  formatDate(message.createdAt) }}  
+            </div>
+            <!-- 실시간으로 날짜 바뀌었을 때(추후) -->
+          <!-- <div v-else></div>
+            <div v-if="shouldDisplayDate(message.sendTime) && message.sendTime" class="message-date">
+              {{  formatDate(message.sendTime) }}  
+            </div> -->
 
           <!-- 메시지 내용 -->
           <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
             <div class="message-sender">{{ message.sender }}</div>
             <div class="message-content">
+<<<<<<< HEAD
               <span class="message-time1">{{ message.message }}</span><br>
               <span class="message-time2">{{ formatTime(message.createdAt) }}</span>
+=======
+              <span class="message-time">{{ message.message }}</span>
+              <span class="message-time" v-if="message.createdAt">{{ formatTime(message.createdAt) }}</span>
+              <span class="message-time" v-if="message.sendTime">{{ message.sendTime }}</span>
+>>>>>>> 31b4b6704400a99f576238fad8752281eccd4828
             </div>
             <div v-if="isLastMessageRead(index, message)">
               <span class="message-time">읽음</span>
@@ -116,10 +128,6 @@
         });
         rooms.splice(0, rooms.length, ...response.data.rooms);
         user.name = response.data.user; 
-        // profile.name =response.data.rooms[2].receiverProfileUrl; // 사용자 이름 저장
-        // console.log(response.data);
-        // console.log(user.name);
-        // console.log("이미지 url: "+profile.name);
         } catch (error) {
           console.error("Error fetching chat rooms:", error);
         }
@@ -204,8 +212,7 @@
                 } 
             }
           );
-
-            
+          
             selectedUser.sender = response.data.room.sender;
             selectedUser.receiver = response.data.room.receiver;
             messages.length = 0; // 기존 메시지 초기화
@@ -230,23 +237,20 @@
         return;
       }
 
-      const message = {
+      const sendMessage = {
         roomId: roomId.value,
         sender: user.name,
         message: messageInput.value,
+        sendTime: new Date(),
         type: 'TALK'
       };
 
       console.log("stompClient is alive?" + stompClient);
-      console.log('Sending message:', JSON.stringify(message));
+      console.log('Sending message:', JSON.stringify(sendMessage));
 
       try {
-        console.log("roomId.value : " + roomId.value);
-        await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(message));
+        await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(sendMessage));
         messageInput.value = '';
-
-        console.log("roomName.value : " + roomName.value);
-
         fetchChatRoomDetail(roomName.value);
       } catch (error) {
         console.error('메시지 전송 실패:', error);
@@ -255,6 +259,17 @@
     };
 
     const showMessage = (message) => {
+
+      const formatSendTime = (sendTime) => {
+        const newDate = new Date(sendTime);
+        const newHour = String(newDate.getHours()).padStart(2, '0'); // 월은 0부터 시작 1을 더해줌
+        const newMinute = String(newDate.getMinutes()).padStart(2, '0');
+
+        return `${newHour}:${newMinute}`;
+      };
+
+      // sendTime 변환 후 재할당
+      message.sendTime = formatSendTime(message.sendTime);
       messages.push(message);  // 메시지 추가
 
       nextTick(() => {
@@ -265,30 +280,32 @@
       });
     };
 
+    
+
     // 컴포넌트가 마운트될 때 데이터 가져오기
     onMounted(async () => {
         console.log("Component is mounted. Now fetching chat rooms...");
         await fetchChatRooms();
     });
 
-        // 컴포넌트가 언마운트될 때 WebSocket 연결 해제
-      onBeforeUnmount(() => {
+    // 컴포넌트가 언마운트될 때 WebSocket 연결 해제
+    onBeforeUnmount(() => {
         if (stompClient.value) {
             stompClient.value.disconnect();
             console.log('Disconnected');
         }
     });
 
-      /* timestamp 바꾸기 */
-      const formatTime = (timestamp) => {
-          // console.log(timestamp);
-          const date = new Date(timestamp);
-          /* 한국에 맞춘 지역 시간 */
-          const hour = String(date.getHours()).padStart(2, '0'); // 월은 0부터 시작 1을 더해줌
-          const minute = String(date.getMinutes()).padStart(2, '0');
+    /* timestamp 바꾸기 */
+    const formatTime = (timestamp) => {
+        // console.log(timestamp);
+        const date = new Date(timestamp);
+        /* 한국에 맞춘 지역 시간 */
+        const hour = String(date.getHours()).padStart(2, '0'); // 월은 0부터 시작 1을 더해줌
+        const minute = String(date.getMinutes()).padStart(2, '0');
 
-          return `${hour}:${minute}`;
-        }
+        return `${hour}:${minute}`;
+      }
 
       
     /* 날짜 포맷 */

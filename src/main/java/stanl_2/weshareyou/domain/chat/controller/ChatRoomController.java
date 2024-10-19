@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoom;
 import stanl_2.weshareyou.domain.chat.entity.ChatRoomMessage;
-import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
-import stanl_2.weshareyou.domain.chat.service.ChatRoomService;
+import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageServiceImpl;
+import stanl_2.weshareyou.domain.chat.service.ChatRoomServiceImpl;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
 
 import java.util.HashMap;
@@ -20,8 +20,8 @@ import java.util.Map;
 @RequestMapping("api/v1/chat")
 public class ChatRoomController {
 
-    private final ChatRoomService chatRoomService;
-    private final ChatRoomMessageService chatRoomMessageService;
+    private final ChatRoomServiceImpl chatRoomService;
+    private final ChatRoomMessageServiceImpl chatRoomMessageService;
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("")

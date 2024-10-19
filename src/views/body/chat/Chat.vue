@@ -24,12 +24,15 @@
       <p v-else class="no-rooms">No chat rooms available.</p>
     </div>
 
-        <div v-if="showModal" class="modal-overlay">
-    <div class="modal-content">
-      <p>정말 취소하시겠습니까?</p>
-      <div class="modal-actions">
-        <button @click="confirmDelete">확인</button>
-        <button @click="closeModal">취소</button>
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-icon">
+        <img src="@/assets/icon/delete-icon.png" alt="Delete Icon" />
+        <p class="delete-font">삭제하시겠습니까?</p>
+      </div>
+      <div class="button-group">
+        <button class="confirm-btn" @click="confirmDelete">확인</button>
+        <button class="cancel-btn" @click="closeModal">취소</button>
       </div>
     </div>
   </div>
@@ -598,90 +601,97 @@ display: block; /* 마우스 오버 시 버튼 표시 */
 .room-item-container:hover {
 background-color: #e9ecef;
 }
+/* 모달 오버레이 */
 .modal-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.6); /* 반투명 배경 */
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
 
-/* 모달 컨테이너 */
-.modal-container {
-background-color: white;
-width: 30%; /* 화면의 30% 너비 */
-max-width: 500px; /* 최대 너비 제한 */
-min-width: 300px; /* 최소 너비 보장 */
-height: 25%; /* 화면의 25% 높이 */
-padding: 2rem;
-border-radius: 12px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-text-align: center;
-animation: fadeIn 0.3s ease-out;
+/* 모달 내용 */
+.modal-content {
+  position: relative;
+  background-color: white !important;
+  padding: 2rem;
+  border-radius: 4px !important;
+  text-align: center;
+  width: 40rem !important; /* 고정 너비 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000 !important;
+  width: 60%;
 }
 
-/* 모달 타이틀 */
-.modal-title {
-font-size: 2rem;
-font-weight: bold;
-margin-bottom: 1rem;
-color: #333;
+/* 아이콘과 메시지 */
+.modal-icon {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  margin-top: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 모달 메시지 */
-.modal-message {
-font-size: 1.6rem;
-margin-bottom: 2rem;
-color: #555;
+.modal-icon img {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 
-/* 모달 버튼 영역 */
-.modal-actions {
-display: flex;
-justify-content: space-around;
-gap: 1rem;
+/* 메시지 폰트 */
+.delete-font {
+  font-size: 2rem;
+  color: #333;
+}
+
+/* 버튼 그룹 */
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
 /* 확인 버튼 */
-.confirm-button {
-background-color: #ff4d4f;
-color: white;
-border: none;
-padding: 1rem 2rem;
-border-radius: 8px;
-font-size: 1.4rem;
-cursor: pointer;
-transition: background-color 0.3s;
-flex: 1;
-max-width: 120px;
+.confirm-btn {
+  background-color: white;
+  color: #ff414c;
+  border: 1px solid #ff414c;
+  border-radius: 5px;
+  padding: 1rem 5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s;
 }
 
-.confirm-button:hover {
-background-color: #ff7875;
+.confirm-btn:hover {
+  background-color: #ff414c;
+  color: white;
 }
 
 /* 취소 버튼 */
-.cancel-button {
-background-color: #f0f0f0;
-color: #333;
-border: none;
-padding: 1rem 2rem;
-border-radius: 8px;
-font-size: 1.4rem;
-cursor: pointer;
-transition: background-color 0.3s;
-flex: 1;
-max-width: 120px;
+.cancel-btn {
+  background-color: white;
+  color: #439aff;
+  border: 1px solid #439aff;
+  border-radius: 5px;
+  padding: 1rem 5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s;
 }
 
-.cancel-button:hover {
-background-color: #d9d9d9;
+.cancel-btn:hover {
+  background-color: #439aff;
+  color: white;
 }
+
 .profile {
 width: 50px; /* 이미지의 너비를 50px로 설정 */
 height: 50px; /* 이미지의 높이를 50px로 설정 */

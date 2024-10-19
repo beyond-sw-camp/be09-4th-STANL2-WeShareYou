@@ -10,12 +10,12 @@
     </div>
 
     <!-- 게시물 목록 (Main Content) -->
-    <div class="board-container">
+    <div class="board-container"  >
       <div class="actions">
         <!-- 글 작성 버튼 -->
         <button class="create-button" @click="goToCreate">글 작성</button>
       </div>
-      <div v-for="item in boards" :key="item.id" class="board-card">
+      <div v-for="item in boards" :key="item.id" class="board-card" @click="openModal(item)">
         
         <div class="user-info">
           <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image" @click="goToProfile(item.memberNickname)">
@@ -133,11 +133,6 @@ const fetchBoardItems = async (reset = false) => {
         loading.value = false;
     }
 };
-
-// const openModal = (board) => {
-//   selectedBoard.value = board;
-//   isModalOpen.value = true;
-// };
 
 const openModal = (board) => {
   selectedBoard.value = {

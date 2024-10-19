@@ -5,29 +5,12 @@
       <div class="modal-left">
         <img :src="currentImage" alt="Board Image" class="board-image" />
         <div class="navigation">
-          <!-- 첫 번째 이미지에서는 오른쪽에만 버튼 표시 -->
-          <button
-            v-if="currentImageIndex === 0"
-            @click="nextImage"
-            class="right-button"
-          >
-            ❯
-          </button>
-
-          <!-- 중간 이미지에서는 양쪽에 버튼 표시 -->
+          <button v-if="currentImageIndex === 0" @click="nextImage" class="right-button">❯</button>
           <template v-else-if="currentImageIndex < board.imageUrls.length - 1">
             <button @click="prevImage" class="left-button">❮</button>
             <button @click="nextImage" class="right-button">❯</button>
           </template>
-
-          <!-- 마지막 이미지에서는 왼쪽에만 버튼 표시 -->
-          <button
-            v-if="currentImageIndex === board.imageUrls.length - 1"
-            @click="prevImage"
-            class="left-button"
-          >
-            ❮
-          </button>
+          <button v-if="currentImageIndex === board.imageUrls.length - 1" @click="prevImage" class="left-button">❮</button>
         </div>
       </div>
 
@@ -38,16 +21,53 @@
           <span class="nickname">{{ board.memberNickname }}</span>
         </div>
         <hr class="divider" />
-        <h2>{{ board.title }}</h2>
-        <p v-html="formattedContent"></p>
-        <button @click="close">Close</button>
+
+        <div class="comments">
+          <h2>{{ board.title }}</h2>
+          <p v-html="formattedContent"></p>
+          <h3>Comments</h3>
+          <ul>
+            <li v-for="(comment, index) in comments" :key="index" class="comment-item">
+              <img v-if="comment.memberProfileUrl" :src="comment.memberProfileUrl" alt="Profile Image" class="profile-img" />
+              <div class="comment-content">
+                <strong class="nickname">{{ comment.nickname }}</strong>
+                <p class="content">{{ comment.content }}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="interactions">
+
+          <hr class="interaction-divider" />
+          <!-- 상단: 좋아요 아이콘 -->
+          <div class="interaction-icons">
+            <img src="@/assets/icon/boardIcons/heart.svg" @click="likePost" class="svg-icon" alt="Like Icon" />
+            <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(board)" />
+            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />
+          </div>
+
+          <!-- 중간: 좋아요 및 댓글 수 -->
+          <div class="interaction-info">
+            <span>좋아요 {{ board.likesCount }}개</span>
+            <span>댓글 {{ board.commentCount }}개</span>
+          </div>
+
+          <!-- 하단: 댓글 입력과 전송 -->
+          <div class="comment-input">
+            <input v-model="newComment" placeholder="Write a comment..." />
+            <img src="@/assets/icon/boardIcons/send.svg" @click="addComment" class="svg-icon send-icon" alt="Send Icon" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
 import { defineProps, defineEmits, ref, computed } from 'vue';
+import { onMounted } from 'vue';
 
 const props = defineProps({
   board: {
@@ -81,6 +101,68 @@ const nextImage = () => {
 const formattedContent = computed(() => {
   return props.board.content.replace(/\n/g, '<br>');
 });
+
+const comments = ref([]);
+
+const fetchComments = async () => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/v1/board-comment/${props.board.id}`);
+
+    let data = await response.text(); // 응답을 텍스트로 읽기
+    console.log('Response Text:', data); // 응답 로그 출력
+
+    let parsedData;
+    // 응답이 문자열일 경우 JSON을 파싱
+    if (typeof data === 'string') {
+      const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || []; // 여러 JSON이 중복될 경우 첫 번째만 추출
+      if (jsonParts.length > 0) {
+        try {
+          parsedData = JSON.parse(jsonParts[0]); // 첫 번째 JSON 파싱
+        } catch (error) {
+          console.error("JSON 파싱 실패:", error);
+          return;
+        }
+      } else {
+        console.error('No valid JSON found in response.');
+        return;
+      }
+    } else {
+      // 만약 응답이 이미 JSON 객체라면 그대로 할당
+      parsedData = data;
+    }
+
+    // JSON이 성공적으로 파싱되었을 때 처리
+    if (parsedData.success && parsedData.result) {
+      comments.value = parsedData.result.map(comment => ({
+        memberProfileUrl: comment.memberProfileUrl,
+        nickname: comment.nickname,
+        content: comment.content,
+      }));
+    } else {
+      console.error('Unexpected data format:', parsedData);
+    }
+
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+  }
+};
+
+const addComment = () => {
+  if (newComment.value.trim() !== '') {
+    comments.value.push({ nickname: 'You', content: newComment.value, memberProfileUrl: null });
+    newComment.value = '';
+  }
+};
+
+const likePost = () => {
+  console.log('Post liked!');
+};
+
+// 게시물이 열릴 때 댓글을 가져옴
+onMounted(() => {
+  fetchComments();
+});
+
 </script>
 
 <style scoped>
@@ -163,7 +245,6 @@ const formattedContent = computed(() => {
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .user-info {
@@ -188,7 +269,7 @@ const formattedContent = computed(() => {
   border: 0;
   height: 1.3px; /* 더 두껍게 */
   background-color: #444; /* 더 진한 회색 */
-  margin: 1rem 0 1.5rem 0; /* 위로 조금 당김 */
+  margin: 1rem 0 0 0;
 }
 
 h2 {
@@ -198,21 +279,101 @@ h2 {
 
 p {
   flex-grow: 1;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.5;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-button {
-  align-self: flex-end;
-  background-color: #439aff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+.comments {
+  /* margin-top: 1rem; */
+  margin: 0;
+  overflow-y: scroll;
+}
+
+.comment-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.profile-img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.comment-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.nickname {
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+}
+
+.content {
+  margin: 0;
+  font-size: 1rem;
+}
+
+
+.interactions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+}
+
+.interaction-divider{
+  border: 0;
+  height: 1.3px; /* 더 두껍게 */
+  background-color: #444; /* 더 진한 회색 */
+  margin: 0 0 1rem 0;
+}
+
+.interaction-icons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.svg-icon {
+  width: 2.5rem;
+  height: 2.5rem;
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
 }
 
-button:hover {
-  background-color: #73b3ff;
+.svg-icon:hover {
+  transform: scale(1.2);
+}
+
+.interaction-info {
+  display: flex;
+  font-size: 1.3rem;
+  color: #666;
+  gap: 0.7rem;
+}
+
+.comment-input {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.comment-input input {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.send-icon {
+  width: 3rem;
+  height: 3rem;
 }
 </style>

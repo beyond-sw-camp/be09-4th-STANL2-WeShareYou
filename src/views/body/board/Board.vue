@@ -162,9 +162,7 @@ const fetchBoardItems = async (reset = false) => {
         });
         
         boards.value = [...boards.value, ...newContents];
-        console.log('New contents added:', newContents.length); // 디버깅 로그
 
-        boards.value = [...boards.value, ...newContents];
         if (boards.value.length === 0) {
             console.warn("No boards found.");
         }

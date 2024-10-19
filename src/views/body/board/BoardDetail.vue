@@ -55,11 +55,11 @@
             <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="focusCommentInput" />
             <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />\
 
-            <div class="more-options" @click="toggleDropdown">
+            <div v-if="isAuthor" class="more-options" @click="toggleDropdown">
               <button class="more-button">⋯</button>
               <div v-if="showDropdown" class="dropdown-menu">
-                <button v-if="isAuthor" @click="editPost">수정</button>
-                <button v-if="isAuthor" @click="deletePost">삭제</button>
+                <button @click="editPost">수정</button>
+                <button @click="deletePost">삭제</button>
               </div>
             </div>
           </div>  
@@ -87,7 +87,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { defineProps, defineEmits, ref, computed, onMounted } from 'vue';
 
 const router = useRouter();
-const route = useRoute();
 const userInfo = localStorage.getItem('userInfo');
 
 const props = defineProps({
@@ -107,7 +106,14 @@ const close = () => emit('close');
 const token = localStorage.getItem('jwtToken'); // JWT 토큰 가져오기
 const showDropdown = ref(false);
 
-const isAuthor = computed(() => board.memberId === token.id);
+const isAuthor = ref(false); // 초기값 설정
+
+try {
+  const user = JSON.parse(userInfo); 
+  isAuthor.value = user.id === props.board.memberId; // 작성자 여부 확인
+} catch (error) {
+  console.error('userInfo 파싱 오류:', error);
+}
 
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
@@ -123,7 +129,7 @@ const deletePost = async () => {
     try {
       await fetch(`http://localhost:8080/api/v1/board/${board.id}`, { method: 'DELETE' });
       alert('게시글이 삭제되었습니다.');
-      close(); // Close the modal after deletion
+      close(); 
     } catch (error) {
       console.error('게시글 삭제 에러:', error);
     }
@@ -249,7 +255,6 @@ const addComment = async () => {
     console.error('댓글 작성 에러:', error);
   }
 };
-
 
 const likePost = () => {
   console.log('Post liked!');

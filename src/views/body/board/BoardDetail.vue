@@ -88,6 +88,7 @@ import { defineProps, defineEmits, ref, computed, onMounted } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
+const userInfo = localStorage.getItem('userInfo');
 
 const props = defineProps({
   board: {
@@ -207,8 +208,8 @@ const addComment = async () => {
   if (newComment.value.trim() === '') return; // 빈 댓글 방지
 
   try {
-    const token = localStorage.getItem('jwtToken');
-    const payload = JSON.parse(atob(token.split('.')[1])); // JWT 토큰에서 유저 정보 추출
+    
+    const payload = JSON.parse(userInfo); // JWT 토큰에서 유저 정보 추출
     const nickName = payload.nickname || '익명'; // 닉네임 추출 (없을 시 '익명')
     const profileUrl = payload.profile || null; // 프로필 이미지 URL 추출
 

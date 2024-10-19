@@ -157,13 +157,14 @@ const fetchBoardItems = async (reset = false) => {
             hasNext.value = data.result?.hasNext;
         }
 
-        newContents.forEach((board) => {
+        newContents.forEach(board => {
             board.liked = likedBoardIds.value.has(board.id);
         });
         
         boards.value = [...boards.value, ...newContents];
         console.log('New contents added:', newContents.length); // 디버깅 로그
 
+        boards.value = [...boards.value, ...newContents];
         if (boards.value.length === 0) {
             console.warn("No boards found.");
         }
@@ -290,6 +291,14 @@ onUnmounted(() => {
     if (sentinel.value) {
         intersectionObserver.unobserve(sentinel.value);
     }
+});
+
+router.beforeEach(async (to, from, next) => {
+    if (to.path.startsWith('/board')) {
+        await fetchLikedBoards(); // 좋아요한 게시글 정보 다시 로드
+        await fetchBoardItems(true); // 페이지 변경 시 데이터 초기화
+    }
+    next();
 });
 </script>
 

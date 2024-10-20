@@ -85,7 +85,8 @@
 ---
 
 ### System Architecture <a id="system-architecture"></a>
-![image](https://github.com/user-attachments/assets/f1f310df-1231-4d40-96c5-065e2f0cbe54)
+![image](https://github.com/user-attachments/assets/babbaeaf-24aa-468c-89b9-df71e8df8b4b)
+
 
 ## DDD <a id="ddd"></a>
 

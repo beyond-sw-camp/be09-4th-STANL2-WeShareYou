@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import stanl_2.weshareyou.domain.chat.entity.ChatMessage;
 import stanl_2.weshareyou.domain.chat.service.ChatRoomMessageService;
 
+import java.sql.Timestamp;
+
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -23,7 +26,8 @@ public class ChatController {
     @MessageMapping("/message/{roomId}")
     public void sendMessage(ChatMessage message, @DestinationVariable String roomId) {
         try {
-            chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
+            Timestamp time=chatRoomMessageService.addMessageToRoom(message.getRoomId(), message.getSender(), message.getMessage());
+            message.setReceivedTime(time);
             messagingTemplate.convertAndSend("/sub/" + roomId, message);
         } catch (Exception e) {
             e.printStackTrace();

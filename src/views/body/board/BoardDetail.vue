@@ -1,6 +1,6 @@
 <template>
   <div class="modal-overlay" @click.self="close">
-    <div class="modal-content">
+    <div class="modal-content1">
       <button class="close-button" @click="close">✕</button>
 
       <!-- 이미지 슬라이더 -->
@@ -24,7 +24,7 @@
         </div>
         <hr class="divider" />
 
-        <div class="comments">
+        <div class="comments" ref="commentArea">
           <h2>{{ board.title }}</h2>
           <p v-html="formattedContent"></p>
           <hr class="comment-divider"/>
@@ -51,9 +51,15 @@
           <hr class="interaction-divider" />
           <!-- 상단: 좋아요 아이콘 -->
           <div class="interaction-icons">
-            <img src="@/assets/icon/boardIcons/heart.svg" @click="likePost" class="svg-icon" alt="Like Icon" />
+            <!-- <img src="@/assets/icon/boardIcons/heart.svg" @click="likePost" class="svg-icon" alt="Like Icon" /> -->
+            <img
+              :src="board.liked ? filledHeartIcon : emptyHeartIcon"
+              @click="toggleLike"
+              class="svg-icon"
+              alt="Heart Icon"
+            />
             <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="focusCommentInput" />
-            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />\
+            <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board)" />\
 
             <div v-if="isAuthor" class="more-options">
               <button class="more-button" @click="toggleDropdown">⋯</button>
@@ -65,10 +71,10 @@
           </div>  
 
           <!-- 중간: 좋아요 및 댓글 수 -->
-          <div class="interaction-info">
+          <!-- <div class="interaction-info">
             <span>좋아요 {{ board.likesCount }}개</span>
             <span>댓글 {{ board.commentCount }}개</span>
-          </div>
+          </div> -->
 
           <!-- 하단: 댓글 입력과 전송 -->
           <div class="comment-input">
@@ -85,9 +91,12 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { defineProps, defineEmits, ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 
 const router = useRouter();
 const userInfo = localStorage.getItem('userInfo');
+const filledHeartIcon = new URL('@/assets/icon/boardIcons/filledheart.svg', import.meta.url).href;
+const emptyHeartIcon = new URL('@/assets/icon/boardIcons/heart.svg', import.meta.url).href;
 
 const props = defineProps({
   board: {
@@ -101,12 +110,24 @@ const props = defineProps({
   tag: {  // Define tag prop
     type: String,
     required: true,
-  }
-
+  },
+  liked: {
+    type: Boolean,
+    required: true,
+  },
 });
 
+const liked = ref(props.liked); // 좋아요 초기 상태
+const likesCount = ref(props.board.likesCount); // 좋아요 개수
+
+const toggleLike = () => {
+  liked.value = !liked.value;
+  likesCount.value += liked.value ? 1 : -1;
+};
+
 const emit = defineEmits(['close']);
-const close = () => {
+const close = () => emit('close');
+const close2 = () => {
   emit('close');  // Emit the close event to close the modal
 
   // Navigate to the route and refresh the page
@@ -154,7 +175,7 @@ const deletePost = async () => {
       
 
       alert('게시글이 삭제되었습니다.');
-      close(); 
+      close2(); 
     } catch (error) {
       console.error('게시글 삭제 에러:', error);
     }
@@ -187,10 +208,18 @@ const formattedContent = computed(() => {
 const comments = ref([]);
 const newComment = ref(''); 
 const commentInput = ref(null); // 입력창에 접근하기 위한 ref
+const commentArea = ref(null);
 
 const focusCommentInput = () => {
   commentInput.value?.focus(); // 입력창에 포커스
 };
+
+const scrollToBottom = () => {
+  if (commentArea.value) {
+    commentArea.value.scrollTop = commentArea.value.scrollHeight;
+  }
+};
+
 
 const fetchComments = async () => {
   try {
@@ -275,6 +304,13 @@ const addComment = async () => {
 
     // 입력창 초기화
     newComment.value = '';
+
+    setTimeout(() => {
+      if (commentArea.value) {
+        commentArea.value.scrollTop = commentArea.value.scrollHeight;
+      }
+    }, 30);
+    
     console.log('댓글 작성 성공:', result);
   } catch (error) {
     console.error('댓글 작성 에러:', error);
@@ -285,8 +321,22 @@ const likePost = () => {
   console.log('Post liked!');
 };
 
-const goToChat = () => {
-  router.push('/chat');
+const goToChat = async (item) => {
+
+const user = JSON.parse(userInfo);   
+const responseChat = await axios.post('http://localhost:8080/api/v1/chat', {
+  sender: user.nickname,   // 로그인한 사용자 (채팅방 생성자)
+  receiver: item.memberNickname,  // 입력된 상대방 이름
+}, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  }
+});
+
+console.log(user.nickname);
+console.log(item.memberNickname);
+
+router.push('/chat');
 };
 
 // 게시물이 열릴 때 댓글을 가져옴
@@ -309,7 +359,7 @@ onMounted(() => {
   justify-content: center;
 }
 
-.modal-content {
+.modal-content1 {
   display: flex;
   flex-direction: row;
   background: white;
@@ -527,8 +577,8 @@ p {
 
 .close-button {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  /* top: 1rem; */
+  right: 152px;
   background: none;
   border: none;
   font-size: 2rem;
@@ -584,5 +634,9 @@ p {
 
 .dropdown-menu button:hover {
   color: red;
+}
+
+.first-button{
+  margin-left: 51.6rem;
 }
 </style>

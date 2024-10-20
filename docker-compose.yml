@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./front-end
+    image: bang99/weshareu-frontend:latest
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - weshareyou-network
+    restart: always
+
+  backend:
+    build:
+      context: ./back-end
+    image: bang99/weshareu-backend:latest
+    container_name: backend
+    ports:
+      - "7777:7777"
+    depends_on:
+      - mongodb
+      - mariadb
+      - redis
+    networks:
+      - weshareyou-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7777/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: wsuchat
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: wsu
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  weshareyou-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  mariadb-data:

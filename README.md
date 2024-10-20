@@ -19,8 +19,8 @@
    - [System Architecture](#system-architecture)
    - [주요 기능 FLOW CHART](#주요-기능-flow-chart)
    - [DDD](#ddd)
-     - [Event Storming](#1-event-storming)
-     - [Bounded Context](#2-bounded-context)
+     - [Bounded Context](#1-bounded-context)
+     - [Context Mapping](#2-context-mapping)
    - [DB 모델링](#db-모델링)
      - [개념 모델링](#1-개념-모델링)
      - [논리 모델링](#2-논리-모델링)
@@ -87,19 +87,14 @@
 ### System Architecture <a id="system-architecture"></a>
 ![image](https://github.com/user-attachments/assets/f1f310df-1231-4d40-96c5-065e2f0cbe54)
 
-
-
-
-
 ## DDD <a id="ddd"></a>
 
-### 1. Event Storming <a id="1-event-storming"></a>
+### 1. Bounded Context <a id="1-bounded-context"></a>
+![image](https://github.com/user-attachments/assets/d3dafafc-ee60-44e8-9212-4ce8f9fddace)
 
-![image](https://github.com/user-attachments/assets/b11ddb78-7874-4dfd-a8c0-ebfdbd41e238)
+### 2. Context Mapping <a id="2-context-mapping"></a>
+![image](https://github.com/user-attachments/assets/b5d42556-57ff-4dae-b41b-dd158c6fb332)
 
-### 2. Bounded Context <a id="2-bounded-context"></a>
-
-![image](https://github.com/user-attachments/assets/3efdd6c0-09bb-4ac0-ae83-d0e399f39ccd)
 
 ## DB 모델링 <a id="db-모델링"></a>
 

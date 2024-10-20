@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Document(collection  = "message") // com.websocket.chat.test 데이터베이스에 message 테이블 생성하여 메시지 내용 저장
+@Document(collection  = "message")
 public class ChatMessage {
 
     private String roomId;

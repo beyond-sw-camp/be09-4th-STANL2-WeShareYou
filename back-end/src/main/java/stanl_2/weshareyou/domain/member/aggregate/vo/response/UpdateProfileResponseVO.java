@@ -1,0 +1,23 @@
+package stanl_2.weshareyou.domain.member.aggregate.vo.response;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+public class UpdateProfileResponseVO {
+    @NotNull
+    private String nickname;
+
+    @NotNull
+    private String profileUrl;
+
+    @NotNull
+    private String introduction;
+
+    @NotNull
+    private String language;
+}

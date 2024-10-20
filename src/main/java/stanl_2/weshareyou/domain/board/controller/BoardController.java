@@ -237,13 +237,13 @@ public class BoardController {
      * }
      */
     @GetMapping("/{tag}")
-    public ApiResponse<?> readBoard(@RequestAttribute("id") Long id,
+    public ApiResponse<?> readBoard(/*@RequestAttribute("id") Long id,*/
                                     @PathVariable TAG tag,
                                     @RequestParam(value = "cursor", required = false) Long cursorId,
                                     @RequestParam(value ="size", defaultValue = "4") Integer size){
 
         CursorDTO cursorDTO = new CursorDTO();
-        cursorDTO.setId(id);
+//        cursorDTO.setId(id);
         cursorDTO.setTag(tag);
         cursorDTO.setCursorId(cursorId);
         cursorDTO.setSize(size);

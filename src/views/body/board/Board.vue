@@ -77,6 +77,7 @@
       v-if="isModalOpen" 
       :board="selectedBoard" 
       :initialImageIndex="selectedImageIndex" 
+      :tag="tag"
       @close="closeModal" 
     />
   </div>
@@ -130,41 +131,75 @@ const fetchBoardItems = async (reset = false) => {
         hasNext.value = true;
     }
 
-    try {
-        const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
-            params: { cursor: cursorId.value || '', size: 3 }
-        });
+    const initialSize = 3;
+    let currentSize = initialSize;
+    let newContents = [];
+    let currentTag = '';
+    const targetSize = 3;  // 목표로 하는 게시물 수
 
-        let data = response.data;
-        let newContents = [];
-        
-        console.log("Parsed Data:", data);
-        if (typeof data === 'string') {
-            const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
-            if (jsonParts.length > 0) {
-                try {
-                    const parsed = JSON.parse(jsonParts[0]);
-                    newContents = parsed.result?.comment || [];
-                    cursorId.value = parsed.result?.cursorId || '';
-                    hasNext.value = parsed.result?.hasNext;
-                } catch (error) {
-                    console.error("JSON 파싱 실패:", error);
+    try {
+        while (newContents.length < targetSize && hasNext.value) {
+            const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
+                params: { cursor: cursorId.value || '', size: currentSize }
+            });
+
+            let data = response.data;
+            let parsedData = [];
+            
+            console.log("Parsed Data:", data);
+            if (typeof data === 'string') {
+                const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
+                if (jsonParts.length > 0) {
+                    try {
+                        const parsed = JSON.parse(jsonParts[0]);
+                        parsedData = parsed.result?.comment || [];
+                        currentTag = data.result?.tag || tag.value;
+                        cursorId.value = parsed.result?.cursorId || '';
+                        hasNext.value = parsed.result?.hasNext;
+                    } catch (error) {
+                        console.error("JSON 파싱 실패:", error);
+                    }
                 }
+            } else {
+                parsedData = data.result?.comment || [];
+                currentTag = data.result?.tag || tag.value;
+                cursorId.value = data.result?.cursorId || '';
+                hasNext.value = data.result?.hasNext;
             }
-        } else {
-            newContents = data.result?.comment || [];
-            cursorId.value = data.result?.cursorId || '';
-            hasNext.value = data.result?.hasNext;
+            
+            console.log("Parsed data:", parsedData);
+
+            // 활성 게시물만 필터링
+            const filteredContents = parsedData.filter(board => board.active === true)
+                .map(board => ({
+                    ...board,
+                    tag: currentTag  // 각 게시글에 태그 정보 추가
+                }));
+            
+            // 좋아요 상태 반영
+            filteredContents.forEach(board => {
+                board.liked = likedBoardIds.value.has(board.id);
+            });
+            
+            newContents = [...newContents, ...filteredContents];
+            
+            console.log("New contents after filtering:", newContents);
+
+            if (newContents.length < targetSize && hasNext.value) {
+                currentSize *= 2;  // 다음 요청 시 더 많은 데이터를 가져오기
+                console.log("Increasing request size to:", currentSize);
+            } else {
+                break;  // 목표 크기에 도달하거나 더 이상 가져올 데이터가 없으면 루프 종료
+            }
         }
 
-        newContents.forEach(board => {
-            board.liked = likedBoardIds.value.has(board.id);
-        });
-        
+        // 기존 데이터에 추가
         boards.value = [...boards.value, ...newContents];
 
         if (boards.value.length === 0) {
             console.warn("No boards found.");
+        } else {
+            console.log("Total boards after update:", boards.value.length);
         }
     } catch (error) {
         console.error("API 호출 에러:", error.response?.data || error.message);
@@ -174,6 +209,7 @@ const fetchBoardItems = async (reset = false) => {
 };
 
 const openModal = (board, imageIndex) => {
+  console.log(board.tag);
   selectedBoard.value = {
     ...board,
     imageUrls: board.imageObj.map(image => image.imageUrl),

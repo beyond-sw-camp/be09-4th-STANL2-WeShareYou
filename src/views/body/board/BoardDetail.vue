@@ -98,10 +98,21 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  tag: {  // Define tag prop
+    type: String,
+    required: true,
+  }
 });
 
 const emit = defineEmits(['close']);
-const close = () => emit('close');
+const close = () => {
+  emit('close');  // Emit the close event to close the modal
+
+  // Navigate to the route and refresh the page
+  router.push(`/board/${props.tag}`).then(() => {
+    window.location.reload();  // Refresh the page after navigation
+  });
+};
 
 const token = localStorage.getItem('jwtToken'); // JWT 토큰 가져오기
 const showDropdown = ref(false);
@@ -127,7 +138,18 @@ const deletePost = async () => {
   const confirmed = confirm('정말로 이 게시글을 삭제하시겠습니까?');
   if (confirmed) {
     try {
-      await fetch(`http://localhost:8080/api/v1/board/${props.board.id}`, { method: 'DELETE' });
+      
+      const token = localStorage.getItem('jwtToken');
+
+      await fetch(`http://localhost:8080/api/v1/board`, { 
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: props.board.id
+      });
+      
       alert('게시글이 삭제되었습니다.');
       close(); 
     } catch (error) {

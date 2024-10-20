@@ -1,6 +1,6 @@
 <template>
   <div class="modal-overlay" @click.self="close">
-    <div class="modal-content">
+    <div class="modal-content1">
       <button class="close-button" @click="close">✕</button>
 
       <!-- 이미지 슬라이더 -->
@@ -106,7 +106,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-const close = () => {
+const close = () => emit('close');
+const close2 = () => {
   emit('close');  // Emit the close event to close the modal
 
   // Navigate to the route and refresh the page
@@ -154,7 +155,7 @@ const deletePost = async () => {
       
 
       alert('게시글이 삭제되었습니다.');
-      close(); 
+      close2(); 
     } catch (error) {
       console.error('게시글 삭제 에러:', error);
     }
@@ -309,7 +310,7 @@ onMounted(() => {
   justify-content: center;
 }
 
-.modal-content {
+.modal-content1 {
   display: flex;
   flex-direction: row;
   background: white;
@@ -527,8 +528,8 @@ p {
 
 .close-button {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  /* top: 1rem; */
+  right: 152px;
   background: none;
   border: none;
   font-size: 2rem;
@@ -584,5 +585,9 @@ p {
 
 .dropdown-menu button:hover {
   color: red;
+}
+
+.first-button{
+  margin-left: 51.6rem;
 }
 </style>

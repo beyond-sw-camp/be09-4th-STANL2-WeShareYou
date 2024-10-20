@@ -82,10 +82,8 @@ const submitPost = async () => {
   );
 
   const json = JSON.stringify(formData);
-    console.log("data: " + json);
 
     const jwtToken = localStorage.getItem('jwtToken');
-    console.log("jwtToken: " + jwtToken);
 
   try {
     const response = await axios.post('http://localhost:8080/api/v1/product', 
@@ -107,10 +105,6 @@ const submitPost = async () => {
 </script>
 
 <style scoped>
-.container-regist {
-    /* 생략 */
-}
-
 .wrapper-regist {
     display: flex;
     justify-content: end;

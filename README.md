@@ -88,21 +88,14 @@
 
 > 단순한 학습의 장을 넘어, 체계적이고 효과적인 학습 플랫폼으로 발전할 수 있을 것으로 기대
 
-# 설계 문서 <a id="설계-문서"></a>
+# 설계 문서(Jira) <a id="설계-문서"></a>
 
 ---
 
 ### System Architecture <a id="system-architecture"></a>
 
-![Network Diagrams](https://github.com/user-attachments/assets/83706f89-f51f-4036-8cd7-f4244cb34801)
+![image](https://github.com/user-attachments/assets/e52ce4f5-c582-4a39-a6f5-b316bc0c228b)
 
-
-## 주요 기능 FLOW CHART <a id="주요-기능-flow-chart"></a>
-
-![문제관련 drawio (1)](https://github.com/user-attachments/assets/59625632-7ce8-4300-b085-945d176620f8)
-
-## OAuth 2.0 Sequence Diagram <a id="OAuth2SequenceDiagram"></a>
-![image](https://github.com/user-attachments/assets/b150924e-92a5-4290-9602-38efa24e9804)
 
 ## DDD <a id="ddd"></a>
 

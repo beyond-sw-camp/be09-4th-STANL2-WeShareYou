@@ -1,121 +1,3 @@
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mongodb-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mongodb
-  template:
-    metadata:
-      labels:
-        app: mongodb
-    spec:
-      containers:
-        - name: mongodb
-          image: mongo:6.0
-          ports:
-            - containerPort: 27017
-          env:
-            - name: MONGO_INITDB_DATABASE
-              value: "wsuchat"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb-service
-spec:
-  selector:
-    app: mongodb
-  ports:
-    - protocol: TCP
-      port: 27017
-      targetPort: 27017
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mariadb-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mariadb
-  template:
-    metadata:
-      labels:
-        app: mariadb
-    spec:
-      containers:
-        - name: mariadb
-          image: mariadb:10.6
-          ports:
-            - containerPort: 3306
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: "test"
-            - name: MYSQL_DATABASE
-              value: "wsu"
-            - name: MYSQL_USER
-              value: "test"
-            - name: MYSQL_PASSWORD
-              value: "test"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mariadb-service
-spec:
-  selector:
-    app: mariadb
-  ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redis-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: redis
-  template:
-    metadata:
-      labels:
-        app: redis
-    spec:
-      containers:
-        - name: redis
-          image: redis:alpine
-          ports:
-            - containerPort: 6379
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis-service
-spec:
-  selector:
-    app: redis
-  ports:
-    - protocol: TCP
-      port: 6379
-      targetPort: 6379
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: backend-env-config
-data:
-  DATABASE_HOST: mongodb-service
-  REDIS_HOST: redis-service
-  MYSQL_HOST: mariadb-service
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -135,15 +17,6 @@ spec:
           image: bang99/weshareu-backend:latest
           ports:
             - containerPort: 7777
-          envFrom:
-            - configMapRef:
-                name: backend-env-config
-          volumeMounts:
-            - name: backend-volume
-              mountPath: /config
-      volumes:
-        - name: backend-volume
-          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -152,10 +25,12 @@ metadata:
 spec:
   selector:
     app: backend
+  type: ClusterIP  # NodePort에서 ClusterIP로 변경
   ports:
     - protocol: TCP
       port: 7777
       targetPort: 7777
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -184,9 +59,8 @@ metadata:
 spec:
   selector:
     app: frontend
-  type: NodePort
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30080  # 30000-32767 사이 포트 선택

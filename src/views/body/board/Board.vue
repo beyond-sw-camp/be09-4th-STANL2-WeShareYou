@@ -42,7 +42,7 @@
             @click="upLike(item.id)"
           />
           <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(item)" />
-          <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
+          <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item)" />
         </div> 
 
         <h3 class="board-title">{{ item.title }}</h3>
@@ -65,6 +65,7 @@
           <span>좋아요 {{ item.likesCount }}개</span>
           <span>댓글 {{ item.commentCount }}개</span>
         </div> -->
+
       </div>
       <!-- 무한 스크롤을 위한 sentinel -->
       <div ref="sentinel" class="sentinel"></div>
@@ -78,6 +79,7 @@
       :board="selectedBoard" 
       :initialImageIndex="selectedImageIndex" 
       :tag="tag"
+      :liked="selectedBoard.liked" 
       @close="closeModal" 
     />
   </div>
@@ -99,6 +101,8 @@ const likedBoardIds = ref(new Set());
 const isModalOpen = ref(false);
 const selectedBoard = ref(null);
 const selectedImageIndex = ref(0);
+const userInfo = localStorage.getItem('userInfo');
+const token =localStorage.getItem('jwtToken');  
 
 const router = useRouter();
 const route = useRoute();
@@ -139,59 +143,59 @@ const fetchBoardItems = async (reset = false) => {
 
     try {
       while (newContents.length < targetSize && hasNext.value) {
-            const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
-                params: { cursor: cursorId.value || '', size: currentSize }
-            });
-            let data = response.data;
-            let parsedData = [];
+        const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
+          params: { cursor: cursorId.value || '', size: currentSize }
+        });
+        let data = response.data;
+        let parsedData = [];
             
-            console.log("Parsed Data:", data);
-            if (typeof data === 'string') {
-                const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
-                if (jsonParts.length > 0) {
-                    try {
-                        const parsed = JSON.parse(jsonParts[0]);
-                        parsedData = parsed.result?.comment || [];
-                        currentTag = data.result?.tag || tag.value;
-                        cursorId.value = parsed.result?.cursorId || '';
-                        hasNext.value = parsed.result?.hasNext;
-                    } catch (error) {
-                        console.error("JSON 파싱 실패:", error);
-                }
-            }
-          } else {
-                parsedData = data.result?.comment || [];
-                currentTag = data.result?.tag || tag.value;
-                cursorId.value = data.result?.cursorId || '';
-                hasNext.value = data.result?.hasNext;
-            }
+        console.log("Parsed Data:", data);
+        if (typeof data === 'string') {
+          const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
+          if (jsonParts.length > 0) {
+            try {
+              const parsed = JSON.parse(jsonParts[0]);
+              parsedData = parsed.result?.comment || [];
+              currentTag = data.result?.tag || tag.value;
+              cursorId.value = parsed.result?.cursorId || '';
+              hasNext.value = parsed.result?.hasNext;
+              } catch (error) {
+                console.error("JSON 파싱 실패:", error);
+              }
+          }
+        } else {
+          parsedData = data.result?.comment || [];
+          currentTag = data.result?.tag || tag.value;
+          cursorId.value = data.result?.cursorId || '';
+          hasNext.value = data.result?.hasNext;
+        }
             
-            console.log("Parsed data:", parsedData);
+        console.log("Parsed data:", parsedData);
 
-            // 활성 게시물만 필터링
-            const filteredContents = parsedData.filter(board => board.active === true)
-                .map(board => ({
-                    ...board,
-                    tag: currentTag  // 각 게시글에 태그 정보 추가
-                }));
+        // 활성 게시물만 필터링
+        const filteredContents = parsedData.filter(board => board.active === true)
+          .map(board => ({
+            ...board,
+            tag: currentTag  // 각 게시글에 태그 정보 추가
+          }));
             
             // 좋아요 상태 반영
-            filteredContents.forEach(board => {
-                board.liked = likedBoardIds.value.has(board.id);
-            });
+        filteredContents.forEach(board => {
+          board.liked = likedBoardIds.value.has(board.id);
+        });
             
-            newContents = [...newContents, ...filteredContents];
+        newContents = [...newContents, ...filteredContents];
             
-            console.log("New contents after filtering:", newContents);
+        console.log("New contents after filtering:", newContents);
 
-            if (newContents.length < targetSize && hasNext.value) {
-                currentSize *= 2;  // 다음 요청 시 더 많은 데이터를 가져오기
-                console.log("Increasing request size to:", currentSize);
-            } else {
-                break;  // 목표 크기에 도달하거나 더 이상 가져올 데이터가 없으면 루프 종료
-            }
-          }
-        boards.value = [...boards.value, ...newContents];
+        if (newContents.length < targetSize && hasNext.value) {
+          currentSize *= 2;  // 다음 요청 시 더 많은 데이터를 가져오기
+          console.log("Increasing request size to:", currentSize);
+        } else {
+          break;  // 목표 크기에 도달하거나 더 이상 가져올 데이터가 없으면 루프 종료
+        }
+      }
+      boards.value = [...boards.value, ...newContents];
 
         if (boards.value.length === 0) {
             console.warn("No boards found.");
@@ -262,7 +266,21 @@ const goToCreate = () => {
   router.push('/board/create'); // 글 작성 페이지로 이동
 };
 
-const goToChat = () => {
+const goToChat = async (item) => {
+
+  const user = JSON.parse(userInfo);   
+  const responseChat = await axios.post('http://localhost:8080/api/v1/chat', {
+    sender: user.nickname,   // 로그인한 사용자 (채팅방 생성자)
+    receiver: item.memberNickname,  // 입력된 상대방 이름
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+
+  console.log(user.nickname);
+  console.log(item.memberNickname);
+
   router.push('/chat');
 };
 

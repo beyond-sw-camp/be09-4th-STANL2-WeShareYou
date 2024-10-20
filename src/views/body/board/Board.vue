@@ -15,19 +15,32 @@
         <!-- 글 작성 버튼 -->
         <button class="create-button" @click="goToCreate">글 작성</button>
       </div>
-      <div v-for="item in boards" :key="item.id" class="board-card" @click="openModal(item)">
+      <div v-for="item in boards" :key="item.id" class="board-card">
         
         <div class="user-info">
           <img :src="item.memberProfileUrl" alt="User Profile" class="profile-image" @click="goToProfile(item.memberNickname)">
           <span class="nickname" @click="goToProfile(item.memberNickname)">{{ item.memberNickname }} </span>
         </div>
-
+        
+        <hr class="divider"/>
         <div class="image-container">
-          <img v-for="(image, i) in item.imageObj.slice(0, 3)" :key="i" :src="image.imageUrl" :alt="image.fileName" class="board-image"/>
+          <img 
+            v-for="(image, i) in item.imageObj.slice(0, 3)" 
+            :key="i" 
+            :src="image.imageUrl" 
+            :alt="image.fileName" 
+            class="board-image" 
+            @click="openModal(item, i)" 
+          />
         </div>
 
         <div class="board-footer">
-          <img src="@/assets/icon/boardIcons/heart.svg" class="svg-icon" alt="Heart Icon" @click="upLike(item.id)"/>
+          <img
+            :src="item.liked ? filledHeartIcon : emptyHeartIcon"
+            class="svg-icon"
+            alt="Heart Icon"
+            @click="upLike(item.id)"
+          />
           <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="openModal(item)" />
           <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="letter Icon" @click="goToChat(item.id)" />
         </div> 
@@ -58,8 +71,15 @@
     </div>
 
     <div v-if="loading" class="loading">Loading...</div>
+    
     <!-- Modal Component -->
-    <board-detail v-if="isModalOpen" :board="selectedBoard" @close="closeModal" />
+    <board-detail 
+      v-if="isModalOpen" 
+      :board="selectedBoard" 
+      :initialImageIndex="selectedImageIndex" 
+      :tag="tag"
+      @close="closeModal" 
+    />
   </div>
 </template>
 
@@ -75,13 +95,30 @@ const hasNext = ref(true);
 const loading = ref(false);
 const sentinel = ref(null);
 const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']); // 태그 목록
+const likedBoardIds = ref(new Set());
 const isModalOpen = ref(false);
 const selectedBoard = ref(null);
+const selectedImageIndex = ref(0);
 
 const router = useRouter();
 const route = useRoute();
 
 const tag = ref(route.params.tag || 'GUIDE');
+const emptyHeartIcon = new URL('@/assets/icon/boardIcons/heart.svg', import.meta.url).href;
+const filledHeartIcon = new URL('@/assets/icon/boardIcons/filledheart.svg', import.meta.url).href;
+
+const fetchLikedBoards = async () => {
+    try {
+        const token = localStorage.getItem('jwtToken');
+        const response = await axios.get('http://localhost:8080/api/v1/board_likes', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        likedBoardIds.value = new Set(response.data); // 좋아요한 게시글 ID 저장
+    } catch (error) {
+        console.error('Error fetching liked boards:', error.response?.data || error.message);
+    }
+};
 
 const fetchBoardItems = async (reset = false) => {
     if (loading.value || (!reset && !hasNext.value)) return;
@@ -94,39 +131,73 @@ const fetchBoardItems = async (reset = false) => {
         hasNext.value = true;
     }
 
-    try {
-        const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
-            params: { cursor: cursorId.value || '', size: 3 }
-        });
+    const initialSize = 3;
+    let currentSize = initialSize;
+    let newContents = [];
+    let currentTag = '';
+    const targetSize = 3;  // 목표로 하는 게시물 수
 
-        let data = response.data;
-        let newContents = [];
-        
-        console.log("Parsed Data:", data);
-        if (typeof data === 'string') {
-            const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
-            if (jsonParts.length > 0) {
-                try {
-                    const parsed = JSON.parse(jsonParts[0]);
-                    newContents = parsed.result?.comment || [];
-                    cursorId.value = parsed.result?.cursorId || '';
-                    hasNext.value = parsed.result?.hasNext;
-                } catch (error) {
-                    console.error("JSON 파싱 실패:", error);
+    try {
+      while (newContents.length < targetSize && hasNext.value) {
+            const response = await axios.get(`http://localhost:8080/api/v1/board/${tag.value}`, {
+                params: { cursor: cursorId.value || '', size: currentSize }
+            });
+            let data = response.data;
+            let parsedData = [];
+            
+            console.log("Parsed Data:", data);
+            if (typeof data === 'string') {
+                const jsonParts = data.match(/\{.*?\}(?=\{|\s*$)/g) || [];
+                if (jsonParts.length > 0) {
+                    try {
+                        const parsed = JSON.parse(jsonParts[0]);
+                        parsedData = parsed.result?.comment || [];
+                        currentTag = data.result?.tag || tag.value;
+                        cursorId.value = parsed.result?.cursorId || '';
+                        hasNext.value = parsed.result?.hasNext;
+                    } catch (error) {
+                        console.error("JSON 파싱 실패:", error);
                 }
             }
-        } else {
-            newContents = data.result?.comment || [];
-            cursorId.value = data.result?.cursorId || '';
-            hasNext.value = data.result?.hasNext;
-        }
+          } else {
+                parsedData = data.result?.comment || [];
+                currentTag = data.result?.tag || tag.value;
+                cursorId.value = data.result?.cursorId || '';
+                hasNext.value = data.result?.hasNext;
+            }
+            
+            console.log("Parsed data:", parsedData);
 
+            // 활성 게시물만 필터링
+            const filteredContents = parsedData.filter(board => board.active === true)
+                .map(board => ({
+                    ...board,
+                    tag: currentTag  // 각 게시글에 태그 정보 추가
+                }));
+            
+            // 좋아요 상태 반영
+            filteredContents.forEach(board => {
+                board.liked = likedBoardIds.value.has(board.id);
+            });
+            
+            newContents = [...newContents, ...filteredContents];
+            
+            console.log("New contents after filtering:", newContents);
+
+            if (newContents.length < targetSize && hasNext.value) {
+                currentSize *= 2;  // 다음 요청 시 더 많은 데이터를 가져오기
+                console.log("Increasing request size to:", currentSize);
+            } else {
+                break;  // 목표 크기에 도달하거나 더 이상 가져올 데이터가 없으면 루프 종료
+            }
+          }
         boards.value = [...boards.value, ...newContents];
-        console.log('New contents added:', newContents.length); // 디버깅 로그
 
         if (boards.value.length === 0) {
             console.warn("No boards found.");
-        }
+          } else {
+            console.log("Total boards after update:", boards.value.length);
+          }
     } catch (error) {
         console.error("API 호출 에러:", error.response?.data || error.message);
     } finally {
@@ -134,11 +205,14 @@ const fetchBoardItems = async (reset = false) => {
     }
 };
 
-const openModal = (board) => {
+const openModal = (board, imageIndex) => {
+  console.log(board.tag);
+
   selectedBoard.value = {
     ...board,
     imageUrls: board.imageObj.map(image => image.imageUrl),
   };
+  selectedImageIndex.value = imageIndex; // Set the initial image index
   isModalOpen.value = true;
 };
 
@@ -193,26 +267,40 @@ const goToChat = () => {
 };
 
 const upLike = async (boardId) => {
-    
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/board_like', {
-        headers: {
-          'Content-Type': "application.json" // 요청 속성으로 포함
-          }
-        });
+        const token = localStorage.getItem('jwtToken');
+        const boardIndex = boards.value.findIndex((board) => board.id === boardId);
+        if (boardIndex === -1) return;
 
-        // 좋아요 개수 1 증가
-        const boardIndex = boards.value.findIndex(board => board.id === boardId);
-        if (boardIndex !== -1) {
-            boards.value[boardIndex].likesCount += 1;
+        const board = boards.value[boardIndex];
+        const url = 'http://localhost:8080/api/v1/board_like';
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+
+        if (board.liked) {
+            await axios.delete(url, {
+                headers,
+                data: { boardId }
+            });
+
+            board.likesCount -= 1;
+            board.liked = false;
+            likedBoardIds.value.delete(boardId); // Set에서 삭제
+            console.log('좋아요 취소 완료');
+        } else {
+            await axios.post(url, { boardId }, { headers });
+
+            board.likesCount += 1;
+            board.liked = true;
+            likedBoardIds.value.add(boardId); // Set에 추가
+            console.log('좋아요 추가 완료');
         }
-        
-        console.log('좋아요 추가 완료:', response.data);
     } catch (error) {
-        console.error('좋아요 추가 에러:', error.response?.data || error.message);
+        console.error('좋아요 처리 에러:', error.response?.data || error.message);
     }
 };
-
 
 watch(
     () => route.params.tag,
@@ -222,32 +310,31 @@ watch(
     }
 );
 
-onMounted(() => {
-    fetchBoardItems();
+onMounted(async () => {
+    await fetchLikedBoards(); // 좋아요한 게시글 정보 먼저 로드
+    await fetchBoardItems(); // 게시글 로드 후 좋아요 상태 반영
     if (sentinel.value) {
         intersectionObserver.observe(sentinel.value);
     }
 });
+
 
 onUnmounted(() => {
     if (sentinel.value) {
         intersectionObserver.unobserve(sentinel.value);
     }
 });
+
+router.beforeEach(async (to, from, next) => {
+    if (to.path.startsWith('/board')) {
+        await fetchLikedBoards(); // 좋아요한 게시글 정보 다시 로드
+        await fetchBoardItems(true); // 페이지 변경 시 데이터 초기화
+    }
+    next();
+});
 </script>
 
 <style scoped>
-/* :root {
-  --main-blue: #94C7FF;
-  --white: #FFF;
-  --black-60: #627086;
-  --shadow-color: rgba(19, 24, 48, 0.15);
-}
-
-body {
-  font-family: ABeeZee, sans-serif;
-} */
-
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -384,19 +471,21 @@ body {
 
 .image-container {
   display: flex;
-  gap: 1.5rem; /* 8px = 0.5rem */
-  margin-bottom: 0.75rem; /* 12px = 0.75rem */
   padding: 1rem;
-  box-sizing: border-box; /* Ensure padding is included in the total size */
+  box-sizing: border-box;
+  width: 100%;
+  gap: 1rem; /* 이미지 사이의 간격 */
 }
 
 .board-image {
-  width: 30rem;
-  height: 30rem;
-  border-radius: 0.8rem; /* 모서리 둥글게 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* 애니메이션 */
-  cursor: pointer; /* 마우스 커서 변경 */
+  flex: 1;
+  max-width: calc((100% - 2rem) / 3); /* 3개 이미지일 때 각각의 최대 너비 */
+  height: 26rem;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .board-footer {
@@ -454,7 +543,7 @@ body {
   display: flex;
   gap: 0.3rem;
   font-size: 2rem;
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 }
 
 .loading {
@@ -464,5 +553,15 @@ body {
   color: #666;
 }
 
-/* -- */
+.svg-icon {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.svg-icon:hover {
+  transform: scale(1.2);
+}
 </style>

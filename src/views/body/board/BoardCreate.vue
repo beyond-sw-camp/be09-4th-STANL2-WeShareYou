@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+
     <h2>게시글 정보</h2>
     <!-- Image Upload Section -->
     <div class="image-container">
@@ -31,29 +32,25 @@
     </div>
 
     <div class="button-container">
-      <button class="btn btn-primary" @click="submitForm">수정</button>
+      <button class="btn btn-primary" @click="submitForm">등록</button>
       <button class="btn btn-secondary" @click="goToMain">취소</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
-
-const route = useRoute();
-const router = useRouter();
-const boardId = route.params.id;
 
 // Form state
 const images = ref([]);
 const title = ref('');
 const content = ref('');
-const selectedTag = ref('GUIDE');
-const token = localStorage.getItem('jwtToken');
+const selectedTag = ref('GUIDE'); 
 const userInfo = localStorage.getItem('userInfo');
-const deletedFileIds = ref([]);
+const token = localStorage.getItem('jwtToken');
+const router = useRouter();
 
 // Tag options
 const tags = ref(['GUIDE', 'FREEMARKET', 'ACCOMPANY', 'TIP']);
@@ -72,69 +69,22 @@ const handleImageUpload = (event) => {
     const file = files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
-      const imageObject = { file, preview: e.target.result };
-
       if (currentImageIndex.value !== null && currentImageIndex.value < images.value.length) {
-        images.value.splice(currentImageIndex.value, 1, imageObject);
+        // Replace existing image
+        images.value[currentImageIndex.value] = { file, preview: e.target.result };
       } else if (images.value.length < 3) {
-        images.value.push(imageObject);
+        // Add new image
+        images.value.push({ file, preview: e.target.result });
       }
     };
     reader.readAsDataURL(file);
   }
-  event.target.value = ''; // Reset input to allow re-upload of the same file
+  // Reset file input
+  event.target.value = '';
 };
 
 const deleteImage = (index) => {
-  const image = images.value[index];
-  if (image.id) {
-    deletedFileIds.value.push(image.id); // 삭제할 이미지 ID 저장
-    console.log(deletedFileIds);
-  }
-  images.value.splice(index, 1); // UI에서 이미지 삭제
-};
-
-const fetchPost = async (postId) => {
-  try {
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-
-    const response = await axios.get(`http://localhost:8080/api/v1/board/detail/${postId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    console.log('Full response:', response);
-
-    if (response.data.success) {
-      const post = response.data.result;
-      title.value = post.title;
-      content.value = post.content;
-
-      // 이미지 처리
-      images.value = post.imageObj?.map(img => ({ 
-        id: img.id,
-        preview: img.imageUrl
-      })) || [];
-
-    } else {
-      console.error('API responded with an error:', response.data.error);
-    }
-  } catch (error) {
-    console.error('Error fetching post:', error);
-    if (error.response) {
-      console.error('Server responded with:', error.response.data);
-      console.error('Status code:', error.response.status);
-    } else if (error.request) {
-      console.error('No response received:', error.request);
-    } else {
-      console.error('Error setting up request:', error.message);
-    }
-  }
+  images.value.splice(index, 1);
 };
 
 const submitForm = async () => {
@@ -143,22 +93,18 @@ const submitForm = async () => {
     const payload = JSON.parse(userInfo);
     const memberId = payload?.id;
 
-    images.value.forEach((image) => formData.append('newFiles', image.file));
+    images.value.forEach((image) => formData.append('file', image.file));
 
-    formData.append('deletedFileIds', new Blob([JSON.stringify(deletedFileIds.value)], { type : 'application/json'}));
-
-    const boardUpdateRequestVO = {
-      id: route.params.id,
+    const boardCreateRequestVO = {
       title: title.value,
       content: content.value,
       tag: selectedTag.value,
-      memberId: memberId,
+      id: memberId,
     };
 
-    formData.append('vo', new Blob([JSON.stringify(boardUpdateRequestVO)], { type: 'application/json' }));
+    formData.append('vo', new Blob([JSON.stringify(boardCreateRequestVO)], { type: 'application/json' }));
 
-
-    const response = await axios.put(`http://localhost:8080/api/v1/board`, formData, {
+    const response = await axios.post(`http://localhost:8080/api/v1/board`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data',
@@ -170,7 +116,7 @@ const submitForm = async () => {
     if (response.data.success) {
       goToMain();
     } else {
-      console.error('Error updating board:', response.data.error);
+      console.error('Error creating board:', response.data.error);
     }
   } catch (error) {
     console.error('Error submitting form', error);
@@ -179,12 +125,7 @@ const submitForm = async () => {
 
 const goToMain = () => {
   router.push('/board/GUIDE');
-};
-
-onMounted(() => {
-  console.log(boardId);
-  fetchPost(boardId);
-});
+}
 
 </script>
 

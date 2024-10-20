@@ -22,6 +22,9 @@ import NoticeDetail from "@/views/body/notice/components/NoticeDetail.vue";
 import NoticePost from '@/views/body/notice/components/NoticePost.vue';
 import NoticeModify from '@/views/body/notice/components/NoticeModify.vue';
 
+import BoardCreate from "@/views/body/board/BoardCreate.vue";
+import BoardUpdate from "@/views/body/board/BoardUpdate.vue";
+
 const routes = [
     {
         path: '/login',
@@ -84,6 +87,18 @@ const routes = [
         path: '/board/detail/:id', // Regular route for direct access
         name: 'BoardDetail',
         component: BoardDetail,
+        props: true,
+    },
+    {
+        path: '/board/create', // Regular route for direct access
+        name: 'BoardCreate',
+        component: BoardCreate,
+        props: true,
+    },
+    {
+        path: '/board/update/:id', // Regular route for direct access
+        name: 'BoardUpdate',
+        component: BoardUpdate,
         props: true,
     },
     {

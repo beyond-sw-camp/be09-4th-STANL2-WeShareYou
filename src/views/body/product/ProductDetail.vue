@@ -9,12 +9,12 @@
             <h2 class="product-title">{{ product.title }}</h2>
             <span>{{ product.category }}</span>
 
-            <form>
+            <form @submit.prevent="submitProduct">
                 <div class="form-group">
                     <label for="rentalDate">대여일시:</label>
                     <div class="input-group">
-                        <input type="text" id="rentalDate" placeholder="YYYY.MM.DD" class="date-input" />
-                        <select class="time-select">
+                        <input v-model="startDate" type="text" id="rentalDate" placeholder="YYYY.MM.DD" class="date-input" />
+                        <select v-model="startTime" class="time-select">
                             <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
                         </select>
                     </div>
@@ -23,46 +23,82 @@
                 <div class="form-group">
                     <label for="returnDate">반납일시:</label>
                     <div class="input-group">
-                        <input type="text" id="returnDate" placeholder="YYYY.MM.DD" class="date-input" />
-                        <select class="time-select">
+                        <input v-model="endDate" type="text" id="returnDate" placeholder="YYYY.MM.DD" class="date-input" />
+                        <select v-model="endTime" class="time-select">
                             <option v-for="hour in hours" :key="hour" :value="hour">{{ hour }}</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>수량 선택:</label>
-                    <select class="quantity-select">
-                        <option v-for="num in quantityOptions" :key="num">{{ num }}개</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="submit-btn">빌리기</button>
+                <button 
+                    type="submit" 
+                    class="submit-btn" 
+                    :disabled="product.rental"
+                    :class="{ disabled: product.rental }">
+                    {{ product.rental ? "대여완료" : "빌리기" }}
+                </button>
             </form>
         </div>
     </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 
 const route = useRoute();
+const router = useRouter();
 const id = route.params.id; // URL에서 제품 ID 가져오기
+const category = route.params.category;
 
 const product = ref({});
 const loading = ref(true);
 const error = ref(null);
 
-const hours = ref([]);
-for (let i = 0; i < 24; i++) {
-    const hourString = i.toString().padStart(2, '0') + ':00'; // Format hour as 'HH:00'
-    hours.value.push(hourString);
-}
+const startDate = ref('');
+const startTime = ref('');
+const endDate = ref('');
+const endTime = ref('');
 
-const quantityOptions = Array.from({ length: 10 }, (_, i) => i + 1); // 1부터 10까지
+const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ':00');
+
+const submitProduct = async () => {
+    if (!startDate.value || !startTime.value || !endDate.value || !endTime.value) {
+        alert('모든 항목을 입력해주세요.');
+        return;
+    }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    // 날짜와 시간을 결합하여 Timestamp로 변환
+    const startAt = new Date(`${startDate.value} ${startTime.value}`).toISOString();
+    const endAt = new Date(`${endDate.value} ${endTime.value}`).toISOString();
+
+    const payload = {
+        productId: id,
+        startAt,
+        endAt
+    };
+
+    try {
+        const response = await axios.put(`http://localhost:8080/api/v1/product/share/${id}`, payload, {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        alert('대여가 완료되었습니다.');
+
+        // 상세 조회를 다시 불러와서 상태 업데이트
+        await fetchProductDetail();
+
+        router.push(`/product/${category}/${id}`);
+    } catch (error) {
+        console.error('등록 실패:', error);
+        alert('이미 대여된 상품입니다.');
+    }
+};
 
 // API에서 제품 상세 정보를 가져오는 함수
 const fetchProductDetail = async () => {
@@ -102,6 +138,7 @@ const fetchProductDetail = async () => {
         loading.value = false; // 로딩 종료
     }
 };
+
 
 // 컴포넌트가 마운트될 때 제품 상세 정보 가져오기
 onMounted(() => {
@@ -162,7 +199,8 @@ form {
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
 }
 
 label {
@@ -210,9 +248,18 @@ label {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 2rem;
+}
+.submit-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 .submit-btn:hover {
     background-color: #0056b3;
+}
+
+.submit-btn.disabled:hover {
+    background-color: #cccccc; /* 비활성화된 버튼에 hover 효과 제거 */
 }
 </style>

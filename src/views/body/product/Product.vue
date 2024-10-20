@@ -84,17 +84,17 @@ const categoryTranslations = {
 const translatedCategory = ref(categoryTranslations[category.value] || '공유 물품');
 
 // 언어 변경 시 카테고리 번역 업데이트
-watch(
-    () => route.params.category,
-    async (newCategory) => {
-        category.value = newCategory || '공유 물품';
-        translatedCategory.value = await translateText(
-            categoryTranslations[newCategory] || '공유 물품',
-            currentLang.value
-        );
-    },
-    { immediate: true }
-);
+// watch(
+//     () => route.params.category,
+//     async (newCategory) => {
+//         category.value = newCategory || '공유 물품';
+//         translatedCategory.value = await translateText(
+//             categoryTranslations[newCategory] || '공유 물품',
+//             currentLang.value
+//         );
+//     },
+//     { immediate: true }
+// );
 </script>
 
 <style scoped>

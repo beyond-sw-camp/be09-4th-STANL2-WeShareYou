@@ -36,4 +36,10 @@ public class BoardSummaryVO {
 
     @NotNull
     private Integer likesCount;
+
+    @NotNull
+    private Integer memberId;
+
+    @NotNull
+    private Boolean active;
 }

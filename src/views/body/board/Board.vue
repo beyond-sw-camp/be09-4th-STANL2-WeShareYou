@@ -61,10 +61,10 @@
         </div>
 
         <!-- 좋아요와 댓글 수 -->
-        <div class="interaction-info">
+        <!-- <div class="interaction-info">
           <span>좋아요 {{ item.likesCount }}개</span>
           <span>댓글 {{ item.commentCount }}개</span>
-        </div>
+        </div> -->
       </div>
       <!-- 무한 스크롤을 위한 sentinel -->
       <div ref="sentinel" class="sentinel"></div>

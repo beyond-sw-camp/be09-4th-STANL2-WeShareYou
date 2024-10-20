@@ -65,10 +65,10 @@
           </div>  
 
           <!-- 중간: 좋아요 및 댓글 수 -->
-          <div class="interaction-info">
+          <!-- <div class="interaction-info">
             <span>좋아요 {{ board.likesCount }}개</span>
             <span>댓글 {{ board.commentCount }}개</span>
-          </div>
+          </div> -->
 
           <!-- 하단: 댓글 입력과 전송 -->
           <div class="comment-input">

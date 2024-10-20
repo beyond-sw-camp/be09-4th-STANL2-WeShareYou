@@ -18,7 +18,6 @@
 4. [설계 문서](#설계-문서)
    - [System Architecture](#system-architecture)
    - [주요 기능 FLOW CHART](#주요-기능-flow-chart)
-   - [OAuth 2.0 Sequence Diagram](#OAuth2SequenceDiagram)
    - [DDD](#ddd)
      - [Event Storming](#1-event-storming)
      - [Bounded Context](#2-bounded-context)
@@ -69,12 +68,7 @@
 
 ## 3. 차별점 <a id="3-차별점"></a>
 
-|         | 팀원모집 | 일정관리 | 문제 출제 | 일정관리 |
-| ------- | -------- | -------- | --------- | -------- |
-| Studyin | ㅇ       | ㅇ       |           | ㅇ       |
-| 맞추다  |          |          | ㅇ        |          |
-| 공작소  | ㅇ       | ㅇ       |           | ㅇ       |
-| SGMA    | ㅇ       | ㅇ       | ㅇ        | ㅇ       |
+
 
 ## 4. 핵심 기능 <a id="4-핵심-기능"></a>
 

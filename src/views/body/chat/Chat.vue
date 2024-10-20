@@ -16,6 +16,7 @@
         <li v-for="room in rooms" :key="room.roomId" class="room-item-container">
           <p class="room-item"@click="setSelectedRoom(room)" >
             {{ room.sender === user.name ? room.receiver : room.sender }}
+  
           </p>
           <!-- 버튼을 마우스 오버 시 표시 -->
           <button class="delete-button" @click="openDeleteModal(room)">삭제</button>
@@ -62,14 +63,9 @@
           <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
             <div class="message-sender">{{ message.sender }}</div>
             <div class="message-content">
-<<<<<<< HEAD
-              <span class="message-time1">{{ message.message }}</span><br>
-              <span class="message-time2">{{ formatTime(message.createdAt) }}</span>
-=======
               <span class="message-time">{{ message.message }}</span>
               <span class="message-time" v-if="message.createdAt">{{ formatTime(message.createdAt) }}</span>
               <span class="message-time" v-if="message.sendTime">{{ message.sendTime }}</span>
->>>>>>> 31b4b6704400a99f576238fad8752281eccd4828
             </div>
             <div v-if="isLastMessageRead(index, message)">
               <span class="message-time">읽음</span>
@@ -155,6 +151,7 @@
           );
             alert(`${receiver.value}와의 채팅방이 생성되었습니다.`);
             fetchChatRooms();  // 채팅방 목록을 다시 가져와서 업데이트
+            console.log(response.data)
         } catch (error) {
             console.error("채팅방 생성 실패", error);
             alert("채팅방 생성에 실패했습니다. 다시 시도해주세요.");
@@ -206,6 +203,7 @@
         }
 
         try {
+          
             console.log("Fetching message rooms...");
             console.log("Fetching에서의 roomId: " + room.roomId);
             const response = await axios.get(`http://localhost:8080/api/v1/chat/${room.roomId}`
@@ -227,6 +225,13 @@
           });
 
           messages.push(...newMessages); // 상태를 한 번만 갱신
+
+          setTimeout(() => {
+          const messageArea = document.getElementById('messageArea');
+          if (messageArea) {
+            messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight; // 스크롤을 아래로 이동
+          }
+        }, 30);
 
         } catch (error) {
             console.error("Error fetching chat rooms:", error);
@@ -254,7 +259,16 @@
       try {
         await stompClient.value.send(`/pub/message/${roomId.value}`, {}, JSON.stringify(sendMessage));
         messageInput.value = '';
+
+         // 메시지를 보낸 후 메시지 영역을 최하단으로 스크롤
+        setTimeout(() => {
+          const messageArea = document.getElementById('messageArea');
+          if (messageArea) {
+            messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight; // 스크롤을 아래로 이동
+          }
+        }, 30); // 타임아웃으로 Vue 렌더링 후 바로 적용되도록 처리
         fetchChatRoomDetail(roomName.value);
+
       } catch (error) {
         console.error('메시지 전송 실패:', error);
         alert('메시지 전송에 실패했습니다. 다시 시도해주세요.');
@@ -544,7 +558,7 @@
 .message-time {
   font-size: 1.2rem;
   margin-top: 0.5rem;
-  color: white;
+  color: black;
   display: block;
 }
 

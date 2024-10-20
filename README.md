@@ -91,7 +91,8 @@
 ---
 
 ### System Architecture <a id="system-architecture"></a>
-![image](https://github.com/user-attachments/assets/3d4d8992-7571-436f-b623-510ad48095c5)
+![image](https://github.com/user-attachments/assets/f1f310df-1231-4d40-96c5-065e2f0cbe54)
+
 
 
 

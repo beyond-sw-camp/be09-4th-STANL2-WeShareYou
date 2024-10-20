@@ -55,11 +55,11 @@
             <img src="@/assets/icon/boardIcons/comment.svg" class="svg-icon" alt="Comment Icon" @click="focusCommentInput" />
             <img src="@/assets/icon/boardIcons/letter.svg" class="svg-icon" alt="Message Icon" @click="goToChat(board.id)" />\
 
-            <div v-if="isAuthor" class="more-options" @click="toggleDropdown">
-              <button class="more-button">⋯</button>
+            <div v-if="isAuthor" class="more-options">
+              <button class="more-button" @click="toggleDropdown">⋯</button>
               <div v-if="showDropdown" class="dropdown-menu">
-                <button @click="editPost">수정</button>
-                <button @click="deletePost">삭제</button>
+                <button @click="editPost">게시글 수정</button>
+                <button @click="deletePost">게시글 삭제</button>
               </div>
             </div>
           </div>  
@@ -83,7 +83,7 @@
 
 
 <script setup>
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { defineProps, defineEmits, ref, computed, onMounted } from 'vue';
 
 const router = useRouter();
@@ -120,14 +120,14 @@ const toggleDropdown = () => {
 };
 
 const editPost = () => {
-  router.push(`/edit/${board.id}`); // Navigate to edit page
+  router.push(`/board/update/${props.board.id}`); // Navigate to edit page
 };
 
 const deletePost = async () => {
   const confirmed = confirm('정말로 이 게시글을 삭제하시겠습니까?');
   if (confirmed) {
     try {
-      await fetch(`http://localhost:8080/api/v1/board/${board.id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8080/api/v1/board/${props.board.id}`, { method: 'DELETE' });
       alert('게시글이 삭제되었습니다.');
       close(); 
     } catch (error) {
@@ -517,6 +517,7 @@ p {
 }
 
 .more-options {
+  margin-left: auto;
   position: relative;
 }
 

@@ -58,8 +58,6 @@
 
 # 프로젝트 개요 <a id="프로젝트-개요"></a>
 
----
-
 ## 1. 배경 <a id="1-배경"></a>
 
 1. 팀 스터디의 효율성을 향상시킬 수 있는 도구가 필요함
@@ -93,8 +91,9 @@
 ---
 
 ### System Architecture <a id="system-architecture"></a>
+![image](https://github.com/user-attachments/assets/3d4d8992-7571-436f-b623-510ad48095c5)
 
-![image](https://github.com/user-attachments/assets/e52ce4f5-c582-4a39-a6f5-b316bc0c228b)
+
 
 
 ## DDD <a id="ddd"></a>

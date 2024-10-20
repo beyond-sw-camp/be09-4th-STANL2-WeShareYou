@@ -1,6 +1,8 @@
 package stanl_2.weshareyou.domain.member.aggregate.dto;
 
 import lombok.*;
+import stanl_2.weshareyou.domain.board.aggregate.entity.Board;
+import stanl_2.weshareyou.domain.board_like.aggregate.entity.BoardLike;
 import stanl_2.weshareyou.domain.member.aggregate.Role;
 import stanl_2.weshareyou.domain.member.aggregate.Sex;
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findlikeboard.LikeNoResponseVO;
@@ -8,6 +10,7 @@ import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmyboard.MyBoar
 import stanl_2.weshareyou.domain.member.aggregate.vo.response.findmycomment.MyCommentResponseVO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter

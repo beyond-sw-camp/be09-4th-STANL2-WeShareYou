@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @Entity
@@ -32,22 +31,5 @@ public class LoginHistory {
 
     @Column(name="LOGIN_HISTORY_USER_AGENT")
     String userAgent;
-
-    // 생성자
-    public LoginHistory(Long id, String loginDateStr, String clientIp, String loginId, String userAgent) {
-        this.id = id;
-        this.loginDate = parseDate(loginDateStr); // String을 LocalDateTime으로 변환
-        this.clientIp = clientIp;
-        this.loginId = loginId;
-        this.userAgent = userAgent;
-    }
-
-
-
-    // 날짜 변환 함수
-    private LocalDateTime parseDate(String dateStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
-        return LocalDateTime.parse(dateStr, formatter);
-    }
 
 }

@@ -56,14 +56,13 @@ public class BoardCommentServiceImpl implements BoardCommentService{
         boardComment.setContent(boardCommentDto.getContent());
         boardComment.setCreatedAt(currentTimestamp);
         boardComment.setUpdatedAt(currentTimestamp);
+        board.setCommentCount(board.getCommentCount() + 1);
         boardComment.setBoard(board);
         boardComment.setMember(member);
         boardCommentRepository.save(boardComment);
 
         BoardCommentDto boardCommentDto1 = modelMapper.map(boardComment, BoardCommentDto.class);
         boardCommentDto1.setBoardCommentId(board.getId());
-        boardCommentDto1.setNickname(member.getNickname());
-        boardCommentDto1.setBoardId(board.getId());
 
         return boardCommentDto1;
     }
@@ -87,8 +86,11 @@ public class BoardCommentServiceImpl implements BoardCommentService{
     @Transactional
     @Override
     public void deleteBoardComment(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
         BoardComment boardcomment = boardCommentRepository.findById(boardId)
                 .orElseThrow(() -> new CommonException(ErrorCode.BOARD_NOT_FOUND));
+        board.setCommentCount(board.getCommentCount()-1);
         boardCommentRepository.delete(boardcomment);
     }
 
@@ -100,7 +102,6 @@ public class BoardCommentServiceImpl implements BoardCommentService{
             BoardCommentDto boardCommentDto = new BoardCommentDto();
             boardCommentDto.setBoardCommentId(boardComment.getId());
             boardCommentDto.setContent(boardComment.getContent());
-            boardCommentDto.setMemberProfileUrl(boardComment.getMember().getProfileUrl());
 
             if (boardComment.getMember() != null) {
                 boardCommentDto.setNickname(boardComment.getMember().getNickname()); // Member의 닉네임 추가

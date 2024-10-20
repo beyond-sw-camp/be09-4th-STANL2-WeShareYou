@@ -24,7 +24,4 @@ public class BoardCommentReadResponseVO {
 
     @NotNull
     private Timestamp updatedAt;
-
-    @NotNull
-    private String memberProfileUrl;
 }

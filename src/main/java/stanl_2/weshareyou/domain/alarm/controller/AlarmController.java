@@ -2,10 +2,6 @@ package stanl_2.weshareyou.domain.alarm.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import stanl_2.weshareyou.domain.alarm.aggregate.dto.AlarmDTO;
@@ -14,11 +10,6 @@ import stanl_2.weshareyou.domain.alarm.aggregate.vo.response.AlarmReadStatusResp
 import stanl_2.weshareyou.domain.alarm.service.AlarmService;
 import stanl_2.weshareyou.global.common.dto.CursorDTO;
 import stanl_2.weshareyou.global.common.response.ApiResponse;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/alarm")
@@ -51,8 +42,8 @@ public class AlarmController {
      */
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestAttribute("id") Long memberId,
-                                             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "")
-                                             String lastEventId) {
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "")
+                                String lastEventId) {
 
         return alarmService.subscribe(memberId, lastEventId);
     }

@@ -62,14 +62,9 @@
           <div class="message-wrapper" :class="message.sender === user.name ? 'my-message' : 'their-message'">
             <div class="message-sender">{{ message.sender }}</div>
             <div class="message-content">
-<<<<<<< HEAD
-              <span class="message-time1">{{ message.message }}</span><br>
-              <span class="message-time2">{{ formatTime(message.createdAt) }}</span>
-=======
               <span class="message-time">{{ message.message }}</span>
               <span class="message-time" v-if="message.createdAt">{{ formatTime(message.createdAt) }}</span>
               <span class="message-time" v-if="message.sendTime">{{ message.sendTime }}</span>
->>>>>>> 31b4b6704400a99f576238fad8752281eccd4828
             </div>
             <div v-if="isLastMessageRead(index, message)">
               <span class="message-time">읽음</span>

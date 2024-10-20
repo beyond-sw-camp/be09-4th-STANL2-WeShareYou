@@ -17,7 +17,6 @@
    - [기대 효과](#5-기대-효과)
 4. [설계 문서](#설계-문서)
    - [System Architecture](#system-architecture)
-   - [주요 기능 FLOW CHART](#주요-기능-flow-chart)
    - [DDD](#ddd)
      - [Bounded Context](#1-bounded-context)
      - [Context Mapping](#2-context-mapping)

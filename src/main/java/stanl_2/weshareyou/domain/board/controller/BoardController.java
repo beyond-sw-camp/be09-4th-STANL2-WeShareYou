@@ -71,6 +71,10 @@ public class BoardController {
 
         BoardDTO boardResponseDTO = boardService.createBoard(boardDTO);
 
+        String formattedContent = boardResponseDTO.getContent().replace("\n", "\\n");
+        boardResponseDTO.setContent(formattedContent);
+
+
         BoardCreateResponseVO boardCreateResponseVO = modelMapper.map(boardResponseDTO, BoardCreateResponseVO.class);
 
         return ApiResponse.ok(boardCreateResponseVO);

@@ -63,10 +63,7 @@
 
 
 1. 기내 반입 금지 물품들로 인해 버려지는 물품들이 공항에 쌓여가고 있음
-
-
-<img width="598" alt="스크린샷 2024-10-21 오후 4 48 40" src="https://github.com/user-attachments/assets/b643ba16-3f0b-4542-8f80-cfab954881ca">
-- 2024년 3월 
+2. 여행 중 일회성 소비를 막고, 지속 가능한 사회를 만들어가기 위함
 
 ## 2. 서비스 목표 <a id="2-서비스-목표"></a>
 
@@ -100,166 +97,72 @@
 
 ### System Architecture <a id="system-architecture"></a>
 
-![Network Diagrams](https://github.com/user-attachments/assets/83706f89-f51f-4036-8cd7-f4244cb34801)
-
-
-## 주요 기능 FLOW CHART <a id="주요-기능-flow-chart"></a>
-
-![문제관련 drawio (1)](https://github.com/user-attachments/assets/59625632-7ce8-4300-b085-945d176620f8)
-
-## OAuth 2.0 Sequence Diagram <a id="OAuth2SequenceDiagram"></a>
-![image](https://github.com/user-attachments/assets/b150924e-92a5-4290-9602-38efa24e9804)
+![image](https://github.com/user-attachments/assets/844d3f87-8494-40d4-96cf-00ea06a8e8b7)
 
 ## DDD <a id="ddd"></a>
 
 ### 1. Event Storming <a id="1-event-storming"></a>
 
-![image](https://github.com/user-attachments/assets/b11ddb78-7874-4dfd-a8c0-ebfdbd41e238)
+![image](https://github.com/user-attachments/assets/2aa841bc-711a-4be8-8723-3e02ffe67bdc)
 
-### 2. Bounded Context <a id="2-bounded-context"></a>
+### 2. External System <a id="2-external-system"></a>
 
-![image](https://github.com/user-attachments/assets/3efdd6c0-09bb-4ac0-ae83-d0e399f39ccd)
+![image](https://github.com/user-attachments/assets/b0f246d8-50f1-4644-9b00-de8ef8b5a00c)
+
+### 3. Command & Actor <a id="3-command-and-actor-system"></a>
+
+![image](https://github.com/user-attachments/assets/edb25e69-3553-405b-a460-dafb7d50d60e)
+
+### 4. Aggregate <a id="4-aggregate"></a>
+
+![image](https://github.com/user-attachments/assets/14a5be54-4f55-4dd7-b4f1-0b7ead806fef)
+
+### 5. Bounded Context <a id="5-bounded-context"></a>
+
+![image](https://github.com/user-attachments/assets/437d1dc4-8091-4f30-9f84-d2b089be34de)
+
+### 6. Context Mapping <a id="6-context_mapping"></a>
+
+![image](https://github.com/user-attachments/assets/d7872d52-41f8-424c-ad04-abd5f5b73695)
 
 ## DB 모델링 <a id="db-모델링"></a>
 
-### 1. 개념 모델링 <a id="1-개념-모델링"></a>
+### 1. 논리 모델링 <a id="2-논리-모델링"></a>
 
-![image](https://github.com/user-attachments/assets/e6dea257-6429-4be1-91f4-fa653914148e)
+![image](https://github.com/user-attachments/assets/fc56ae44-6b45-43f6-a66a-cb93f36c7e3f)
 
-### 2. 논리 모델링 <a id="2-논리-모델링"></a>
+### 2. 물리 모델링 <a id="3-물리-모델링"></a>
 
-![image](https://github.com/user-attachments/assets/b8903887-7000-4205-bf5d-f41de5996ab9)
-
-### 3. 물리 모델링 <a id="3-물리-모델링"></a>
-
-![image](https://github.com/user-attachments/assets/2bf256be-07f2-4f74-91d6-dab3994d7e0b)
-
-
-
-
+![image](https://github.com/user-attachments/assets/08499ff0-00ae-4e62-83cc-5376c4ae5ef1)
 
 ## 산출물<a id="산출물"></a>
 
-### 1. 기능 정의서 <a id="기능명세서"></a>
+### 1. 요구사항 명세서 <a id="요구사항명세서"></a>
 
-[기능 정의서 바로가기](https://docs.google.com/spreadsheets/d/1XVX6lAse2VZzDybUvryL8GyeM3-PO_EZMFG10hMVJSk/edit?gid=0#gid=0)
+[요구사항 명세서 바로가기](https://docs.google.com/spreadsheets/d/1FtUepEhB9tNA0qP20CNM_EzY0c0Jh0suZ3eh00r_5K0/edit?gid=0#gid=0)
 
-![image](https://github.com/user-attachments/assets/e3a3e217-34e9-4954-8301-1150095d71bf)
+![image](https://github.com/user-attachments/assets/54ab239f-be8b-487a-ad08-4a1a1021c21d)
+![image](https://github.com/user-attachments/assets/56ffc490-62e5-4960-9877-60827520e468)
 
-## 2. 와이어 프레임<a id="와이어프레임"></a>
+### 2. 기능 정의서 <a id="기능명세서"></a>
 
-### 2.1 전체 와이어 프레임
-![image](https://github.com/user-attachments/assets/89defadf-fa92-4d09-8de3-767962dab4d2)
+[[기능 정의서 바로가기](https://docs.google.com/spreadsheets/d/1FtUepEhB9tNA0qP20CNM_EzY0c0Jh0suZ3eh00r_5K0/edit?gid=1007720080#gid=1007720080)]
 
+![image](https://github.com/user-attachments/assets/fd7dd066-3180-4e56-afac-8d63645fcd91)
+![image](https://github.com/user-attachments/assets/28fa0db9-9315-4acc-b767-baed89d83189)
 
-### 2.2 회원
+## 3. 와이어 프레임<a id="와이어프레임"></a>
 
-<details>
-  <summary>2.2.1. 마이페이지</summary>
-   <img src="https://github.com/user-attachments/assets/e2019098-836a-48c4-9d03-d9e93060f4e0" alt="마이페이지" />
-</details>
+![image](https://github.com/user-attachments/assets/3be68d1b-2558-4dc6-b4f4-b583b4b03636)
+![image](https://github.com/user-attachments/assets/6ececb3f-39d6-4f71-a8bf-31c59db8e692)
 
-<details>
-  <summary>2.2.2. 일반 & 카카오 로그인</summary>
-  <img src="https://github.com/user-attachments/assets/022e3e9e-7ab3-4f97-9a99-9ef7abb99c55" alt="일반 & 카카오 로그인" />
-</details>
+### 4. WBS<a id="WBS"></a>
 
-<details>
-  <summary>2.2.3. 회원가입</summary>
-  <img src="https://github.com/user-attachments/assets/01b21f1d-97c7-4562-8581-fd53e3043258" alt="회원가입" />
-</details>
+![image](https://github.com/user-attachments/assets/82cb9fd2-2de6-4757-ad97-a1de9b63a7be)
 
-<details>
-  <summary>2.2.4. 아이디 찾기</summary>
-  <img src="https://github.com/user-attachments/assets/43d1d170-9b8c-4801-a8e5-ddb0e55fcf95" alt="아이디 찾기" />
-</details>
+### 5. AS IS TO BE<a id="as-is-to-be"></a>
 
-<details>
-  <summary>2.2.5. 비밀번호 찾기</summary>
-  <img src="https://github.com/user-attachments/assets/38194563-9c02-46a3-a369-63e330aa0aed" alt="비밀번호 찾기" />
-</details>
+![image](https://github.com/user-attachments/assets/b63c2582-a926-4080-aeeb-83b61b949e75)
 
-### 2.3 스터디 그룹 및 모집관련
-
-<details>
-  <summary>2.3.1 스터디 그룹 모집글</summary>
-
-  <img src="https://github.com/user-attachments/assets/3687f3ec-1479-4374-89d6-1b21ff639ea4" alt="스터디 그룹 모집글" />
-</details>
-
-<details>
-  <summary>2.3.2 스터디 그룹 자유게시판 및 공지사항</summary>
-
-  <img src="https://github.com/user-attachments/assets/1e988cc6-a63b-4613-ab6d-4e564efb5895" alt="스터디 그룹 자유게시판 및 공지사항" />
-</details>
-
-<details>
-  <summary>2.3.3 스터디 그룹원</summary>
-  <img src="https://github.com/user-attachments/assets/ae4ff43b-6f9a-49f7-8f71-87ed8c310c6b" alt="스터디 그룹원" />
-</details>
-
-
-### 2.4 스터디 그룹 일정 및 문제
-<details>
-  <summary>스터디 그룹 일정 및 문제</summary>
-  <img src="https://github.com/user-attachments/assets/c1e73822-d022-4b2f-a335-f054fbdd4cf8" alt="스터디 그룹 일정 및 문제" />
-</details>
-
-
-## 3. 스토리 보드<a id="스토리보드"></a>
-
-### 3.1 전체 스토리 보드
-![image](https://github.com/user-attachments/assets/574e8f9d-2cfc-4063-993b-c4980ea9873d)
-
-### 3.2 회원
-
-<details>
-  <summary>3.2.1. 마이페이지</summary>
-  <img src="https://github.com/user-attachments/assets/81084eef-6700-45b2-af93-1aaf8d969781" alt="마이페이지" />
-</details>
-
-<details>
-  <summary>3.2.2. 일반 & 카카오 로그인</summary>
-  <img src="https://github.com/user-attachments/assets/593ac0fb-fe8e-4f1c-a975-daa4b67d7fdd" alt="일반 & 카카오 로그인" />
-</details>
-
-<details>
-  <summary>3.2.3. 회원가입</summary>
-  <img src="https://github.com/user-attachments/assets/fc174228-f14a-4de6-8bf1-2845cb9a2dc5" alt="회원가입" />
-</details>
-
-<details>
-  <summary>3.2.4. 아이디 찾기</summary>
-  <img src="https://github.com/user-attachments/assets/a4f3eb47-401e-4c4c-b95e-1270d71e77a6" alt="아이디 찾기" />
-</details>
-
-<details>
-  <summary>3.2.5. 비밀번호 찾기</summary>
-  <img src="https://github.com/user-attachments/assets/2a95d0d6-6bc2-42d8-adda-8b4663504a34" alt="비밀번호 찾기" />
-</details>
-
-### 3.3 스터디 그룹 및 모집관련
-
-<details>
-  <summary>3.3.1 스터디 그룹 모집글</summary>
-  <img src="https://github.com/user-attachments/assets/ddaa6706-9809-43d8-9319-417ad19eeeb0" alt="스터디 그룹 모집글" />
-</details>
-
-<details>
-  <summary>3.3.2 스터디 그룹 자유게시판 및 공지사항</summary>
-  <img src="https://github.com/user-attachments/assets/1bdcc2c5-6cd2-43f1-bdaf-07592b24e916" alt="스터디 그룹 자유게시판 및 공지사항" />
-</details>
-
-<details>
-  <summary>3.3.3 스터디 그룹원</summary>
-  <img src="https://github.com/user-attachments/assets/5fcfb1ad-5f62-4a3d-9eeb-fe13104b564e" alt="스터디 그룹원" />
-</details>
-
-### 3.4 스터디 그룹 일정 및 문제
-
-<details>
-  <summary>스터디 그룹 일정 및 문제</summary>
-  <img src="https://github.com/user-attachments/assets/71cfac86-9e2e-4c24-b56c-55d0cc5835b5" alt="스터디 그룹 일정 및 문제" />
-</details>
 
 

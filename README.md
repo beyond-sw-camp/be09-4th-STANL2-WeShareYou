@@ -95,7 +95,7 @@
 
 ---
 
-### System Architecture <a id="system-architecture"></a>
+## System Architecture <a id="system-architecture"></a>
 
 ![image](https://github.com/user-attachments/assets/844d3f87-8494-40d4-96cf-00ea06a8e8b7)
 
@@ -151,7 +151,7 @@
 ![image](https://github.com/user-attachments/assets/fd7dd066-3180-4e56-afac-8d63645fcd91)
 ![image](https://github.com/user-attachments/assets/28fa0db9-9315-4acc-b767-baed89d83189)
 
-## 3. 와이어 프레임<a id="와이어프레임"></a>
+### 3. 와이어 프레임<a id="와이어프레임"></a>
 
 ![image](https://github.com/user-attachments/assets/3be68d1b-2558-4dc6-b4f4-b583b4b03636)
 ![image](https://github.com/user-attachments/assets/6ececb3f-39d6-4f71-a8bf-31c59db8e692)
@@ -160,7 +160,120 @@
 
 ![image](https://github.com/user-attachments/assets/82cb9fd2-2de6-4757-ad97-a1de9b63a7be)
 
-### 5. AS IS TO BE<a id="as-is-to-be"></a>
+### 6. 실행 결과
+<details>
+<summary>회원 기능</summary>
+
+<details>
+<summary> 1. 회원가입 & 이메일 인증  </summary>
+https://github.com/user-attachments/assets/f56d6c30-1e88-4b80-a00a-c45b48a919de
+</details>
+<details>
+<summary> 2. 로그인 </summary>
+https://github.com/user-attachments/assets/b4848f50-fb87-4b7b-820a-872113fe6b4e
+</details>
+<details>
+<summary> 3. 프로필 수정 </summary>
+https://github.com/user-attachments/assets/f0776a3b-9a12-46fc-8384-d4624c903f1c
+</details>
+</details>
+
+---
+
+<details>
+<summary>게시글</summary>
+ 
+<details>
+<summary> 1. 게시글 등록 </summary>
+
+</details>
+
+
+https://github.com/user-attachments/assets/02a34d15-a19d-4a14-a95c-1f236afd9f6a
+
+
+<details>
+<summary> 2. 게시글 수정 </summary>
+
+</details>
+
+<details>
+<summary> 3. 게시글 삭제 </summary>
+
+</details>
+
+<details>
+<summary> 4. 게시글 조회 </summary>
+
+</details>
+
+https://github.com/user-attachments/assets/e2b3b4fc-ef9d-46ab-90ff-fb64e82ad131
+
+
+
+<details>
+<summary> 5. 게시글 댓글 알림 </summary>
+
+</details>
+
+<details>
+<summary> 6. 식재료 게시글 댓글 등록 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/bf849242-8cac-4d20-b14b-51dd7d804d67"  width="600">
+</details>
+
+<details>
+<summary> 7. 식재료 게시글 댓글 수정 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/6dc817c6-fc87-4acb-a17c-5e4e54378703"  width="600">
+</details>
+
+<details>
+<summary> 8. 식재료 게시글 댓글 삭제 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/6457439d-dcbc-4f93-8041-560f6ff305c4"  width="600">
+</details>
+
+<details>
+<summary> 9. 식재료 게시글 댓글 조회 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/cc32614e-e42d-4926-a760-c338d9e45429"  width="600">
+</details>
+
+</details>
+
+---
+
+<details>
+<summary>🧑‍🍳 레시피 게시글 관리</summary>
+ 
+<details>
+<summary> 1. 레시피 게시글 등록 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/c39d0453-232b-494d-92bb-7f23ce330a61"  width="600">
+</details>
+
+<details>
+<summary> 2. 레시피 게시글 수정 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/0c033569-60a2-47ed-9c27-9f2393f27548"  width="600">
+</details>
+
+<details>
+<summary> 3. 레시피 게시글 삭제 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/4e34de5a-b3fa-45c4-ad34-87e2cfcd2a7b"  width="600">
+</details>
+
+<details>
+<summary> 4. 레시피 게시글 조회 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/068cec05-90ec-4741-934b-c28a8758a6bf"  width="600">
+</details>
+
+<details>
+<summary> 5. 레시피 게시글 키워드 검색 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/3e48bb44-2e93-4702-b6a7-7a803f6260f8"  width="600">
+</details>
+
+<details>
+<summary> 6. 레시피 게시글 조건별 검색 </summary>
+<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/13cb16ef-9693-4de5-8581-a6d43f8b7fe4"  width="600">
+</details>
+
+### 6. AS IS TO BE<a id="as-is-to-be"></a>
 
 ![image](https://github.com/user-attachments/assets/b63c2582-a926-4080-aeeb-83b61b949e75)
 

@@ -195,15 +195,18 @@ https://github.com/user-attachments/assets/f0776a3b-9a12-46fc-8384-d4624c903f1c
 <details>
 <summary>게시글</summary>
  
+</details>
+
 <details>
 <summary> 1. 게시글 등록 </summary>
 
 </details>
+<details>
 
-
+   
 https://github.com/user-attachments/assets/02a34d15-a19d-4a14-a95c-1f236afd9f6a
 
-
+</details>
 <details>
 <summary> 2. 게시글 수정 </summary>
 

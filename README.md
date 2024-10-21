@@ -165,16 +165,28 @@
 <summary>회원 기능</summary>
 
 <details>
-<summary> 1. 회원가입 & 이메일 인증  </summary>
+<summary> 회원가입 & 이메일 인증  </summary>
+
+   
 https://github.com/user-attachments/assets/f56d6c30-1e88-4b80-a00a-c45b48a919de
+
+
 </details>
 <details>
-<summary> 2. 로그인 </summary>
+<summary> 로그인 </summary>
+
+   
 https://github.com/user-attachments/assets/b4848f50-fb87-4b7b-820a-872113fe6b4e
+
+
 </details>
 <details>
-<summary> 3. 프로필 수정 </summary>
+<summary> 프로필 수정 </summary>
+
+   
 https://github.com/user-attachments/assets/f0776a3b-9a12-46fc-8384-d4624c903f1c
+
+
 </details>
 </details>
 

@@ -1,0 +1,5 @@
+# Dockerfile for MariaDB
+FROM mariadb:10.6
+ENV MYSQL_ROOT_PASSWORD=test
+ENV MYSQL_DATABASE=wsu
+EXPOSE 3306

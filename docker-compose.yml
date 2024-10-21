@@ -1,32 +1,41 @@
-version: "3.8"
-
 services:
   frontend:
     build:
       context: ./front-end
+      dockerfile: Dockerfile
     image: bang99/weshareu-frontend:latest
     ports:
-      - "30080:8080"  # 80 대신 8080 사용
+      - "30080:80"  # 프론트엔드 접근 포트
     networks:
       - weshareyou-network
     restart: always
+    depends_on:
+      - backend
 
   backend:
     build:
       context: ./back-end
+      dockerfile: Dockerfile
     image: bang99/weshareu-backend:latest
     ports:
-      - "30077:7777"  # Jenkins 충돌 방지를 위해 다른 포트 사용
+      - "8080:8080"  # 백엔드 접근 포트
     networks:
       - weshareyou-network
     depends_on:
       - mongodb
       - mariadb
       - redis
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/wsu
+    - SPRING_DATASOURCE_USERNAME=test
+    - SPRING_DATASOURCE_PASSWORD=test
+    - SPRING_PROFILES_ACTIVE=private
     restart: always
 
   mongodb:
-    image: mongo:6.0
+    build:
+      context: ./mongo
+      dockerfile: Dockerfile
     ports:
       - "27017:27017"
     volumes:
@@ -36,7 +45,9 @@ services:
     restart: always
 
   mariadb:
-    image: mariadb:10.6
+    build:
+      context: ./mariadb
+      dockerfile: Dockerfile
     environment:
       MYSQL_ROOT_PASSWORD: test
       MYSQL_DATABASE: wsu
@@ -49,7 +60,9 @@ services:
     restart: always
 
   redis:
-    image: redis:alpine
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
     ports:
       - "6379:6379"
     networks:

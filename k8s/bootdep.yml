@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bootdep
+spec:
+  selector:
+    matchLabels:
+      app: bootkube
+  # replicas: 3
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bootkube
+    spec:
+      containers:
+      - name: boot-container
+        image: bang99/weshareu-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

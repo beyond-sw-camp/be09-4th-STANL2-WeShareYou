@@ -1,0 +1,3 @@
+# Dockerfile for Redis
+FROM redis:alpine
+EXPOSE 6379

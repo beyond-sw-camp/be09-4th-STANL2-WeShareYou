@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vuedep
+spec:
+  selector:
+    matchLabels:
+      app: vuekube
+  template:
+    metadata:
+      labels:
+        app: vuekube
+    spec:
+      containers:
+      - name: vue-container
+        image: bang99/weshareu-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80      # 5173이 아니라 80으로 바꿔야 한다.

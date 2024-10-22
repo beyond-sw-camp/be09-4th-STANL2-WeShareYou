@@ -161,11 +161,11 @@
 ![image](https://github.com/user-attachments/assets/82cb9fd2-2de6-4757-ad97-a1de9b63a7be)
 
 ### 6. 실행 결과
-<details>
-<summary>회원 기능</summary>
 
 <details>
-<summary> 회원가입 & 이메일 인증  </summary>
+<summary>회원 기능</summary>
+<details>
+<summary>회원가입 & 이메일 인증  </summary>
 
    
 https://github.com/user-attachments/assets/f56d6c30-1e88-4b80-a00a-c45b48a919de
@@ -173,7 +173,7 @@ https://github.com/user-attachments/assets/f56d6c30-1e88-4b80-a00a-c45b48a919de
 
 </details>
 <details>
-<summary> 로그인 </summary>
+<summary>로그인 </summary>
 
    
 https://github.com/user-attachments/assets/b4848f50-fb87-4b7b-820a-872113fe6b4e
@@ -181,7 +181,7 @@ https://github.com/user-attachments/assets/b4848f50-fb87-4b7b-820a-872113fe6b4e
 
 </details>
 <details>
-<summary> 프로필 수정 </summary>
+<summary>프로필 수정 </summary>
 
    
 https://github.com/user-attachments/assets/f0776a3b-9a12-46fc-8384-d4624c903f1c
@@ -193,100 +193,84 @@ https://github.com/user-attachments/assets/f0776a3b-9a12-46fc-8384-d4624c903f1c
 ---
 
 <details>
-<summary>게시글</summary>
- 
-</details>
+<summary>게시글 기능</summary>
 
 <details>
-<summary> 1. 게시글 등록 </summary>
+<summary>게시글 조회</summary>
 
-</details>
-<details>
+
+https://github.com/user-attachments/assets/a1db067f-e8c8-4742-ba81-d6af500b384a
 
    
-https://github.com/user-attachments/assets/02a34d15-a19d-4a14-a95c-1f236afd9f6a
-
 </details>
 <details>
-<summary> 2. 게시글 수정 </summary>
+<summary>게시글 작성</summary>
 
+
+https://github.com/user-attachments/assets/c72a75fc-41ee-4380-a708-eb0b1fbaf579
+
+   
 </details>
-
 <details>
-<summary> 3. 게시글 삭제 </summary>
+<summary>게시글 수정</summary>
 
+
+https://github.com/user-attachments/assets/a1db067f-e8c8-4742-ba81-d6af500b384a
+
+   
 </details>
-
 <details>
-<summary> 4. 게시글 조회 </summary>
+<summary>게시글 삭제</summary>
 
+
+https://github.com/user-attachments/assets/38522821-f81c-42ba-92bb-ac025ae1a526
+
+   
 </details>
-
-https://github.com/user-attachments/assets/e2b3b4fc-ef9d-46ab-90ff-fb64e82ad131
-
-
-
 <details>
-<summary> 5. 게시글 댓글 알림 </summary>
+<summary>게시글 댓글 알람</summary>
 
+
+https://github.com/user-attachments/assets/37668fff-ce2e-44a7-8293-50d6081e6586
+
+   
 </details>
-
-<details>
-<summary> 6. 식재료 게시글 댓글 등록 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/bf849242-8cac-4d20-b14b-51dd7d804d67"  width="600">
-</details>
-
-<details>
-<summary> 7. 식재료 게시글 댓글 수정 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/6dc817c6-fc87-4acb-a17c-5e4e54378703"  width="600">
 </details>
 
 <details>
-<summary> 8. 식재료 게시글 댓글 삭제 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/6457439d-dcbc-4f93-8041-560f6ff305c4"  width="600">
-</details>
-
+<summary>공유물품</summary>
 <details>
-<summary> 9. 식재료 게시글 댓글 조회 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/162286096/cc32614e-e42d-4926-a760-c338d9e45429"  width="600">
-</details>
+<summary>공유물품 조회 & 대여</summary>
 
+
+https://github.com/user-attachments/assets/78f0ce16-44fc-4da5-9931-9eeda17828e0
+
+   
+</details>
+<details>
+<summary>게시글 댓글 알람</summary>
+
+
+https://github.com/user-attachments/assets/37668fff-ce2e-44a7-8293-50d6081e6586
+
+   
 </details>
 
 ---
 
 <details>
-<summary>🧑‍🍳 레시피 게시글 관리</summary>
- 
+<summary>공지사항</summary>
 <details>
-<summary> 1. 레시피 게시글 등록 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/c39d0453-232b-494d-92bb-7f23ce330a61"  width="600">
+<summary>공지사항 조회</summary>
+
+
+https://github.com/user-attachments/assets/142f02dc-59b5-4c4b-b475-1d80cf719826
+
+   
 </details>
 
-<details>
-<summary> 2. 레시피 게시글 수정 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/0c033569-60a2-47ed-9c27-9f2393f27548"  width="600">
-</details>
 
-<details>
-<summary> 3. 레시피 게시글 삭제 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/4e34de5a-b3fa-45c4-ad34-87e2cfcd2a7b"  width="600">
-</details>
-
-<details>
-<summary> 4. 레시피 게시글 조회 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/068cec05-90ec-4741-934b-c28a8758a6bf"  width="600">
-</details>
-
-<details>
-<summary> 5. 레시피 게시글 키워드 검색 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/3e48bb44-2e93-4702-b6a7-7a803f6260f8"  width="600">
-</details>
-
-<details>
-<summary> 6. 레시피 게시글 조건별 검색 </summary>
-<img src = "https://github.com/3-Minutes-Query/1st_project/assets/105826061/13cb16ef-9693-4de5-8581-a6d43f8b7fe4"  width="600">
-</details>
+---
 
 ### 6. AS IS TO BE<a id="as-is-to-be"></a>
 

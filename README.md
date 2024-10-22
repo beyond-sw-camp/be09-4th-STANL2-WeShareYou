@@ -283,6 +283,20 @@ https://github.com/user-attachments/assets/142f02dc-59b5-4c4b-b475-1d80cf719826
    
 ---
 
+<details>
+<summary>FAQ & 번역</summary>
+<details>
+<summary>FAQ 조회 & 번역 </summary>
+
+
+https://github.com/user-attachments/assets/beaf8fbe-b669-48e0-bff2-129666cdcda4
+
+   
+</details>
+</details>
+
+---
+
 ### 6. AS IS TO BE<a id="as-is-to-be"></a>
 
 ![image](https://github.com/user-attachments/assets/b63c2582-a926-4080-aeeb-83b61b949e75)

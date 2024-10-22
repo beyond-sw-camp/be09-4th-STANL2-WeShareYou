@@ -215,7 +215,7 @@ https://github.com/user-attachments/assets/c72a75fc-41ee-4380-a708-eb0b1fbaf579
 <summary>게시글 수정</summary>
 
 
-https://github.com/user-attachments/assets/a1db067f-e8c8-4742-ba81-d6af500b384a
+https://github.com/user-attachments/assets/ad01e96c-e453-4c51-922b-c3f090bd4bef
 
    
 </details>
@@ -228,6 +228,14 @@ https://github.com/user-attachments/assets/38522821-f81c-42ba-92bb-ac025ae1a526
    
 </details>
 <details>
+<summary>게시글 댓글</summary>
+
+
+https://github.com/user-attachments/assets/67ea3a26-0d3b-4a63-8fc3-8bb76824c0a4
+
+   
+</details>
+<details>
 <summary>게시글 댓글 알람</summary>
 
 
@@ -236,6 +244,8 @@ https://github.com/user-attachments/assets/37668fff-ce2e-44a7-8293-50d6081e6586
    
 </details>
 </details>
+
+---
 
 <details>
 <summary>공유물품</summary>
@@ -255,6 +265,7 @@ https://github.com/user-attachments/assets/37668fff-ce2e-44a7-8293-50d6081e6586
 
    
 </details>
+</details>
 
 ---
 
@@ -268,8 +279,8 @@ https://github.com/user-attachments/assets/142f02dc-59b5-4c4b-b475-1d80cf719826
 
    
 </details>
-
-
+</details>
+   
 ---
 
 ### 6. AS IS TO BE<a id="as-is-to-be"></a>

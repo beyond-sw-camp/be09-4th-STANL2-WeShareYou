@@ -15,8 +15,6 @@
    - [기대 효과](#5-기대-효과)
 4. [설계 문서](#설계-문서)
    - [System Architecture](#system-architecture)
-   - [주요 기능 FLOW CHART](#주요-기능-flow-chart)
-   - [OAuth 2.0 Sequence Diagram](#OAuth2SequenceDiagram)
    - [DDD](#ddd)
      - [Event Storming](#1-event-storming)
      - [Bounded Context](#2-bounded-context)
